@@ -8,17 +8,20 @@
         android:id="@+id/homeFragment"
         android:icon="@drawable/baseline_home_24"
         app:showAsAction="ifRoom"
-        android:title="Home"
+        android:title="@null"
+        
+
         ></item>
     <item
         android:id="@+id/searchFragment"
-        android:title="Search"
+        android:title="@null"
         app:showAsAction="ifRoom"
         android:icon="@drawable/search_svgrepo_com"
+
         ></item>
     <item
         android:id="@+id/profileFragment"
-        android:title="Profile"
+        android:title="@null"
         app:showAsAction="ifRoom"
         android:icon="@drawable/avatar_default_svgrepo_com"
         ></item>

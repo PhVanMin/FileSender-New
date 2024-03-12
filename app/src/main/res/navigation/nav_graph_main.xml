@@ -6,6 +6,7 @@
     android:id="@+id/nav_graph_main"
     app:startDestination="@id/homeFragment"
     >
+    
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.xender.fragment.HomeFragment"
