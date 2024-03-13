@@ -2,13 +2,17 @@ package com.example.xender.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.xender.R;
+import com.example.xender.activity.SendActivity;
+import com.example.xender.adapter.ContactAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +29,9 @@ public class ContactFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private ListView listView;
+    private ContactAdapter contactAdapter;
 
     public ContactFragment() {
         // Required empty public constructor
@@ -62,5 +69,16 @@ public class ContactFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_contact, container, false);
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle saveInstanceState) {
+
+      super.onActivityCreated(saveInstanceState);
+       listView = getActivity().findViewById(R.id.list_contacts);
+        SendActivity parent = (SendActivity) getActivity();
+        contactAdapter = new ContactAdapter(getActivity(),R.layout.contact,parent.getContacts());
+       listView.setAdapter(contactAdapter);
     }
 }
