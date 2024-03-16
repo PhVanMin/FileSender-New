@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/wifiQrFragment"
+    android:id="@+id/nav_graph_qr">
+    <fragment
+        android:id="@+id/wifiQrFragment"
+        android:name="com.example.xender.fragment.WifiQrFragment"
+
+        tools:layout="@layout/fragment_wifi_qr">
+
+        <action
+            android:id="@+id/action_wifiQrFragment_to_bluetoothQrFragment"
+            app:destination="@id/bluetoothQrFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bluetoothQrFragment"
+        android:name="com.example.xender.fragment.BluetoothQrFragment"
+
+        tools:layout="@layout/fragment_bluetooth_qr">
+
+        <action
+            android:id="@+id/action_bluetoothQrFragment_to_wifiQrFragment"
+            app:destination="@id/wifiQrFragment" />
+    </fragment>
+</navigation>

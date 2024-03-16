@@ -38,18 +38,18 @@ public class SendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send);
 
+
+
+
+
         toolbar = findViewById(R.id.appbar_send);
         toolbar.setTitle("Chọn tập tin");
-
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-
-
         toolbar.isBackInvokedCallbackEnabled();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-     
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         BottomNavigationView navigationView = findViewById(R.id.navigation_view);
         NavigationUI.setupWithNavController(navigationView,navController);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

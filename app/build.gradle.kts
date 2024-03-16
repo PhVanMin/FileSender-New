@@ -42,6 +42,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.recyclerview:recyclerview:1.1.0")
     implementation("com.github.bumptech.glide:glide:5.0.0-rc01")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.2")
     implementation ("androidx.multidex:multidex:2.0.1")
 

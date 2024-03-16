@@ -1,40 +1,44 @@
 package com.example.xender.fragment;
 
-import android.content.Intent;
+import android.content.BroadcastReceiver;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.xender.R;
 import com.example.xender.activity.QRActivity;
-import com.example.xender.activity.SendActivity;
+import com.example.xender.wifi.WifiDirectBroadcastReceiver;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
+ * Use the {@link WifiQrFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class WifiQrFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    private Button sendBtn ;
-    private Button qrBtn;
-    private Button connectBtn;
+    private String address;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    public HomeFragment() {
+    ImageView qr_code;
+    QRActivity activity;
+    public WifiQrFragment() {
         // Required empty public constructor
     }
 
@@ -44,11 +48,11 @@ public class HomeFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
+     * @return A new instance of fragment WifiQRFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
+    public static WifiQrFragment newInstance(String param1, String param2) {
+        WifiQrFragment fragment = new WifiQrFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -64,30 +68,40 @@ public class HomeFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        return inflater.inflate(R.layout.fragment_wifi_qr, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        sendBtn= getActivity().findViewById(R.id.send_btn);
-        sendBtn.setOnClickListener(v -> gotoSendActivity());
-        qrBtn = getActivity().findViewById(R.id.qr_btn);
-        qrBtn.setOnClickListener(v ->gotoQRActivity());
+        qr_code= getActivity().findViewById(R.id.Qr_code);
+        // below line is for getting
+        // the windowmanager service.
+
+        activity = (QRActivity) getActivity();
+
+        address = activity.getMyWifiAddress();
+        try {
+            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+
+
+            BitMatrix bitMatrix =multiFormatWriter.encode(address, BarcodeFormat.QR_CODE,250,250);
+            BarcodeEncoder barcodeEncoder=new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            qr_code.setImageBitmap(bitmap);
+
+        } catch(Exception e){
+
+        }
     }
 
-    public void gotoSendActivity(){
-        Intent intent = new Intent(getActivity(), SendActivity.class);
-        startActivity(intent);
-    }
-    public void gotoQRActivity(){
-        Intent intent = new Intent(getActivity(), QRActivity.class);
-        startActivity(intent);
-    }
+
 }

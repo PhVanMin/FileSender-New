@@ -9,8 +9,6 @@
         android:icon="@drawable/baseline_home_24"
         app:showAsAction="ifRoom"
         android:title="@null"
-        
-
         ></item>
     <item
         android:id="@+id/searchFragment"
