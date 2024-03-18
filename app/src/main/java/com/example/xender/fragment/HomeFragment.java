@@ -10,10 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.xender.R;
 import com.example.xender.activity.QRActivity;
 import com.example.xender.activity.SendActivity;
+import com.example.xender.utils.StorageUtil;
+
+import java.io.File;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,13 +31,14 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private TextView storageInfoTextView;
     private Button sendBtn ;
     private Button qrBtn;
     private Button connectBtn;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ProgressBar progressBar;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -76,12 +82,23 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        sendBtn= getActivity().findViewById(R.id.send_btn);
+        sendBtn = getActivity().findViewById(R.id.send_btn);
         sendBtn.setOnClickListener(v -> gotoSendActivity());
         qrBtn = getActivity().findViewById(R.id.qr_btn);
-        qrBtn.setOnClickListener(v ->gotoQRActivity());
-    }
+        qrBtn.setOnClickListener(v -> gotoQRActivity());
+        storageInfoTextView = getActivity().findViewById(R.id.storageInfoTextView);
 
+        long gbMemoryAvailable = StorageUtil.getByteAvailable() / (1073741824);
+        long gbMemorySize = StorageUtil.getByteMemorySize() / (1073741824);
+
+        storageInfoTextView.setText(
+                String.valueOf(gbMemorySize - gbMemoryAvailable) + " GB of " +
+                        String.valueOf(gbMemorySize) + " GB");
+
+        progressBar = getActivity().findViewById(R.id.progressBar);
+        progressBar.setMax((int) gbMemorySize);
+        progressBar.setProgress((int) ((gbMemorySize - gbMemoryAvailable)));
+    }
     public void gotoSendActivity(){
         Intent intent = new Intent(getActivity(), SendActivity.class);
         startActivity(intent);

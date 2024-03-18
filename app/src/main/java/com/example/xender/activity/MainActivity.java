@@ -7,12 +7,16 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.FileUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.xender.R;
+import com.example.xender.utils.StorageUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigationView = findViewById(R.id.navigation_view);
         NavigationUI.setupWithNavController(navigationView,navController);
+
+        StorageUtil.getAllDir(Environment.getExternalStorageDirectory(),StorageUtil.FILTER_BY_DOCUMENT);
+
     }
 
 

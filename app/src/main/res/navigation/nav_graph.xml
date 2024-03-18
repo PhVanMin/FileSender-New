@@ -10,12 +10,7 @@
 
         tools:layout="@layout/fragment_contact">
 
-        <action
-            android:id="@+id/action_contactFragment_to_folderFragment"
-            app:destination="@id/folderFragment" />
-        <action
-            android:id="@+id/action_contactFragment_to_photoFragment"
-            app:destination="@id/photoFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/photoFragment"
@@ -23,24 +18,30 @@
 
         tools:layout="@layout/fragment_photo">
 
-        <action
-            android:id="@+id/action_photoFragment_to_contactFragment"
-            app:destination="@id/contactFragment" />
-        <action
-            android:id="@+id/action_photoFragment_to_folderFragment"
-            app:destination="@id/folderFragment" />
+
     </fragment>
     <fragment
-        android:id="@+id/folderFragment"
-        android:name="com.example.xender.fragment.FolderFragment"
+        android:id="@+id/fileFragment"
+        android:name="com.example.xender.fragment.FileFragment"
 
         tools:layout="@layout/fragment_folder">
 
-        <action
-            android:id="@+id/action_folderFragment_to_photoFragment"
-            app:destination="@id/photoFragment" />
-        <action
-            android:id="@+id/action_folderFragment_to_contactFragment"
-            app:destination="@id/contactFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/videoFragment"
+        android:name="com.example.xender.fragment.FileFragment"
+
+        tools:layout="@layout/fragment_video">
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/audioFragment"
+        android:name="com.example.xender.fragment.FileFragment"
+
+        tools:layout="@layout/fragment_audio">
+
+
     </fragment>
 </navigation>

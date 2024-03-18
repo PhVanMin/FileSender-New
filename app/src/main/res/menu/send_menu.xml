@@ -20,13 +20,28 @@
 
             ></item>
         <item
-            android:id="@+id/folderFragment"
+            android:id="@+id/fileFragment"
 
             app:showAsAction="ifRoom"
             android:title="Tập tin"
 
 
             ></item>
+        <item
+            android:id="@+id/videoFragment"
 
+            app:showAsAction="ifRoom"
+            android:title="Video"
+
+
+            ></item>
+        <item
+            android:id="@+id/audioFragment"
+
+            app:showAsAction="ifRoom"
+            android:title="Âm thanh"
+
+
+            ></item>
 
 </menu>
