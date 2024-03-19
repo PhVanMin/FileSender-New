@@ -12,13 +12,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.xender.Loader.ImagesGallery;
+import com.example.xender.Loader.ImagesLoader;
 import com.example.xender.R;
 import com.example.xender.adapter.GalleryAdapter;
 
@@ -88,6 +89,7 @@ public class PhotoFragment extends Fragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        Log.d("ActivitySend","PhotoFragment ");
         super.onActivityCreated(savedInstanceState);
 
         gallery_number= getActivity().findViewById(R.id.gallery_number);
@@ -105,7 +107,7 @@ public class PhotoFragment extends Fragment {
     public void loadImages(){
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
-        images = ImagesGallery.listOfImages(getActivity());
+        images = ImagesLoader.listOfImages(getActivity());
         galleryAdapter= new GalleryAdapter(getActivity(), images, new GalleryAdapter.PhotoListenter() {
             @Override
             public void onPhotoClick(String path) {

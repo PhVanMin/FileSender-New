@@ -16,8 +16,11 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 
+import com.example.xender.Loader.ContactsLoader;
 import com.example.xender.R;
+import com.example.xender.adapter.ContactAdapter;
 import com.example.xender.model.Contact;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -27,21 +30,17 @@ import java.util.HashSet;
 public class SendActivity extends AppCompatActivity {
     Toolbar toolbar;
     NavController navController;
-    private final ArrayList<Contact> contacts = new ArrayList<>();
-    public ArrayList<Contact> getContacts() {
-        return contacts;
-    }
 
+    Adapter contactAdapter;
+
+    public Adapter getContactAdapter() {
+        return contactAdapter;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send);
-
-
-
-
-
         toolbar = findViewById(R.id.appbar_send);
         toolbar.setTitle("Chọn tập tin");
         toolbar.isBackInvokedCallbackEnabled();
@@ -59,42 +58,13 @@ public class SendActivity extends AppCompatActivity {
             }
         });
 
-        getContactList();
+        ContactsLoader loader = new ContactsLoader(this);
+        loader.getContactList();
+        contactAdapter  = new ContactAdapter(this,R.layout.contact,loader.getContacts());
+
+
     }
 
 
-    private void getContactList() {
-        if(ContextCompat.checkSelfPermission(
-                this, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.READ_CONTACTS},
-                    0);
-        }
-        ContentResolver cr = getContentResolver();
-        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        Cursor cursor = cr.query(uri,
-                null, null, null, null);
-        if (cursor != null) {
-            HashSet<String> mobileNoSet = new HashSet<String>();
-            try {
-                final int nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
-                final int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
-                String name, number;
-                while (cursor.moveToNext()) {
-                    name = cursor.getString(nameIndex);
-                    number = cursor.getString(numberIndex);
-                    number = number.replace(" ", "");
-                    if (!mobileNoSet.contains(number)) {
-                        contacts.add(new Contact(name, number));
-                        mobileNoSet.add(number);
-                        Log.d("hvy", "onCreaterrView  Phone Number: name = " + name
-                                + " No = " + number);
-                    }
-                }
-            } finally {
-                cursor.close();
-            }
-        }
-    }
 }

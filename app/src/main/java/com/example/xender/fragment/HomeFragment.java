@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.xender.R;
+import com.example.xender.activity.ConnectActivity;
 import com.example.xender.activity.QRActivity;
 import com.example.xender.activity.SendActivity;
 import com.example.xender.utils.StorageUtil;
@@ -86,6 +87,8 @@ public class HomeFragment extends Fragment {
         sendBtn.setOnClickListener(v -> gotoSendActivity());
         qrBtn = getActivity().findViewById(R.id.qr_btn);
         qrBtn.setOnClickListener(v -> gotoQRActivity());
+        connectBtn = getActivity().findViewById(R.id.connect_btn);
+        connectBtn.setOnClickListener(v -> gotoConnectctivity());
         storageInfoTextView = getActivity().findViewById(R.id.storageInfoTextView);
 
         long gbMemoryAvailable = StorageUtil.getByteAvailable() / (1073741824);
@@ -105,6 +108,10 @@ public class HomeFragment extends Fragment {
     }
     public void gotoQRActivity(){
         Intent intent = new Intent(getActivity(), QRActivity.class);
+        startActivity(intent);
+    }
+    public void gotoConnectctivity(){
+        Intent intent = new Intent(getActivity(), ConnectActivity.class);
         startActivity(intent);
     }
 }
