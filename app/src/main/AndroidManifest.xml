@@ -42,7 +42,7 @@
         android:theme="@style/Theme.Xender"
         tools:targetApi="31">
         <activity
-            android:name=".Utils.Passcode"
+            android:name=".Utils.PasscodeUtil"
             android:exported="false" />
         <activity
             android:name=".activity.SendActivity"

@@ -1,7 +1,6 @@
 package com.example.xender.Utils;
 
 import android.util.Base64;
-import android.util.Log;
 
 import java.nio.charset.StandardCharsets;
 
@@ -9,7 +8,7 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-public class EncryptionUtils {
+public class EncryptionUtil {
 
     // This method encrypts the input data using AES algorithm
     public static byte[] encrypt(String input, String keyString) throws Exception {

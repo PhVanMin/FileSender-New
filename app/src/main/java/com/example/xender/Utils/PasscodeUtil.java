@@ -17,7 +17,7 @@ import com.example.xender.R;
 
 import java.util.concurrent.Callable;
 
-public class Passcode implements View.OnFocusChangeListener, View.OnKeyListener, TextWatcher {
+public class PasscodeUtil implements View.OnFocusChangeListener, View.OnKeyListener, TextWatcher {
 
     private EditText mPinFirstDigitEditText;
     private EditText mPinSecondDigitEditText;
@@ -30,7 +30,7 @@ public class Passcode implements View.OnFocusChangeListener, View.OnKeyListener,
     private ViewGroup insertPoint;
     private Callable callable;
 
-    public Passcode(Context context, int insert_view_id, Callable callable) {
+    public PasscodeUtil(Context context, int insert_view_id, Callable callable) {
         this.context = context;
         this.activity = getActivity(context);
         this.callable = callable;
