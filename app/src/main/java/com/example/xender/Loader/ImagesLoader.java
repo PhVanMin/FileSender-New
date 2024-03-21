@@ -1,14 +1,23 @@
 package com.example.xender.Loader;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 
 public class ImagesLoader {
+
     public static ArrayList<String> listOfImages(Context context){
+
         Uri uri;
         Cursor cursor;
         int column_index_data, column_index_folder_name;

@@ -4,7 +4,13 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
 
+import com.example.xender.R;
+
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +23,10 @@ public class StorageUtil {
     private static String documentPatterns[] ={".pdf",".txt",".docs",".docx",".ppt",".xlsx",".xml"};
     private static String audioPatterns[] ={".mp3"};
     private static String videoPatterns[] ={".mp4"};
+
+    public static ArrayList<File> files = new ArrayList<>();
+
+
 
     public static String[] getPattern(int type) {
         if(type == FILTER_BY_DOCUMENT) return documentPatterns;
@@ -70,10 +80,10 @@ public class StorageUtil {
                         {
                             if (file.getName().contains(pattern)) {
                                 Log.d("File test", file.getAbsolutePath());
+                                files.add(file);
                                 break;
                             }
                         }
-
                     }
                 }
             }

@@ -1,9 +1,11 @@
 package com.example.xender.fragment;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -15,11 +17,14 @@ import android.widget.ImageView;
 
 import com.example.xender.R;
 import com.example.xender.activity.QRActivity;
+import com.example.xender.activity.SendActivity;
 import com.example.xender.wifi.WifiDirectBroadcastReceiver;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+
+import java.text.DecimalFormat;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -83,17 +88,16 @@ public class WifiQrFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         qr_code= getActivity().findViewById(R.id.Qr_code);
-        // below line is for getting
-        // the windowmanager service.
+        QRActivity activity = (QRActivity) getActivity();
+        generateQRCode(activity.getDeviceAddress());
+    }
 
-        activity = (QRActivity) getActivity();
-
-        address = activity.getMyWifiAddress();
+    public void generateQRCode(String qrcode){
         try {
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
 
 
-            BitMatrix bitMatrix =multiFormatWriter.encode(address, BarcodeFormat.QR_CODE,250,250);
+            BitMatrix bitMatrix =multiFormatWriter.encode(qrcode, BarcodeFormat.QR_CODE,250,250);
             BarcodeEncoder barcodeEncoder=new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             qr_code.setImageBitmap(bitmap);
@@ -103,5 +107,11 @@ public class WifiQrFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        QRActivity qrActivity = (QRActivity) getActivity();
+        qrActivity.wifiQrFragment= this;
+    }
 
 }

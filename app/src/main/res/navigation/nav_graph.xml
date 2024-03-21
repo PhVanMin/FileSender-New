@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/videoFragment"
-        android:name="com.example.xender.fragment.FileFragment"
+        android:name="com.example.xender.fragment.VideoFragment"
 
         tools:layout="@layout/fragment_video">
 
@@ -38,7 +38,7 @@
     </fragment>
     <fragment
         android:id="@+id/audioFragment"
-        android:name="com.example.xender.fragment.FileFragment"
+        android:name="com.example.xender.fragment.AudioFragment"
 
         tools:layout="@layout/fragment_audio">
 

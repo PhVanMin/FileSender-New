@@ -1,5 +1,6 @@
 package com.example.xender.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -8,6 +9,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -17,10 +20,14 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
+import android.widget.Toast;
 
 import com.example.xender.Loader.ContactsLoader;
 import com.example.xender.R;
 import com.example.xender.adapter.ContactAdapter;
+import com.example.xender.fragment.ContactFragment;
+import com.example.xender.fragment.FileFragment;
+import com.example.xender.fragment.PhotoFragment;
 import com.example.xender.model.Contact;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -30,8 +37,10 @@ import java.util.HashSet;
 public class SendActivity extends AppCompatActivity {
     Toolbar toolbar;
     NavController navController;
-
+    public static final int READ_CONTACTS_PERMISSION=1;
+    public static final int READ_IMAGES_PERMISSION=2;
     Adapter contactAdapter;
+
 
     public Adapter getContactAdapter() {
         return contactAdapter;
@@ -65,6 +74,27 @@ public class SendActivity extends AppCompatActivity {
 
     }
 
-
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == READ_IMAGES_PERMISSION){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this,"Read external storage granted",Toast.LENGTH_SHORT).show();
+                photoFragment.loadImages();
+            } else {
+                Toast.makeText(this,"Read external storage denied",Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == READ_CONTACTS_PERMISSION){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this,"Read external storage granted",Toast.LENGTH_SHORT).show();
+                contactFragment.loadContacts();
+            } else {
+                Toast.makeText(this,"Read external storage denied",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    public PhotoFragment photoFragment;
+    public ContactFragment contactFragment;
+    public FileFragment fileFragment;
 }

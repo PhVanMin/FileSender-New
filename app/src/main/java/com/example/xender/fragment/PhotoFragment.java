@@ -1,6 +1,8 @@
 package com.example.xender.fragment;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -12,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.xender.Loader.ImagesLoader;
 import com.example.xender.R;
+import com.example.xender.activity.SendActivity;
 import com.example.xender.adapter.GalleryAdapter;
 
 import java.util.List;
@@ -46,7 +50,7 @@ public class PhotoFragment extends Fragment {
     List<String> images;
     TextView gallery_number;
 
-    private static final int MY_READ_PERMISSION_CODE=101;
+    private static final int MY_READ_PERMISSION_CODE = 101;
 
 
     public PhotoFragment() {
@@ -78,6 +82,8 @@ public class PhotoFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
@@ -89,45 +95,62 @@ public class PhotoFragment extends Fragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        Log.d("ActivitySend","PhotoFragment ");
+
+        Log.d("ActivitySend", "PhotoFragment ");
         super.onActivityCreated(savedInstanceState);
 
-        gallery_number= getActivity().findViewById(R.id.gallery_number);
-        recyclerView =getActivity().findViewById(R.id.recylerview_gallery_images);
+        gallery_number = getActivity().findViewById(R.id.gallery_number);
+        recyclerView = getActivity().findViewById(R.id.recylerview_gallery_images);
+
 
         //check permission
-        if(ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(getActivity(),new String[]
-                    {Manifest.permission.READ_EXTERNAL_STORAGE},MY_READ_PERMISSION_CODE);
-        }  else {
-            loadImages();
+
+        if( (android.os.Build.VERSION.SDK_INT) <= 32)
+        {
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+
+            ) {
+
+                ActivityCompat.requestPermissions(getActivity(), new String[]
+                        {Manifest.permission.READ_EXTERNAL_STORAGE}, SendActivity.READ_IMAGES_PERMISSION);
+            }else {
+                loadImages();
+            }
         }
+        else {
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(getActivity(), new String[]
+                        {Manifest.permission.READ_MEDIA_IMAGES}, SendActivity.READ_IMAGES_PERMISSION);
+            } else loadImages();
+        }
+
+
+
     }
-    public void loadImages(){
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        SendActivity sendActivity = (SendActivity) getActivity();
+        sendActivity.photoFragment = this;
+    }
+
+    public void loadImages() {
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         images = ImagesLoader.listOfImages(getActivity());
-        galleryAdapter= new GalleryAdapter(getActivity(), images, new GalleryAdapter.PhotoListenter() {
+        galleryAdapter = new GalleryAdapter(getActivity(), images, new GalleryAdapter.PhotoListenter() {
             @Override
             public void onPhotoClick(String path) {
                 // do sth
-                Toast.makeText(getActivity(),""+path,Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "" + path, Toast.LENGTH_SHORT).show();
             }
         });
         recyclerView.setAdapter(galleryAdapter);
-        gallery_number.setText("Photos (" + images.size()+")");
+        gallery_number.setText("Photos (" + images.size() + ")");
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_READ_PERMISSION_CODE){
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(getActivity(),"Read external storage granted",Toast.LENGTH_SHORT).show();
-                loadImages();
-            } else {
-                Toast.makeText(getActivity(),"Read external storage denied",Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+
 }

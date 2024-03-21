@@ -32,6 +32,7 @@ public class QRActivity extends AppCompatActivity  {
     private String myWifiAddress ="abcs";
     private WifiManager wifiManager;
    public ImageView qr;
+   public WifiQrFragment wifiQrFragment;
     IntentFilter intentFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,8 @@ public class QRActivity extends AppCompatActivity  {
         manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         channel = manager.initialize(this, getMainLooper(), null);
         qr=findViewById(R.id.Qr_code);
-        receiver = new WifiDirectBroadcastReceiver(manager, channel, this,qr);
+
+        receiver = new WifiDirectBroadcastReceiver(manager, channel, this);
 
         intentFilter = new IntentFilter();
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);

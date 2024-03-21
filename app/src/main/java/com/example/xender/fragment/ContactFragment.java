@@ -1,7 +1,9 @@
 package com.example.xender.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -82,10 +84,19 @@ public class ContactFragment extends Fragment {
         Log.d("ActivitySend","ContactFragment ");
       super.onActivityCreated(saveInstanceState);
 
+        loadContacts();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        SendActivity sendActivity = (SendActivity) getActivity();
+        sendActivity.contactFragment= this;
+}
+
+    public void loadContacts(){
         listView = getActivity().findViewById(R.id.list_contacts);
         SendActivity parent = (SendActivity) getActivity();
-
-
         contactAdapter = (ContactAdapter) ((SendActivity) getActivity()).getContactAdapter();
         listView.setAdapter(contactAdapter);
     }

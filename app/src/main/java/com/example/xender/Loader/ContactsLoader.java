@@ -32,10 +32,12 @@ public class ContactsLoader {
     public void getContactList() {
         if(ContextCompat.checkSelfPermission(
                 sendActivity, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+
             ActivityCompat.requestPermissions(sendActivity,
                     new String[]{android.Manifest.permission.READ_CONTACTS},
-                    0);
+                    SendActivity.READ_CONTACTS_PERMISSION);
         }
+
         ContentResolver cr = sendActivity.getContentResolver();
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         Cursor cursor = cr.query(uri,
