@@ -97,10 +97,9 @@ public class FileFragment extends Fragment {
         listView = getActivity().findViewById(R.id.list_files);
         SendActivity parent = (SendActivity) getActivity();
         if (StorageUtil.files.size() == 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                StorageUtil.getAllDir(Environment.getStorageDirectory(), StorageUtil.FILTER_BY_VIDEO);
-            }
+                StorageUtil.getAllDir(Environment.getExternalStorageDirectory(), StorageUtil.FILTER_BY_DOCUMENT);
         }
+        Log.d("File test",String.valueOf(StorageUtil.files.size()));
         fileAdapter = new FileAdapter(getActivity(),R.layout.file,StorageUtil.files);
         listView.setAdapter(fileAdapter);
     }

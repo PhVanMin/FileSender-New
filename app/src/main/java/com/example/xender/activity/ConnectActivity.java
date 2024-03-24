@@ -1,7 +1,7 @@
 package com.example.xender.activity;
 
 
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -48,6 +48,7 @@ public class ConnectActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     @Override
@@ -57,29 +58,71 @@ public class ConnectActivity extends AppCompatActivity {
             String contents = intentResult.getContents();
             if (contents != null) {
                 Log.d("QR Scanner", contents);
-                WifiP2pConfig wifiP2pConfig = new WifiP2pConfig();
-                wifiP2pConfig.deviceAddress = contents;
+                connect(contents);
 
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this,new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.NEARBY_WIFI_DEVICES},MY_READ_PERMISSION_CODE);
-                    return;
-                }
-                manager.connect(channel, wifiP2pConfig, new WifiP2pManager.ActionListener() {
-                    @Override
-                    public void onSuccess() {
-                        Log.d("WifiDirect","success");
-                    }
 
-                    @Override
-                    public void onFailure(int reason) {
-                        Log.d("WifiDirect","fail");
-                    }
-                });
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
 
     }
+
+
+    public void connect(String address) {
+        Log.d("WifiDirect", address);
+        WifiP2pConfig wifiP2pConfig = new WifiP2pConfig();
+        wifiP2pConfig.deviceAddress = address;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]
+                    {Manifest.permission.ACCESS_FINE_LOCATION}, MY_READ_PERMISSION_CODE);
+            Log.d("WifiDirect", "nooo");
+        }
+        manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("WifiDirect","discover successs");
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Log.d("WifiDirect","discover fail");
+            }
+        });
+        manager.connect(channel, wifiP2pConfig, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("WifiDirect", "success");
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                if (reason == WifiP2pManager.ERROR) {
+                    Log.d("WifiDirect", "Connection failed due to an error.");
+                } else if (reason == WifiP2pManager.P2P_UNSUPPORTED) {
+                    Log.d("WifiDirect", "Wi-Fi Direct is not supported on this device.");
+                } else if (reason == WifiP2pManager.BUSY) {
+                    Log.d("WifiDirect", "Connection failed because the system is busy.");
+                } else if (reason == WifiP2pManager.NO_SERVICE_REQUESTS) {
+                    Log.d("WifiDirect", "No valid service requests to connect to.");
+                } else {
+                    Log.d("WifiDirect", "Connection failed with unknown reason: " + reason);
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_READ_PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            }
+
+        }
+
+    }
+
 }

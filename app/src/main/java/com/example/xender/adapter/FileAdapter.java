@@ -67,26 +67,16 @@ public class FileAdapter extends ArrayAdapter<File> {
     public View getView(int position, View convertView, ViewGroup parent){
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View row ;
-        if (convertView == null) {
 
-            row = inflater.inflate(R.layout.file, null);
-            TextView path = (TextView) row.findViewById(R.id.path_textView);
-            TextView size = (TextView) row.findViewById(R.id.size_textView);
+        row = inflater.inflate(R.layout.file, null);
+        TextView path = (TextView) row.findViewById(R.id.path_textView);
+        TextView size = (TextView) row.findViewById(R.id.size_textView);
+        File current = files.get(position);
+        ImageView imageView = (android.widget.ImageView) row.findViewById(R.id.file_imgView);
+        imageView.setImageResource(IMAGE_FILE[extension.get(FilenameUtils.getExtension(current.getAbsolutePath()))]);
+        path.setText(current.getName());
+        size.setText(readableFileSize(current.length()) );
 
-
-            File current = files.get(position);
-
-
-
-            ImageView imageView = (android.widget.ImageView) row.findViewById(R.id.file_imgView);
-            imageView.setImageResource(IMAGE_FILE[extension.get(FilenameUtils.getExtension(current.getAbsolutePath()))]);
-
-
-            path.setText(current.getName());
-            size.setText(readableFileSize(current.length()) );
-
-        }
-        else { row =  convertView; }
         return row;
     }
     public static String readableFileSize(long size) {

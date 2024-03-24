@@ -88,15 +88,13 @@ public class WifiQrFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         qr_code= getActivity().findViewById(R.id.Qr_code);
-        QRActivity activity = (QRActivity) getActivity();
-        generateQRCode(activity.getDeviceAddress());
+//        QRActivity activity = (QRActivity) getActivity();
+
     }
 
     public void generateQRCode(String qrcode){
         try {
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-
-
             BitMatrix bitMatrix =multiFormatWriter.encode(qrcode, BarcodeFormat.QR_CODE,250,250);
             BarcodeEncoder barcodeEncoder=new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);

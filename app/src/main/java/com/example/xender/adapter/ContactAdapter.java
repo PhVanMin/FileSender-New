@@ -42,26 +42,26 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
     public View getView(int position, View convertView, ViewGroup parent){
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View row ;
-        if (convertView == null) {
-
-            row = inflater.inflate(R.layout.contact, null);
-            TextView name = (TextView) row.findViewById(R.id.name_textview);
-            TextView phone = (TextView) row.findViewById(R.id.phone_number_textview);
-
-            Random rand = new Random();
-            int index= rand.nextInt(10);
 
 
+        row = inflater.inflate(R.layout.contact, null);
+        TextView name = (TextView) row.findViewById(R.id.name_textview);
+        TextView phone = (TextView) row.findViewById(R.id.phone_number_textview);
 
-           ImageView imageView = (android.widget.ImageView) row.findViewById(R.id.avatar_imgView);
-          imageView.setImageResource(avatars[index]);
+        Random rand = new Random();
+        int index= rand.nextInt(10);
 
 
-            name.setText(contacts.get(position).getName());
-            phone.setText(contacts.get(position).getPhoneNumber());
 
-        }
-        else { row =  convertView; }
+       ImageView imageView = (android.widget.ImageView) row.findViewById(R.id.avatar_imgView);
+       imageView.setImageResource(avatars[index]);
+
+
+        name.setText(contacts.get(position).getName());
+        phone.setText(contacts.get(position).getPhoneNumber());
+
+
+
         return row;
     }
 }
