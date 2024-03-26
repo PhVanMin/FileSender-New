@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import com.example.xender.R;
 import com.example.xender.activity.QRActivity;
 import com.example.xender.activity.SendActivity;
+import com.example.xender.wifi.MyWifi;
 import com.example.xender.wifi.WifiDirectBroadcastReceiver;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -88,12 +90,13 @@ public class WifiQrFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         qr_code= getActivity().findViewById(R.id.Qr_code);
-//        QRActivity activity = (QRActivity) getActivity();
 
+        generateQRCode(MyWifi.broadcastReceiver.getDeviceAddress());
     }
 
     public void generateQRCode(String qrcode){
         try {
+            Log.d("Wifi device", "generateQRCode: "+qrcode);
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
             BitMatrix bitMatrix =multiFormatWriter.encode(qrcode, BarcodeFormat.QR_CODE,250,250);
             BarcodeEncoder barcodeEncoder=new BarcodeEncoder();

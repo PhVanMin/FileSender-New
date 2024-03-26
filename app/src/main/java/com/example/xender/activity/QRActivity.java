@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pGroup;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,9 +36,13 @@ import android.widget.Toast;
 
 import com.example.xender.R;
 import com.example.xender.fragment.WifiQrFragment;
+import com.example.xender.handler.Client;
+import com.example.xender.handler.Server;
+import com.example.xender.wifi.MyWifi;
 import com.example.xender.wifi.WifiDirectBroadcastReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Collection;
@@ -47,12 +53,12 @@ public class QRActivity extends AppCompatActivity {
     Toolbar toolbar;
     NavController navController;
 
-    private  WifiP2pManager manager;
-    private WifiP2pManager.Channel channel;
-    private BroadcastReceiver receiver;
-
-    private String myWifiAddress = "abcs";
-    private WifiManager wifiManager;
+//    private  WifiP2pManager manager;
+//    private WifiP2pManager.Channel channel;
+//    private BroadcastReceiver receiver;
+//
+//
+//    private WifiManager wifiManager;
     public ImageView qr;
     public WifiQrFragment wifiQrFragment;
     IntentFilter intentFilter;
@@ -81,11 +87,16 @@ public class QRActivity extends AppCompatActivity {
         BottomNavigationView navigationView = findViewById(R.id.navigation_view);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (MyWifi.wifiManager == null)
+            MyWifi.wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
 
-        manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        channel = manager.initialize(this, getMainLooper(), null);
+        if(MyWifi.wifiP2pManager == null)
+            MyWifi.wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+
+        if (MyWifi.channel == null)
+            MyWifi.channel = MyWifi.wifiP2pManager.initialize(this, getMainLooper(), null);
+
         qr = findViewById(R.id.Qr_code);
 
 
@@ -96,10 +107,10 @@ public class QRActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_WIFI_STATE},
                     ACCESS_WIFI_STATE);
         } else {
-            if (!wifiManager.isWifiEnabled()) {
+            if (! MyWifi.wifiManager.isWifiEnabled()) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     Log.d("Wifiii", "<Q");
-                    wifiManager.setWifiEnabled(true);
+                    MyWifi.wifiManager.setWifiEnabled(true);
                 } else {
                     Log.d("Wifiii", ">Q");
                     Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
@@ -107,7 +118,9 @@ public class QRActivity extends AppCompatActivity {
                 }
             }
         }
-        receiver = new WifiDirectBroadcastReceiver(manager, channel, this);
+
+        if(MyWifi.broadcastReceiver == null)
+            MyWifi.broadcastReceiver = new WifiDirectBroadcastReceiver(MyWifi.wifiP2pManager, MyWifi.channel, this);
 
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -134,7 +147,9 @@ public class QRActivity extends AppCompatActivity {
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
-        manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+       //wifiQrFragment.generateQRCode(MyWifi.broadcastReceiver.getDeviceAddress());
+
+        MyWifi.wifiP2pManager.discoverPeers(MyWifi.channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
                 Log.d("WifiDirect","discover successs");
@@ -153,7 +168,7 @@ public class QRActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+        registerReceiver(MyWifi.broadcastReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
 
     }
 
@@ -161,9 +176,8 @@ public class QRActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(receiver);
+        unregisterReceiver(MyWifi.broadcastReceiver);
     }
-
 
 
     @Override
@@ -174,7 +188,7 @@ public class QRActivity extends AppCompatActivity {
                 Toast.makeText(this, "access wifi", Toast.LENGTH_SHORT).show();
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     Log.d("Wifiii", "<Q");
-                    wifiManager.setWifiEnabled(true);
+                    MyWifi.wifiManager.setWifiEnabled(true);
                 } else {
                     Log.d("Wifiii", ">Q");
                     Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
@@ -196,4 +210,24 @@ public class QRActivity extends AppCompatActivity {
         }
 
     }
+    public  static WifiP2pManager.ConnectionInfoListener connectionInfoListener=new WifiP2pManager.ConnectionInfoListener() {
+
+
+        @Override
+        public void onConnectionInfoAvailable(WifiP2pInfo info) {
+            final InetAddress groupOwnerAddress = info.groupOwnerAddress;
+            if(info.groupFormed && info.isGroupOwner){
+                Log.d("wifiDirect","is server");
+                Server server = Server.getServer();
+                if(!server.isAlive())
+                    server.start();
+            } else if (info.groupFormed){
+                Log.d("wifiDirect","is client");
+                Client client = new Client(groupOwnerAddress);
+                client.start();
+
+            }
+        }
+    };
+
 }

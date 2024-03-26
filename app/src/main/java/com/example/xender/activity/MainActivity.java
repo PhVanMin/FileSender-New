@@ -6,6 +6,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import android.net.wifi.p2p.WifiP2pInfo;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileUtils;
@@ -16,8 +18,11 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.xender.R;
+import com.example.xender.handler.Client;
 import com.example.xender.utils.StorageUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.net.InetAddress;
 
 public class MainActivity extends AppCompatActivity {
 

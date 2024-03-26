@@ -5,35 +5,50 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.p2p.WifiP2pConfig;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.xender.R;
+import com.example.xender.handler.Client;
+import com.example.xender.handler.Server;
+import com.example.xender.wifi.MyWifi;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import java.net.InetAddress;
 
 public class ConnectActivity extends AppCompatActivity {
 
     private static final int MY_READ_PERMISSION_CODE = 1;
     Button scan_btn;
-    WifiP2pManager manager;
-    WifiP2pManager.Channel channel;
+    private IntentFilter intentFilter;
+//    WifiP2pManager manager;
+//    WifiP2pManager.Channel channel;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
 
-        manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        channel = manager.initialize(this, getMainLooper(), null);
+        if(MyWifi.wifiP2pManager == null)
+            MyWifi.wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+
+        if (MyWifi.channel == null)
+            MyWifi.channel = MyWifi.wifiP2pManager.initialize(this, getMainLooper(), null);
+
+
 
         scan_btn = findViewById(R.id.scan_btn);
         scan_btn.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +63,11 @@ public class ConnectActivity extends AppCompatActivity {
 
             }
         });
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
     }
 
@@ -60,7 +80,6 @@ public class ConnectActivity extends AppCompatActivity {
                 Log.d("QR Scanner", contents);
                 connect(contents);
 
-
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -69,6 +88,36 @@ public class ConnectActivity extends AppCompatActivity {
     }
 
 
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_READ_PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            }
+
+        }
+
+    }
+   public static WifiP2pManager.ConnectionInfoListener connectionInfoListener=new WifiP2pManager.ConnectionInfoListener() {
+        @Override
+        public void onConnectionInfoAvailable(WifiP2pInfo info) {
+            final InetAddress groupOwnerAddress = info.groupOwnerAddress;
+            if(info.groupFormed && info.isGroupOwner){
+                Log.d("wifiDirect","is server");
+                Server server = Server.getServer();
+                if(!server.isAlive())
+                    server.start();
+            } else if (info.groupFormed){
+                Log.d("wifiDirect","is client");
+                Client client = new Client(groupOwnerAddress);
+                client.start();
+
+            }
+        }
+    };
     public void connect(String address) {
         Log.d("WifiDirect", address);
         WifiP2pConfig wifiP2pConfig = new WifiP2pConfig();
@@ -78,7 +127,7 @@ public class ConnectActivity extends AppCompatActivity {
                     {Manifest.permission.ACCESS_FINE_LOCATION}, MY_READ_PERMISSION_CODE);
             Log.d("WifiDirect", "nooo");
         }
-        manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+        MyWifi.wifiP2pManager.discoverPeers(MyWifi.channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
                 Log.d("WifiDirect","discover successs");
@@ -89,10 +138,14 @@ public class ConnectActivity extends AppCompatActivity {
                 Log.d("WifiDirect","discover fail");
             }
         });
-        manager.connect(channel, wifiP2pConfig, new WifiP2pManager.ActionListener() {
+        MyWifi.wifiP2pManager.connect(MyWifi.channel, wifiP2pConfig, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
+
                 Log.d("WifiDirect", "success");
+
+                MyWifi.wifiP2pManager.requestConnectionInfo(MyWifi.channel,connectionInfoListener);
+
             }
 
             @Override
@@ -112,17 +165,4 @@ public class ConnectActivity extends AppCompatActivity {
             }
         });
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_READ_PERMISSION_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            }
-
-        }
-
-    }
-
 }
