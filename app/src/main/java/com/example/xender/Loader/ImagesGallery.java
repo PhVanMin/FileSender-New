@@ -1,5 +1,6 @@
 package com.example.xender.Loader;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;

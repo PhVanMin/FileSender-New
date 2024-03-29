@@ -44,6 +44,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:5.0.0-rc01")
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.2")
     implementation ("androidx.multidex:multidex:2.0.1")
+
 // https://mvnrepository.com/artifact/com.github.vatbub/VirustotalPublicV2.0
     implementation ("com.github.vatbub:VirustotalPublicV2.0:1.1.rB")
 
