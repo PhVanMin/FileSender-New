@@ -13,13 +13,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.xender.R;
 import com.example.xender.activity.SendActivity;
 import com.example.xender.adapter.ContactAdapter;
 import com.example.xender.adapter.FileAdapter;
+import com.example.xender.handler.SendReceiveHandler;
 import com.example.xender.utils.StorageUtil;
+import com.example.xender.wifi.MyWifi;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -101,6 +110,45 @@ public class FileFragment extends Fragment {
         }
         Log.d("File test",String.valueOf(StorageUtil.files.size()));
         fileAdapter = new FileAdapter(getActivity(),R.layout.file,StorageUtil.files);
+
         listView.setAdapter(fileAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                File current = fileAdapter.files.get(position);
+                try {
+                    byte[] bytes = Files.readAllBytes(Paths.get(current.getAbsolutePath()));
+                    Log.d("WifiDirect", "onItemClick: "+ MyWifi.socket.toString());
+
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SendReceiveHandler handler= new SendReceiveHandler(MyWifi.socket);
+                            try {
+                                handler.writeLong(current.length());
+                                handler.writeUTF(current.getName());
+                                handler.write(bytes);
+                            } catch (IOException e) {
+                                Log.d("WifiDirect", "Exception "+ e.toString());
+                                throw new RuntimeException(e);
+                            }
+
+
+
+                        }
+                    });
+                    thread.start();
+                    Log.d("WifiDirect", "onItemClick: ");
+
+//
+
+                } catch (Exception e) {
+                    Log.d("WifiDirect", "onItemClick: "+e.toString());
+                    throw new RuntimeException(e);
+
+                }
+
+            }
+        });
     }
 }

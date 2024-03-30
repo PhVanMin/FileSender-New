@@ -60,7 +60,6 @@ public class StorageUtil {
         long totalBlocks = stat.getBlockCountLong();
 
            return (long)totalBlocks*blockSize;
-
     }
 
     public static void getAllDir(File dir, int filter){
@@ -91,4 +90,6 @@ public class StorageUtil {
                 Log.d("File test","NULL");
             }
     }
+
+
 }
