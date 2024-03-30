@@ -3,21 +3,12 @@ package com.example.xender.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.Toast;
@@ -28,11 +19,7 @@ import com.example.xender.adapter.ContactAdapter;
 import com.example.xender.fragment.ContactFragment;
 import com.example.xender.fragment.FileFragment;
 import com.example.xender.fragment.PhotoFragment;
-import com.example.xender.model.Contact;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 
 public class SendActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -49,7 +36,7 @@ public class SendActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send);
+        setContentView(R.layout.activity_choose);
         toolbar = findViewById(R.id.appbar_send);
         toolbar.setTitle("Chọn tập tin");
         toolbar.isBackInvokedCallbackEnabled();
