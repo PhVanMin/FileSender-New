@@ -1,7 +1,7 @@
 package com.example.xender.fragment;
 
 import android.content.Context;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,18 +17,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.xender.R;
+import com.example.xender.activity.ChooseActivity;
 import com.example.xender.activity.SendActivity;
-import com.example.xender.adapter.ContactAdapter;
 import com.example.xender.adapter.FileAdapter;
-import com.example.xender.handler.SendReceiveHandler;
 import com.example.xender.utils.StorageUtil;
-import com.example.xender.wifi.MyWifi;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,6 +41,8 @@ public class FileFragment extends Fragment {
     private String mParam2;
     ListView listView;
     FileAdapter fileAdapter;
+    private ChooseActivity sendActivity;
+
     public FileFragment() {
         // Required empty public constructor
     }
@@ -98,13 +94,13 @@ public class FileFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        SendActivity sendActivity = (SendActivity) getActivity();
+         sendActivity = (ChooseActivity) getActivity();
         sendActivity.fileFragment= this;
     }
 
     public void loadFiles(){
         listView = getActivity().findViewById(R.id.list_files);
-        SendActivity parent = (SendActivity) getActivity();
+        ChooseActivity parent = (ChooseActivity) getActivity();
         if (StorageUtil.files.size() == 0) {
                 StorageUtil.getAllDir(Environment.getExternalStorageDirectory(), StorageUtil.FILTER_BY_DOCUMENT);
         }
@@ -115,38 +111,35 @@ public class FileFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                File current = fileAdapter.files.get(position);
+                /*File current = fileAdapter.files.get(position);
                 try {
                     byte[] bytes = Files.readAllBytes(Paths.get(current.getAbsolutePath()));
                     Log.d("WifiDirect", "onItemClick: "+ MyWifi.socket.toString());
-
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            SendReceiveHandler handler= new SendReceiveHandler(MyWifi.socket);
+                            SendReceiveHandler handler = new SendReceiveHandler(MyWifi.socket);
                             try {
                                 handler.writeLong(current.length());
                                 handler.writeUTF(current.getName());
                                 handler.write(bytes);
                             } catch (IOException e) {
-                                Log.d("WifiDirect", "Exception "+ e.toString());
+                                Log.d("WifiDirect", "Exception " + e.toString());
                                 throw new RuntimeException(e);
                             }
-
-
-
                         }
                     });
                     thread.start();
                     Log.d("WifiDirect", "onItemClick: ");
-
-//
-
                 } catch (Exception e) {
                     Log.d("WifiDirect", "onItemClick: "+e.toString());
                     throw new RuntimeException(e);
+                }*/
+                Intent intent = new Intent(getActivity(),SendActivity.class);
+                File current = fileAdapter.files.get(position);
+                intent.putExtra("File",current.getAbsolutePath());
 
-                }
+                startActivity(intent);
 
             }
         });

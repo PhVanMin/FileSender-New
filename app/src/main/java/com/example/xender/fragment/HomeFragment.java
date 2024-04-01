@@ -14,12 +14,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.xender.R;
+import com.example.xender.activity.CloudActivity;
 import com.example.xender.activity.ConnectActivity;
 import com.example.xender.activity.QRActivity;
-import com.example.xender.activity.SendActivity;
+import com.example.xender.activity.ChooseActivity;
 import com.example.xender.utils.StorageUtil;
-
-import java.io.File;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +35,7 @@ public class HomeFragment extends Fragment {
     private Button sendBtn ;
     private Button qrBtn;
     private Button connectBtn;
+    private Button cloudBtn;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -85,10 +85,16 @@ public class HomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         sendBtn = getActivity().findViewById(R.id.send_btn);
         sendBtn.setOnClickListener(v -> gotoSendActivity());
+
         qrBtn = getActivity().findViewById(R.id.qr_btn);
         qrBtn.setOnClickListener(v -> gotoQRActivity());
+
         connectBtn = getActivity().findViewById(R.id.connect_btn);
         connectBtn.setOnClickListener(v -> gotoConnectctivity());
+
+        cloudBtn = getActivity().findViewById(R.id.cloud_btn);
+        cloudBtn.setOnClickListener(v -> gotoCloudActivity());
+
         storageInfoTextView = getActivity().findViewById(R.id.storageInfoTextView);
 
         long gbMemoryAvailable = StorageUtil.getByteAvailable() / (1073741824);
@@ -103,7 +109,7 @@ public class HomeFragment extends Fragment {
         progressBar.setProgress((int) ((gbMemorySize - gbMemoryAvailable)));
     }
     public void gotoSendActivity(){
-        Intent intent = new Intent(getActivity(), SendActivity.class);
+        Intent intent = new Intent(getActivity(), ChooseActivity.class);
         startActivity(intent);
     }
     public void gotoQRActivity(){
@@ -112,6 +118,10 @@ public class HomeFragment extends Fragment {
     }
     public void gotoConnectctivity(){
         Intent intent = new Intent(getActivity(), ConnectActivity.class);
+        startActivity(intent);
+    }
+    public void gotoCloudActivity(){
+        Intent intent = new Intent(getActivity(), CloudActivity.class);
         startActivity(intent);
     }
 }

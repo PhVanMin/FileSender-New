@@ -90,7 +90,7 @@
                 android:background="@drawable/customborder"
                 android:drawableTop="@drawable/send_svgrepo_com"
                 android:textColor="@color/colorPrimary"
-
+                android:layout_marginHorizontal="30dp"
                 android:paddingTop="25sp"
                 android:drawablePadding="2sp"
                 android:text="send"></Button>
@@ -103,10 +103,23 @@
                 android:background="@drawable/customborder"
                 android:drawableTop="@drawable/qr_scan_svgrepo_com"
                 android:textColor="@color/colorPrimary"
-                android:layout_marginHorizontal="30dp"
+               android:layout_marginHorizontal="30dp"
                 android:paddingTop="25sp"
                 android:drawablePadding="2sp"
                 android:text="qr"></Button>
+
+
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+
 
             <Button
                 android:id="@+id/connect_btn"
@@ -114,11 +127,25 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/customborder"
                 android:drawableTop="@drawable/attach_svgrepo_com"
-                android:textColor="@color/colorPrimary"
+                android:drawablePadding="2sp"
+                android:layout_marginHorizontal="30dp"
 
                 android:paddingTop="25sp"
+                android:text="connect"
+                android:textColor="@color/colorPrimary"></Button>
+            <Button
+                android:id="@+id/cloud_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/customborder"
+                android:drawableTop="@drawable/cloud_svgrepo_com"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginHorizontal="30dp"
+                android:paddingTop="25sp"
                 android:drawablePadding="2sp"
-                android:text="connect"></Button>
+                android:text="Cloud"></Button>
+
+
         </LinearLayout>
     </LinearLayout>
 

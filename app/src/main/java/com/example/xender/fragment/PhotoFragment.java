@@ -1,7 +1,6 @@
 package com.example.xender.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +22,7 @@ import android.widget.Toast;
 
 import com.example.xender.Loader.ImagesLoader;
 import com.example.xender.R;
-import com.example.xender.activity.SendActivity;
+import com.example.xender.activity.ChooseActivity;
 import com.example.xender.adapter.GalleryAdapter;
 
 import java.util.List;
@@ -113,7 +111,7 @@ public class PhotoFragment extends Fragment {
             ) {
 
                 ActivityCompat.requestPermissions(getActivity(), new String[]
-                        {Manifest.permission.READ_EXTERNAL_STORAGE}, SendActivity.READ_IMAGES_PERMISSION);
+                        {Manifest.permission.READ_EXTERNAL_STORAGE}, ChooseActivity.READ_IMAGES_PERMISSION);
             }else {
                 loadImages();
             }
@@ -123,7 +121,7 @@ public class PhotoFragment extends Fragment {
                     Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
 
                 ActivityCompat.requestPermissions(getActivity(), new String[]
-                        {Manifest.permission.READ_MEDIA_IMAGES}, SendActivity.READ_IMAGES_PERMISSION);
+                        {Manifest.permission.READ_MEDIA_IMAGES}, ChooseActivity.READ_IMAGES_PERMISSION);
             } else loadImages();
         }
 
@@ -134,7 +132,7 @@ public class PhotoFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        SendActivity sendActivity = (SendActivity) getActivity();
+        ChooseActivity sendActivity = (ChooseActivity) getActivity();
         sendActivity.photoFragment = this;
     }
 

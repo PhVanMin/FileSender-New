@@ -33,10 +33,10 @@ android {
 }
 
 dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-storage")
-    implementation("com.google.firebase:firebase-appcheck-playintegrity")
+
+    implementation ("com.google.firebase:firebase-storage:20.3.0")
+
+    implementation("com.google.firebase:firebase-common:20.4.3")
 
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")

@@ -10,7 +10,7 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.xender.activity.SendActivity;
+import com.example.xender.activity.ChooseActivity;
 import com.example.xender.model.Contact;
 
 import java.util.ArrayList;
@@ -19,13 +19,13 @@ import java.util.HashSet;
 public class ContactsLoader {
 
 
-    private SendActivity sendActivity;
+    private ChooseActivity sendActivity;
     private final ArrayList<Contact> contacts = new ArrayList<>();
     public ArrayList<Contact> getContacts() {
         return contacts;
     }
 
-    public ContactsLoader(SendActivity sendActivity) {
+    public ContactsLoader(ChooseActivity sendActivity) {
         this.sendActivity = sendActivity;
     }
 
@@ -35,7 +35,7 @@ public class ContactsLoader {
 
             ActivityCompat.requestPermissions(sendActivity,
                     new String[]{android.Manifest.permission.READ_CONTACTS},
-                    SendActivity.READ_CONTACTS_PERMISSION);
+                    ChooseActivity.READ_CONTACTS_PERMISSION);
         }
 
         ContentResolver cr = sendActivity.getContentResolver();
