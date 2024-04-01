@@ -1,22 +1,24 @@
 package com.example.xender.model;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 
-public class FileUpload {
+public class FileCloud {
     int id;
     String name;
     String uri;
 
-    Date date;
+    Timestamp time;
 
-    public FileUpload(int id, String name, String uri, Date date) {
+    public FileCloud(int id, String name, String uri, Timestamp time) {
         this.id = id;
         this.name = name;
         this.uri = uri;
-        this.date = date;
+        this.time = time;
     }
 
-    public FileUpload() {
+    public FileCloud() {
     }
 
     public int getId() {
@@ -31,8 +33,8 @@ public class FileUpload {
         return uri;
     }
 
-    public Date getDate() {
-        return date;
+    public Timestamp getTime() {
+        return time;
     }
 
     public void setId(int id) {
@@ -47,7 +49,7 @@ public class FileUpload {
         this.uri = uri;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTime(Date date) {
+        this.time = time;
     }
 }
