@@ -3,12 +3,18 @@ package com.example.xender.fragment;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -26,6 +32,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.xender.R;
+import com.example.xender.activity.QRActivity;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,10 +116,23 @@ public class BluetoothQrFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+    }
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         context = this;
         findViewByIdea();
+        showListBluetooth();
+        BluetoothManager bluetoothManager =  (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
+        bluetoothAdapter = bluetoothManager.getAdapter();
+        if(!bluetoothAdapter.isEnabled()){
+            if (!bluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
+            }
+        }
     }
-
     private void showListBluetooth() {
         btnListDevices.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,23 +158,24 @@ public class BluetoothQrFragment extends Fragment {
         btnListen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* ServerSocket serverSocket = new ServerSocket();
-                serverSocket.start();*/
+
+                BluetoothQrFragment.ServerSocket serverSocket = new BluetoothQrFragment.ServerSocket();
+                serverSocket.start();
             }
         });
         lstvw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*ConnectThread clientClass = new ConnectThread(devices[position]);
+                ConnectThread clientClass = new ConnectThread(devices[position]);
                 clientClass.start();
-                status.setText("Connecting");*/
+                status.setText("Connecting");
             }
         });
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String s = String.valueOf(messageBox.getText());
-                //sendRecevie.wirte(s.getBytes());
+                sendRecevie.wirte(s.getBytes());
             }
         });
     }
@@ -329,6 +354,7 @@ public class BluetoothQrFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_bluetooth_qr, container, false);
     }

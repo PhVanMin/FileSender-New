@@ -79,29 +79,29 @@ public class WifiQrFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_wifi_qr, container, false);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        qr_code= getActivity().findViewById(R.id.Qr_code);
-        // below line is for getting
-        // the windowmanager service.
+        @Override
+        public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            qr_code= getActivity().findViewById(R.id.Qr_code);
+            // below line is for getting
+            // the windowmanager service.
 
-        activity = (QRActivity) getActivity();
+            activity = (QRActivity) getActivity();
 
-        address = activity.getMyWifiAddress();
-        try {
-            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+            address = activity.getMyWifiAddress();
+            try {
+                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
 
 
-            BitMatrix bitMatrix =multiFormatWriter.encode(address, BarcodeFormat.QR_CODE,250,250);
-            BarcodeEncoder barcodeEncoder=new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-            qr_code.setImageBitmap(bitmap);
+                BitMatrix bitMatrix =multiFormatWriter.encode(address, BarcodeFormat.QR_CODE,250,250);
+                BarcodeEncoder barcodeEncoder=new BarcodeEncoder();
+                Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+                qr_code.setImageBitmap(bitmap);
 
-        } catch(Exception e){
+            } catch(Exception e){
 
+            }
         }
-    }
 
 
 }
