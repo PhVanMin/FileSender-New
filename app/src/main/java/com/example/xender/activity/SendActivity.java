@@ -21,6 +21,8 @@ import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
 import com.example.xender.R;
 
+import com.example.xender.handler.DatabaseHandler;
+import com.example.xender.model.FileCloud;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,6 +40,8 @@ import com.google.firebase.storage.UploadTask;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class SendActivity extends AppCompatActivity {
 
@@ -157,6 +161,11 @@ public class SendActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
                     Log.d(TAG, "then: " + downloadUri.toString());
+                    FileCloud fileCloud = new FileCloud(_file.getName(),
+                            downloadUri.toString(),
+                            new Timestamp(new Date().getTime()));
+                    DatabaseHandler handler = new DatabaseHandler(SendActivity.this);
+                    handler.addFileCloud(fileCloud);
                 } else {
                     Log.d(TAG, "then: fail " + task.getException().toString());
                     // ...

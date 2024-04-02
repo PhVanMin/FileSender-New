@@ -18,6 +18,12 @@ public class FileCloud {
         this.time = time;
     }
 
+    public FileCloud(String name, String uri, Timestamp time) {
+        this.name = name;
+        this.uri = uri;
+        this.time = time;
+    }
+
     public FileCloud() {
     }
 
@@ -49,7 +55,7 @@ public class FileCloud {
         this.uri = uri;
     }
 
-    public void setTime(Date date) {
+    public void setTime(Timestamp time) {
         this.time = time;
     }
 }

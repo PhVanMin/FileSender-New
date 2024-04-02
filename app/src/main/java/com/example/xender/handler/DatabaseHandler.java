@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -18,7 +19,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "xenderManager";
     private static final int DATABASE_VERSION = 1;
     private static final String TABLE_NAME = "file_clouds";
-
+    
+    
+    public static String TAG = "Database Handler";
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_URI = "uri";
@@ -30,7 +33,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String tableString = String.format(
-                "CREATE TABLE file_upload (" +
+                "CREATE TABLE file_clouds (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                         "name TEXT," +
                         "uri TEXT," +
@@ -55,6 +58,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_URI,_fileCloud.getUri());
         values.put(KEY_DATE, _fileCloud.getTime().getTime());
         db.insert(TABLE_NAME, null, values);
+        Log.d(TAG, "addFileCloud: ");
         db.close();
     }
 
@@ -67,6 +71,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 cursor.getString(1),
                 cursor.getString(2),
                 new Timestamp(cursor.getLong(3)));
+        Log.d(TAG, "getFileCloud: ");
         return fileCloud;
     }
 
@@ -86,7 +91,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             fileCloudList.add(fileCloud);
             cursor.moveToNext();
         }
+        Log.d(TAG, "getAllFileClouds: ");
         return fileCloudList;
     }
+
+    public void deleteFileCloud(int fileCloudId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, KEY_ID + " = ?", new String[] { String.valueOf(fileCloudId) });
+        Log.d(TAG, "deleteFileCloud: ");
+        db.close();
+    }
+
 
 }
