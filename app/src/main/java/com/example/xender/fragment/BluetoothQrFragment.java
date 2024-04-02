@@ -92,6 +92,15 @@ public class BluetoothQrFragment extends Fragment {
         }
     }
 
+    private void findViewByIdea(){
+        lstvw = (ListView) getActivity().findViewById(R.id.listBluetooth);
+        btnSend = (Button) getActivity().findViewById(R.id.send);
+        btnListen = (Button) getActivity().findViewById(R.id.listen);
+        btnListDevices = (Button) getActivity().findViewById(R.id.listDevices);
+        messageBox = getActivity().findViewById(R.id.messageBox);
+        //messageShow = getActivity().(R.id.showMessage);
+        status = getActivity().findViewById(R.id.status);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
