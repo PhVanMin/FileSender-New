@@ -1,15 +1,18 @@
 package com.example.xender.fragment;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +21,8 @@ import android.widget.TextView;
 
 import com.example.xender.R;
 
+import java.net.ServerSocket;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -40,7 +45,7 @@ public class BluetoothQrFragment extends Fragment {
     private ListView lstvw;
     private ArrayAdapter aAdapter;
 
-    private Context context;
+    private BluetoothQrFragment context;
 
     private Button btnListen, btnListDevices, btnSend;
 
@@ -54,13 +59,14 @@ public class BluetoothQrFragment extends Fragment {
     static final int STATE_CONNECTED = 3;
     static final int STATE_CONNECTION_FAILED = 4;
     static final int STATE_MESSAGE_RECEIVED = 5;
-    int REQUEST_ENABLE_BLUETOOTH=1;
+    int REQUEST_ENABLE_BLUETOOTH = 1;
 
     private static final String TAG = "BluetoothConnectionSevice";
     private static final String NAME = "MYAPP";
 
     private final UUID MY_UUID =
             UUID.fromString("e7203025-4e62-4f0c-8f3b-87ae58178bb7");
+
     public BluetoothQrFragment() {
         // Required empty public constructor
     }
@@ -90,8 +96,55 @@ public class BluetoothQrFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        context = this;
+        findViewByIdea();
     }
 
+    private void showListBluetooth() {
+        btnListDevices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+                String[] strings = new String[pairedDevices.size()];
+                devices = new BluetoothDevice[pairedDevices.size()];
+                int index = 0;
+                if (pairedDevices.size() > 0) {
+                    for (BluetoothDevice device : pairedDevices) {
+                        devices[index] = device;
+                        strings[index] = device.getName();
+                        index++;
+                    }
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1, strings);
+                    lstvw.setAdapter(arrayAdapter);
+                }
+
+            }
+        });
+        btnListen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               /* ServerSocket serverSocket = new ServerSocket();
+                serverSocket.start();*/
+            }
+        });
+        lstvw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /*ConnectThread clientClass = new ConnectThread(devices[position]);
+                clientClass.start();
+                status.setText("Connecting");*/
+            }
+        });
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s = String.valueOf(messageBox.getText());
+                //sendRecevie.wirte(s.getBytes());
+            }
+        });
+    }
     private void findViewByIdea(){
         lstvw = (ListView) getActivity().findViewById(R.id.listBluetooth);
         btnSend = (Button) getActivity().findViewById(R.id.send);
