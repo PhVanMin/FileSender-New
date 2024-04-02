@@ -6,24 +6,12 @@
     android:background="@color/white"
     tools:context=".fragment.BluetoothQrFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/blue"
-        android:id="@+id/navText"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Share App"
-            android:textColor="@color/white"/>
-    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:id="@+id/buttonListen"
-        android:layout_below="@+id/navText"
         >
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="wrap_content"
@@ -63,6 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:id="@+id/showMessage"
+            android:textColor="@color/black"
+            android:textSize="20dp"
             android:hint="MESSAGE"/>
     </LinearLayout>
     <LinearLayout
@@ -75,8 +65,8 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/messageBox"
-            android:hint="message"
-            android:background="@color/aqua" />
+            android:hint="Enter message"
+            android:background="@color/skyBlue" />
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -1,5 +1,8 @@
 package com.example.xender.fragment;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,8 +10,15 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.xender.R;
+
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +36,31 @@ public class BluetoothQrFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+
+    private ListView lstvw;
+    private ArrayAdapter aAdapter;
+
+    private Context context;
+
+    private Button btnListen, btnListDevices, btnSend;
+
+    private TextView status, messageShow;
+    private EditText messageBox;
+    private BluetoothAdapter bluetoothAdapter;
+    private BluetoothDevice[] devices;
+    //private SendRecevie sendRecevie;
+    static final int STATE_LISTENING = 1;
+    static final int STATE_CONNECTING = 2;
+    static final int STATE_CONNECTED = 3;
+    static final int STATE_CONNECTION_FAILED = 4;
+    static final int STATE_MESSAGE_RECEIVED = 5;
+    int REQUEST_ENABLE_BLUETOOTH=1;
+
+    private static final String TAG = "BluetoothConnectionSevice";
+    private static final String NAME = "MYAPP";
+
+    private final UUID MY_UUID =
+            UUID.fromString("e7203025-4e62-4f0c-8f3b-87ae58178bb7");
     public BluetoothQrFragment() {
         // Required empty public constructor
     }
