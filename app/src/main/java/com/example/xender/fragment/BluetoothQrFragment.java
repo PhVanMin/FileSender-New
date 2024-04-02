@@ -3,12 +3,18 @@ package com.example.xender.fragment;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +27,9 @@ import android.widget.TextView;
 
 import com.example.xender.R;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.util.Set;
 import java.util.UUID;
@@ -53,7 +62,7 @@ public class BluetoothQrFragment extends Fragment {
     private EditText messageBox;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothDevice[] devices;
-    //private SendRecevie sendRecevie;
+    private SendRecevie sendRecevie;
     static final int STATE_LISTENING = 1;
     static final int STATE_CONNECTING = 2;
     static final int STATE_CONNECTED = 3;
@@ -153,6 +162,124 @@ public class BluetoothQrFragment extends Fragment {
         messageBox = getActivity().findViewById(R.id.messageBox);
         //messageShow = getActivity().(R.id.showMessage);
         status = getActivity().findViewById(R.id.status);
+    }
+
+
+
+    Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            switch (msg.what){
+                case STATE_LISTENING:
+                    status.setText("Listening...");
+                    break;
+                case STATE_CONNECTING:
+                    status.setText("Connecting");
+                    break;
+                case STATE_CONNECTED:
+                    status.setText("Connected");
+                    break;
+                case STATE_CONNECTION_FAILED:
+                    status.setText("Connection Failed");
+                    break;
+                case STATE_MESSAGE_RECEIVED:
+                    byte[] readBuff = (byte[]) msg.obj;
+                    String tempMsg = new String(readBuff, 0, msg.arg1);
+                    messageShow.setText(tempMsg);
+                    break;
+
+            }
+            return true;
+        }
+    });
+
+
+    private  class ServerSocket extends Thread {
+        private final BluetoothServerSocket mmServerSocket;
+
+        public ServerSocket() {
+            BluetoothServerSocket tmp = null;
+            try {
+
+                tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
+            } catch (IOException e) {
+                Log.e(TAG, "Socket's listen() method failed", e);
+            }
+            mmServerSocket = tmp;
+        }
+        public void run(){
+            BluetoothSocket socket = null;
+            while (true) {
+                try {
+                    Message message = Message.obtain();
+                    message.what = STATE_CONNECTING;
+                    handler.sendMessage(message);
+                    socket = mmServerSocket.accept();
+                } catch (IOException e) {
+                    Log.e(TAG, "Socket's accept() method failed", e);
+                    Message message = Message.obtain();
+                    message.what = STATE_CONNECTION_FAILED;
+                    handler.sendMessage(message);
+                    break;
+                }
+
+                if (socket != null) {
+                    Message message = Message.obtain();
+                    message.what = STATE_CONNECTED;
+                    handler.sendMessage(message);
+                    sendRecevie = new SendRecevie(socket);
+                    sendRecevie.start();
+                    break;
+                }
+            }
+        }
+        public void cancel() {
+            try {
+                mmServerSocket.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Could not close the connect socket", e);
+            }
+        }
+    }
+
+
+    private class SendRecevie extends Thread{
+        private final BluetoothSocket bluetoothSocket;
+        private InputStream inputStream = null;
+        private OutputStream outputStream = null;
+
+        public SendRecevie(BluetoothSocket socket) {
+            this.bluetoothSocket = socket;
+            InputStream tempIn = null;
+            OutputStream tempOut =null;
+            try {
+                tempIn=bluetoothSocket.getInputStream();
+                tempOut=bluetoothSocket.getOutputStream();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            inputStream=tempIn;
+            outputStream=tempOut;
+        }
+        public void run(){
+            byte[] buffer = new byte[1024];
+            int bytes;
+            while(true){
+                try {
+                    bytes = inputStream.read(buffer);
+                    handler.obtainMessage(STATE_MESSAGE_RECEIVED,bytes,-1,buffer).sendToTarget();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        public void wirte(byte[] bytes){
+            try {
+                outputStream.write(bytes);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
