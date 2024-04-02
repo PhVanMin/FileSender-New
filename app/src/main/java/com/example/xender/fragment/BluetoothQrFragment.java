@@ -118,27 +118,39 @@ public class BluetoothQrFragment extends Fragment {
         }
 
     }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         context = this;
         findViewByIdea();
         showListBluetooth();
-        BluetoothManager bluetoothManager =  (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothManager bluetoothManager = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
-        if(!bluetoothAdapter.isEnabled()){
+        if (!bluetoothAdapter.isEnabled()) {
             if (!bluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
             }
         }
     }
+
     private void showListBluetooth() {
         btnListDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
                 Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
                 String[] strings = new String[pairedDevices.size()];
                 devices = new BluetoothDevice[pairedDevices.size()];
@@ -175,7 +187,12 @@ public class BluetoothQrFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String s = String.valueOf(messageBox.getText());
-                sendRecevie.wirte(s.getBytes());
+                if (sendRecevie != null) {
+                    sendRecevie.wirte(s.getBytes());
+                } else {
+                    // Xử lý khi sendRecevie là null, ví dụ:
+                    Log.e(TAG, "sendRecevie is null");
+                }
             }
         });
     }
