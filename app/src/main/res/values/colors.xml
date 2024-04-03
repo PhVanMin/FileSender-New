@@ -10,4 +10,7 @@
     <color name="skyBlue">#87CEEB</color>
     <color name="gray">#ECEBF0</color>
     <color name="gray2">#99626272</color>
+    <color name="blue">#0000ff</color>
+    <color name="aqua">#00ffff</color>
+    <color name="cadetblue">#5f9ea0</color>
 </resources>
