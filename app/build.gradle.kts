@@ -54,6 +54,9 @@ dependencies {
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.2")
     implementation ("androidx.multidex:multidex:2.0.1")
 
+// https://mvnrepository.com/artifact/com.github.vatbub/VirustotalPublicV2.0
+    implementation ("com.github.vatbub:VirustotalPublicV2.0:1.1.rB")
+
     val nav_version = "2.5.3"
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1">
+
+        <TableRow>
+            <TextView
+                android:layout_span="3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Transfer in process"
+                android:textAlignment="center" />
+        </TableRow>
+        <TableRow>
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_span="3"
+                android:padding="10dp"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/progressInfo"
+                android:layout_span="3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Progress: 0%"
+                android:textAlignment="center" />
+        </TableRow>
+        <TableRow>
+            <Button
+                android:background="@drawable/rounded_button"
+                android:layout_column="0"
+                android:id="@+id/cancelTransfer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel" />
+
+            <Button
+                android:id="@+id/pauseTransfer"
+                android:background="@drawable/rounded_button"
+                android:layout_column="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pause" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
