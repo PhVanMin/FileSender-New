@@ -13,11 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.example.xender.Loader.ContactsLoader;
 import com.example.xender.R;
-import com.example.xender.activity.SendActivity;
+import com.example.xender.activity.ChooseActivity;
 import com.example.xender.adapter.ContactAdapter;
-import com.example.xender.model.Contact;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,14 +88,14 @@ public class ContactFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        SendActivity sendActivity = (SendActivity) getActivity();
+        ChooseActivity sendActivity = (ChooseActivity) getActivity();
         sendActivity.contactFragment= this;
 }
 
     public void loadContacts(){
         listView = getActivity().findViewById(R.id.list_contacts);
-        SendActivity parent = (SendActivity) getActivity();
-        contactAdapter = (ContactAdapter) ((SendActivity) getActivity()).getContactAdapter();
+        ChooseActivity parent = (ChooseActivity) getActivity();
+        contactAdapter = (ContactAdapter) ((ChooseActivity) getActivity()).getContactAdapter();
         listView.setAdapter(contactAdapter);
     }
 }

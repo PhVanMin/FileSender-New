@@ -2,6 +2,7 @@ package com.example.xender.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,6 @@ public class FileAdapter extends ArrayAdapter<File> {
             R.drawable.xml_svgrepo_com,
             R.drawable.music_file_5_svgrepo_com,
             R.drawable.video_file_1_svgrepo_com,
-
     } ;
     public static int PDF_IMAGE = 0;
     public static int TXT_IMAGE = 1;
@@ -46,7 +46,7 @@ public class FileAdapter extends ArrayAdapter<File> {
     public static int XML_IMAGE = 6;
     public static int MUSIC_IMAGE = 7;
     public static int VIDEO_IMAGE = 8;
-    ArrayList<File> files;
+    public ArrayList<File> files;
     public static Map<String,Integer> extension = new HashMap<>();
 
 
@@ -59,6 +59,7 @@ public class FileAdapter extends ArrayAdapter<File> {
         extension.put("docs",DOC_IMAGE);
         extension.put("docx",DOCX_IMAGE);
         extension.put("ppt",PPT_IMAGE);
+        extension.put("pptx",PPT_IMAGE);
         extension.put("xlsx",XLSX_IMAGE);
         extension.put("xml",XML_IMAGE);
         extension.put("mp3",MUSIC_IMAGE);
@@ -73,9 +74,13 @@ public class FileAdapter extends ArrayAdapter<File> {
         TextView size = (TextView) row.findViewById(R.id.size_textView);
         File current = files.get(position);
         ImageView imageView = (android.widget.ImageView) row.findViewById(R.id.file_imgView);
-        imageView.setImageResource(IMAGE_FILE[extension.get(FilenameUtils.getExtension(current.getAbsolutePath()))]);
+
+        Log.d("adapter ",  (FilenameUtils.getExtension(current.getAbsolutePath())));
+        int index = extension.get(FilenameUtils.getExtension(current.getAbsolutePath()));
+        Log.d("adapter ", String.valueOf(index));
+        imageView.setImageResource(IMAGE_FILE[index]);
         path.setText(current.getName());
-        size.setText(readableFileSize(current.length()) );
+        size.setText(readableFileSize(current.length()));
 
         return row;
     }

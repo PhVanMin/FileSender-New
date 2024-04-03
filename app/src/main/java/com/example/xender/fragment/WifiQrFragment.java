@@ -1,6 +1,5 @@
 package com.example.xender.fragment;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,15 +16,11 @@ import android.widget.ImageView;
 
 import com.example.xender.R;
 import com.example.xender.activity.QRActivity;
-import com.example.xender.activity.SendActivity;
 import com.example.xender.wifi.MyWifi;
-import com.example.xender.wifi.WifiDirectBroadcastReceiver;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
-
-import java.text.DecimalFormat;
 
 /**
  * A simple {@link Fragment} subclass.

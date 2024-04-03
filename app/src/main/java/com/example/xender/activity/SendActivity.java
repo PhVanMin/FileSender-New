@@ -1,52 +1,83 @@
 package com.example.xender.activity;
 
+import static com.example.xender.adapter.FileAdapter.IMAGE_FILE;
+import static com.example.xender.adapter.FileAdapter.extension;
+import static com.example.xender.adapter.FileAdapter.readableFileSize;
+
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
+import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Adapter;
-import android.widget.Toast;
-
-import com.example.xender.Loader.ContactsLoader;
 import com.example.xender.R;
-import com.example.xender.adapter.ContactAdapter;
-import com.example.xender.fragment.ContactFragment;
-import com.example.xender.fragment.FileFragment;
-import com.example.xender.fragment.PhotoFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import com.example.xender.handler.DatabaseHandler;
+import com.example.xender.model.FileCloud;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class SendActivity extends AppCompatActivity {
+
+    private File file;
+    TextView fileName;
+    TextView sizeDate;
+    ImageView fileImage;
+    Button backButton ;
     Toolbar toolbar;
-    NavController navController;
-    public static final int READ_CONTACTS_PERMISSION=1;
-    public static final int READ_IMAGES_PERMISSION=2;
-    Adapter contactAdapter;
-
-
-    public Adapter getContactAdapter() {
-        return contactAdapter;
-    }
+    Button uploadButton ;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose);
+        setContentView(R.layout.activity_send);
+
+        String path = getIntent().getStringExtra("File");
+        file = new File(path);
+        fileName = findViewById(R.id.fileName);
+        fileImage = findViewById(R.id.fileImage);
+        sizeDate = findViewById(R.id.sizeDate);
+        uploadButton = findViewById(R.id.upload_btn);
+
+
+
+
+        int index = extension.get(FilenameUtils.getExtension(file.getAbsolutePath()));
+        Log.d("adapter ", String.valueOf(index));
+        fileImage.setImageResource(IMAGE_FILE[index]);
+        fileName.setText(file.getName());
+        sizeDate.setText(readableFileSize(file.length()));
         toolbar = findViewById(R.id.appbar_send);
         toolbar.setTitle("Chọn tập tin");
         toolbar.isBackInvokedCallbackEnabled();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        BottomNavigationView navigationView = findViewById(R.id.navigation_view);
-        NavigationUI.setupWithNavController(navigationView,navController);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,34 +85,94 @@ public class SendActivity extends AppCompatActivity {
             }
         });
 
-        ContactsLoader loader = new ContactsLoader(this);
-        loader.getContactList();
-        contactAdapter  = new ContactAdapter(this,R.layout.contact,loader.getContacts());
+       uploadButton.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               uploadFile(file);
+           }
+       });
+        FirebaseApp.initializeApp(/*context=*/ this);
+    }
+    static String TAG= "Upload File";
+    public  void uploadFile(File _file){
+        //  StorageUtil.getAllDir(Environment.getExternalStorageDirectory(),StorageUtil.FILTER_BY_DOCUMENT);
 
+
+
+        Uri file =Uri.fromFile(_file);
+
+//        //FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+//        firebaseAppCheck.installAppCheckProviderFactory(
+//                PlayIntegrityAppCheckProviderFactory.getInstance());
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageMetadata metadata = new StorageMetadata.Builder()
+                .setContentType(null)
+                .build();
+        String path = "files/" + file.getLastPathSegment();
+        StorageReference filePath = storageRef.child(path);
+        UploadTask uploadTask = (UploadTask) filePath
+                        .putFile(file, metadata);
+
+
+
+
+
+        // ...
+
+        // Listen for state changes, errors, and completion of the upload.
+        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                Log.d(TAG, "Upload is " + progress + "% done");
+            }
+        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.d(TAG, "Upload is paused");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.d(TAG, "Upload is fail" + exception.toString());
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.d(TAG, "Upload is success");
+            }
+        });
+
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    Log.d(TAG, "then: " + task.getException().toString());
+                    throw task.getException();
+                }
+
+                // Continue with the task to get the download URL
+                return filePath.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    Log.d(TAG, "then: " + downloadUri.toString());
+                    FileCloud fileCloud = new FileCloud(_file.getName(),
+                            downloadUri.toString(),
+                            new Timestamp(new Date().getTime()));
+                    DatabaseHandler handler = new DatabaseHandler(SendActivity.this);
+                    handler.addFileCloud(fileCloud);
+                } else {
+                    Log.d(TAG, "then: fail " + task.getException().toString());
+                    // ...
+                }
+            }
+        });
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == READ_IMAGES_PERMISSION){
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"Read external storage granted",Toast.LENGTH_SHORT).show();
-                photoFragment.loadImages();
-            } else {
-                Toast.makeText(this,"Read external storage denied",Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (requestCode == READ_CONTACTS_PERMISSION){
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"Read external storage granted",Toast.LENGTH_SHORT).show();
-                contactFragment.loadContacts();
-            } else {
-                Toast.makeText(this,"Read external storage denied",Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-    public PhotoFragment photoFragment;
-    public ContactFragment contactFragment;
-    public FileFragment fileFragment;
 }

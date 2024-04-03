@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.example.xender.R;
 import com.example.xender.fragment.WifiQrFragment;
 import com.example.xender.handler.Client;
+import com.example.xender.handler.SendReceiveHandler;
 import com.example.xender.handler.Server;
 import com.example.xender.wifi.MyWifi;
 import com.example.xender.wifi.WifiDirectBroadcastReceiver;
@@ -64,6 +65,7 @@ public class QRActivity extends AppCompatActivity {
     IntentFilter intentFilter;
     static int ACCESS_WIFI_STATE = 101;
     static int NEARBY_WIFI_DEVICE = 102;
+    static int WRITE_EXTERNAL_STORAGE= 103;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +141,16 @@ public class QRActivity extends AppCompatActivity {
             Toast.makeText(this, "access nearby devicee", Toast.LENGTH_SHORT).show();
         }
 
+        if(ContextCompat.checkSelfPermission(
+                this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(this, "write file not access", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                   WRITE_EXTERNAL_STORAGE);
+        }else {
+            Toast.makeText(this, "write file access", Toast.LENGTH_SHORT).show();
+        }
+
 
 
         intentFilter = new IntentFilter();
@@ -208,26 +220,49 @@ public class QRActivity extends AppCompatActivity {
                 Toast.makeText(this, "not access nearby device", Toast.LENGTH_SHORT).show();
             }
         }
-
+        if (requestCode == WRITE_EXTERNAL_STORAGE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "write external storage", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "not write external storage", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
-    public  static WifiP2pManager.ConnectionInfoListener connectionInfoListener=new WifiP2pManager.ConnectionInfoListener() {
 
 
+    private Client client;
+    public   WifiP2pManager.ConnectionInfoListener connectionInfoListener=new WifiP2pManager.ConnectionInfoListener() {
         @Override
         public void onConnectionInfoAvailable(WifiP2pInfo info) {
             final InetAddress groupOwnerAddress = info.groupOwnerAddress;
             if(info.groupFormed && info.isGroupOwner){
                 Log.d("wifiDirect","is server");
+
+                MyWifi.isServer= true;
                 Server server = Server.getServer();
+
+
                 if(!server.isAlive())
                     server.start();
+
+
+
             } else if (info.groupFormed){
                 Log.d("wifiDirect","is client");
-                Client client = new Client(groupOwnerAddress);
+                client = new Client(groupOwnerAddress);
+
                 client.start();
 
+
+               // handler.start();
             }
         }
     };
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (client != null)
+            client.cleanup();
+    }
 }

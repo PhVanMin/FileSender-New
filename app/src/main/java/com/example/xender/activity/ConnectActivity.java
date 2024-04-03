@@ -107,12 +107,15 @@ public class ConnectActivity extends AppCompatActivity {
             final InetAddress groupOwnerAddress = info.groupOwnerAddress;
             if(info.groupFormed && info.isGroupOwner){
                 Log.d("wifiDirect","is server");
+                MyWifi.isServer= true;
                 Server server = Server.getServer();
+                MyWifi.socket = server.getSocket();
                 if(!server.isAlive())
                     server.start();
             } else if (info.groupFormed){
                 Log.d("wifiDirect","is client");
                 Client client = new Client(groupOwnerAddress);
+                MyWifi.socket = client.getSocket();
                 client.start();
 
             }

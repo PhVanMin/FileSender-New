@@ -6,23 +6,10 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TableRow>
-
-        <ImageView
-            android:id="@+id/backButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="5dp"
-            android:src="@drawable/baseline_arrow_back_24" />
-
-        <TextView
-            android:layout_marginStart="5dp"
-            android:id="@+id/HeaderName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gửi tập tin"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-    </TableRow>
+    <include
+        layout="@layout/appbar"
+        android:id="@+id/appbar_send"
+        ></include>
 
     <TableRow>
         <LinearLayout
@@ -178,6 +165,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
+
+
+    <Button
+        android:layout_marginBottom="20dp"
+        android:textSize="20sp"
+        android:id="@+id/upload_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_button"
+        android:text="UPLOAD"
+        android:textColor="@android:color/white" />
 
     <Button
         android:textSize="20sp"

@@ -2,15 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-
-    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"
-        android:usesPermissionFlags="neverForLocation"/>
+    <uses-permission
+        android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-   <permission android:name="android.Manifest.permission.#LOCAL_MAC_ADDRESS"
-       tools:ignore="ReservedSystemPermission" />
-    <permission android:name="Manifest.permission.ACCESS_FINE_LOCATION"/>
+
+    <permission
+        android:name="android.Manifest.permission.#LOCAL_MAC_ADDRESS"
+        tools:ignore="ReservedSystemPermission" />
+    <permission android:name="Manifest.permission.ACCESS_FINE_LOCATION" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -33,13 +36,11 @@
     -->
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature
-        android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -50,20 +51,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Xender"
         tools:targetApi="31">
-        <activity android:name=".activity.CaptureAct"
+        <activity
+            android:name=".activity.CloudActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CaptureAct"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
-            android:theme="@style/zxing_CaptureTheme"
-            />
+            android:theme="@style/zxing_CaptureTheme" />
         <activity
-
             android:name=".activity.ConnectActivity"
             android:exported="false" />
         <activity
             android:name=".activity.QRActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.SendActivity"
+            android:name=".activity.ChooseActivity"
             android:exported="false"
             android:label="@string/title_activity_send"
             android:theme="@style/Theme.Xender" />
@@ -76,6 +79,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.SendActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
