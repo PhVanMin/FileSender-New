@@ -1,11 +1,15 @@
 package com.example.xender.fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
@@ -85,6 +89,15 @@ public class FileFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle saveInstanceState) {
         Log.d("ActivitySend","FileFragment ");
+        if( (android.os.Build.VERSION.SDK_INT) <= 32) {
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+
+            ) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]
+                        {Manifest.permission.READ_EXTERNAL_STORAGE}, ChooseActivity.READ_IMAGES_PERMISSION);
+            }
+        }
         loadFiles();
         super.onActivityCreated(saveInstanceState);
 

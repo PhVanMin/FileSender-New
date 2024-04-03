@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,6 +114,7 @@ public class HomeFragment extends Fragment {
         startActivity(intent);
     }
     public void gotoQRActivity(){
+        Log.d("QRActivity", "gotoQRActivity: ");
         Intent intent = new Intent(getActivity(), QRActivity.class);
         startActivity(intent);
     }

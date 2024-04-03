@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.CloudActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <include
         layout="@layout/appbar"
         android:id="@+id/appbar_send"
         ></include>
+    <ListView
+        app:layout_constraintTop_toBottomOf="@+id/appbar_send"
+        android:id="@+id/list_cloud_file"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:layout_marginTop="5dp"
+        android:id="@+id/inputURI"
+        android:hint="input URL to download file"
+
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/list_cloud_file"/>
+
+    <Button
+
+        android:id="@+id/download_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_button"
+        android:text="Click to download"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inputURI" />
 </androidx.constraintlayout.widget.ConstraintLayout>
