@@ -54,6 +54,7 @@ public class FileAdapter extends ArrayAdapter<File> {
         super(context, resource, objects);
         this.context = context ;
         this.files= objects;
+
         extension.put("pdf",PDF_IMAGE);
         extension.put("txt",TXT_IMAGE);
         extension.put("docs",DOC_IMAGE);

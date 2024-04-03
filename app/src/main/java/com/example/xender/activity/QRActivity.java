@@ -1,29 +1,19 @@
 package com.example.xender.activity;
 
-import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Fragment;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
@@ -37,24 +27,19 @@ import android.widget.Toast;
 import com.example.xender.R;
 import com.example.xender.fragment.WifiQrFragment;
 import com.example.xender.handler.Client;
-import com.example.xender.handler.SendReceiveHandler;
 import com.example.xender.handler.Server;
+import com.example.xender.permission.PermissionChecker;
 import com.example.xender.wifi.MyWifi;
 import com.example.xender.wifi.WifiDirectBroadcastReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 public class QRActivity extends AppCompatActivity {
     Toolbar toolbar;
     NavController navController;
 
-//    private  WifiP2pManager manager;
+    //    private  WifiP2pManager manager;
 //    private WifiP2pManager.Channel channel;
 //    private BroadcastReceiver receiver;
 //
@@ -63,10 +48,14 @@ public class QRActivity extends AppCompatActivity {
     public ImageView qr;
     public WifiQrFragment wifiQrFragment;
     IntentFilter intentFilter;
-    static int ACCESS_WIFI_STATE = 101;
-    static int NEARBY_WIFI_DEVICE = 102;
-    static int WRITE_EXTERNAL_STORAGE= 103;
+    public static int ACCESS_WIFI_STATE = 101;
+    public static int NEARBY_WIFI_DEVICE = 102;
+    public static int WRITE_EXTERNAL_STORAGE = 103;
 
+    public static int ACCESS_FINE_LOCATION = 104;
+
+    @SuppressLint("MissingPermission")
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,11 +78,17 @@ public class QRActivity extends AppCompatActivity {
         BottomNavigationView navigationView = findViewById(R.id.navigation_view);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+
+
+
+
+
+
         if (MyWifi.wifiManager == null)
             MyWifi.wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
 
-        if(MyWifi.wifiP2pManager == null)
+        if (MyWifi.wifiP2pManager == null)
             MyWifi.wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
 
         if (MyWifi.channel == null)
@@ -102,54 +97,16 @@ public class QRActivity extends AppCompatActivity {
         qr = findViewById(R.id.Qr_code);
 
 
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_WIFI_STATE},
-                    ACCESS_WIFI_STATE);
-        } else {
-            if (! MyWifi.wifiManager.isWifiEnabled()) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    Log.d("Wifiii", "<Q");
-                    MyWifi.wifiManager.setWifiEnabled(true);
-                } else {
-                    Log.d("Wifiii", ">Q");
-                    Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
-                    startActivityForResult(panelIntent, 1);
-                }
-            }
-        }
-
-        if(MyWifi.broadcastReceiver == null)
+        if (MyWifi.broadcastReceiver == null)
             MyWifi.broadcastReceiver = new WifiDirectBroadcastReceiver(MyWifi.wifiP2pManager, MyWifi.channel, this);
 
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    NEARBY_WIFI_DEVICE);
-        } else {
-            Toast.makeText(this, "access nearby devicee", Toast.LENGTH_SHORT).show();
-        }
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.NEARBY_WIFI_DEVICES},
-                    NEARBY_WIFI_DEVICE);
-        } else {
-            Toast.makeText(this, "access nearby devicee", Toast.LENGTH_SHORT).show();
-        }
+        if (PermissionChecker.checkAccessWifiState(this) ){
+            MyWifi.wifiManager.setWifiEnabled(true);
 
-        if(ContextCompat.checkSelfPermission(
-                this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            Toast.makeText(this, "write file not access", Toast.LENGTH_SHORT).show();
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                   WRITE_EXTERNAL_STORAGE);
-        }else {
-            Toast.makeText(this, "write file access", Toast.LENGTH_SHORT).show();
-        }
+            if (PermissionChecker.CheckFineLocation(this)) {
+                if(PermissionChecker.checkWriteExternalStorage(this));
+            }
+        };
 
 
 
@@ -159,17 +116,19 @@ public class QRActivity extends AppCompatActivity {
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
-       //wifiQrFragment.generateQRCode(MyWifi.broadcastReceiver.getDeviceAddress());
+        wifiQrFragment.generateQRCode(MyWifi.broadcastReceiver.getDeviceAddress());
+
+
 
         MyWifi.wifiP2pManager.discoverPeers(MyWifi.channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                Log.d("WifiDirect","discover successs");
+                Log.d("WifiDirect", "discover successs");
             }
 
             @Override
             public void onFailure(int reason) {
-                Log.d("WifiDirect","discover fail");
+                Log.d("WifiDirect", "discover fail");
             }
         });
 
@@ -180,11 +139,12 @@ public class QRActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(MyWifi.broadcastReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+       registerReceiver(MyWifi.broadcastReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
 
     }
 
-    /* unregister the broadcast receiver */
+
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -199,34 +159,37 @@ public class QRActivity extends AppCompatActivity {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "access wifi", Toast.LENGTH_SHORT).show();
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    Log.d("Wifiii", "<Q");
+
                     MyWifi.wifiManager.setWifiEnabled(true);
+
                 } else {
-                    Log.d("Wifiii", ">Q");
+
                     Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
                     startActivityForResult(panelIntent, 1);
                 }
-
+                PermissionChecker.CheckFineLocation(this) ;
             } else {
                 Toast.makeText(this, "not access wifi", Toast.LENGTH_SHORT).show();
             }
         }
+
+        if (requestCode == ACCESS_FINE_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                PermissionChecker.checkWriteExternalStorage(this) ;
+            } else {
+                Toast.makeText(this, "not access wifi", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
+
         if (requestCode == NEARBY_WIFI_DEVICE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "access nearby device", Toast.LENGTH_SHORT).show();
-
-
-            } else {
-                Toast.makeText(this, "not access nearby device", Toast.LENGTH_SHORT).show();
             }
         }
-        if (requestCode == WRITE_EXTERNAL_STORAGE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "write external storage", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "not write external storage", Toast.LENGTH_SHORT).show();
-            }
-        }
+
+
     }
 
 
@@ -237,11 +200,8 @@ public class QRActivity extends AppCompatActivity {
             final InetAddress groupOwnerAddress = info.groupOwnerAddress;
             if(info.groupFormed && info.isGroupOwner){
                 Log.d("wifiDirect","is server");
-
                 MyWifi.isServer= true;
                 Server server = Server.getServer();
-
-
                 if(!server.isAlive())
                     server.start();
 
@@ -254,7 +214,6 @@ public class QRActivity extends AppCompatActivity {
                 client.start();
 
 
-               // handler.start();
             }
         }
     };
