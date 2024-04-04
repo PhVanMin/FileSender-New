@@ -19,7 +19,7 @@ import com.example.xender.activity.CloudActivity;
 import com.example.xender.activity.ConnectActivity;
 import com.example.xender.activity.QRActivity;
 import com.example.xender.activity.ChooseActivity;
-//import com.example.xender.utils.StorageUtil;
+import com.example.xender.utils.StorageUtil;
 
 
 /**
@@ -72,7 +72,6 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
@@ -99,7 +98,7 @@ public class HomeFragment extends Fragment {
 
         storageInfoTextView = getActivity().findViewById(R.id.storageInfoTextView);
 
-        /*long gbMemoryAvailable = StorageUtil.getByteAvailable() / (1073741824);
+        long gbMemoryAvailable = StorageUtil.getByteAvailable() / (1073741824);
         long gbMemorySize = StorageUtil.getByteMemorySize() / (1073741824);
 
         storageInfoTextView.setText(
@@ -108,7 +107,7 @@ public class HomeFragment extends Fragment {
 
         progressBar = getActivity().findViewById(R.id.progressBar);
         progressBar.setMax((int) gbMemorySize);
-        progressBar.setProgress((int) ((gbMemorySize - gbMemoryAvailable)));*/
+        progressBar.setProgress((int) ((gbMemorySize - gbMemoryAvailable)));
     }
     public void gotoSendActivity(){
         Intent intent = new Intent(getActivity(), ChooseActivity.class);
