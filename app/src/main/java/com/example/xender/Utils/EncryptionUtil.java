@@ -1,4 +1,4 @@
-package com.example.xender.Utils;
+package com.example.xender.utils;
 
 import android.util.Base64;
 
