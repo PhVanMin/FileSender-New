@@ -1,7 +1,9 @@
 package com.example.xender.Bluetooth;
 
+import static android.content.ContentValues.TAG;
 import static android.net.VpnProfileState.STATE_CONNECTING;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -9,65 +11,44 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Message;
+import android.os.ParcelUuid;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+
+import androidx.core.app.ActivityCompat;
 
 import java.io.IOException;
 import java.util.UUID;
 
-public class BluetoothBroadcastReceiver {
-    private static final String TAG = "BluetoothConnectionSevice";
-    private static final String NAME = "MYAPP";
-
-    private final UUID MY_UUID =
-            UUID.fromString("e7203025-4e62-4f0c-8f3b-87ae58178bb7");
+public class BluetoothBroadcastReceiver extends Thread {
     private BluetoothAdapter bluetoothAdapter;
+    private BluetoothDevice serverDevice;
+    private BluetoothSocket socket;
+    private UUID uuid;
 
-    private class AcceptThread extends Thread {
-        private final BluetoothServerSocket mmServerSocket;
+    public BluetoothBroadcastReceiver(String uuid) {
+        this.uuid = UUID.fromString(uuid);
+        ConnectThread connectThread = new ConnectThread(findServerDevice(UUID.fromString(uuid)));
+        connectThread.start();
+    }
 
-        public AcceptThread() {
-            BluetoothServerSocket tmp = null;
-            try {
+    private BluetoothDevice findServerDevice(UUID uuid) {
+        BluetoothDevice serverDevice = null;
+        for (BluetoothDevice device : bluetoothAdapter.getBondedDevices()) {
 
-                tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
-            } catch (IOException e) {
-                Log.e(TAG, "Socket's listen() method failed", e);
-            }
-            mmServerSocket = tmp;
-        }
-        public void run(){
-            BluetoothSocket socket = null;
-            while (true) {
-                try {
-                    Message message = Message.obtain();
-                    message.what = STATE_CONNECTING;
-
-                    socket = mmServerSocket.accept();
-                } catch (IOException e) {
-                    Log.e(TAG, "Socket's accept() method failed", e);
-                    break;
-                }
-
-                if (socket != null) {
-                    //manageMyConnectedSocket(socket);
-                    try {
-                        mmServerSocket.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+            for (ParcelUuid deviceUUID : device.getUuids()) {
+                if (deviceUUID.equals(uuid)) {
+                    serverDevice = device;
                     break;
                 }
             }
-        }
-        public void cancel() {
-            try {
-                mmServerSocket.close();
-            } catch (IOException e) {
-                Log.e(TAG, "Could not close the connect socket", e);
+            if (serverDevice != null) {
+                break;
             }
         }
+        return serverDevice;
     }
     private class ConnectThread extends Thread{
         private final BluetoothSocket mmSocket;
@@ -75,31 +56,21 @@ public class BluetoothBroadcastReceiver {
         public ConnectThread(BluetoothDevice device) {
             BluetoothSocket tmp = null;
             mmDevice = device;
-
             try {
-                tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+                tmp = device.createRfcommSocketToServiceRecord(uuid);
             } catch (IOException e) {
-                Log.e(TAG, "Socket's create() method failed", e);
+                Log.e(TAG, "Socket's create() method failed",   e);
             }
             mmSocket = tmp;
         }
         public void run() {
-            // Cancel discovery because it otherwise slows down the connection.
             bluetoothAdapter.cancelDiscovery();
-
             try {
-                // Connect to the remote device through the socket. This call blocks
-                // until it succeeds or throws an exception.
-                Log.d(TAG, "OKkkkkkk");
                 mmSocket.connect();
             } catch (IOException connectException) {
-                // Unable to connect; close the socket and return.
-                try {
-                    mmSocket.close();
-                } catch (IOException closeException) {
-                    Log.e(TAG, "Could not close the client socket", closeException);
-                }
-                return;
+                connectException.printStackTrace();
+
+
             }
 
             //manageMyConnectedSocket(mmSocket);
@@ -112,13 +83,4 @@ public class BluetoothBroadcastReceiver {
             }
         }
     }
-    public void startServer(){
-        AcceptThread acceptThread = new AcceptThread();
-        acceptThread.start();
-    }
-    public void startClient(BluetoothDevice device) {
-        ConnectThread connectThread = new ConnectThread(device);
-        connectThread.start();
-    }
-
 }

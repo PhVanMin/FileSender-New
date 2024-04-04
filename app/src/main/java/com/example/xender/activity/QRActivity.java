@@ -24,7 +24,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.xender.Bluetooth.MyBluetooth;
 import com.example.xender.R;
+import com.example.xender.fragment.BluetoothQrFragment;
 import com.example.xender.fragment.WifiQrFragment;
 import com.example.xender.handler.Client;
 import com.example.xender.handler.Server;
@@ -47,6 +49,7 @@ public class QRActivity extends AppCompatActivity {
 //    private WifiManager wifiManager;
     public ImageView qr;
     public WifiQrFragment wifiQrFragment;
+    public BluetoothQrFragment bluetoothQrFragment;
     IntentFilter intentFilter;
     public static int ACCESS_WIFI_STATE = 101;
     public static int NEARBY_WIFI_DEVICE = 102;

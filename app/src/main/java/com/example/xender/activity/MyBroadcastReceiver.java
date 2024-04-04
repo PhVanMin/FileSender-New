@@ -13,7 +13,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Objects.equals(intent.getAction(), ACTION_CANCEL)) {
-            MainActivity.downloading = false;
+            //MainActivity.downloading = false;
         }
     }
 }

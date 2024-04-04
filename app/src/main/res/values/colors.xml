@@ -13,4 +13,5 @@
     <color name="blue">#0000ff</color>
     <color name="aqua">#00ffff</color>
     <color name="cadetblue">#5f9ea0</color>
+    <color name="colorGray">#808080</color>
 </resources>
