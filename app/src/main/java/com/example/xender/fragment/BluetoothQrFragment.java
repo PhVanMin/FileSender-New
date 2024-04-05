@@ -117,13 +117,14 @@ public class BluetoothQrFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        qr_code= getActivity().findViewById(R.id.Qr_code);
+        qr_code= getActivity().findViewById(R.id.Qr_code1);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_BLUETOOTH_CONNECT_PERMISSION);
         }
         MyBluetooth myBluetooth = new MyBluetooth();
 
-        generateQRCode(MyBluetooth.MY_UUID.toString());
+        generateQRCode(myBluetooth.addressMyBluetooth());
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
