@@ -3,6 +3,7 @@ package com.example.xender.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -24,7 +25,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class CloudActivity extends AppCompatActivity {
@@ -87,11 +92,26 @@ public class CloudActivity extends AppCompatActivity {
     private void downloadFileCloud(String uri){
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference httpsReference = storage.getReferenceFromUrl(uri);
-
+      //  Log.d(TAG, "downloadFileCloud: " + httpsReference.getName());
         httpsReference.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                Log.d(TAG, new String(bytes));
+                try {
+                    String dirPath= android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+                    String fileName  = httpsReference.getName();
+                    File file = new File(dirPath+"/"+fileName);
+                    if(file.exists()){
+                        file.renameTo(new File(dirPath+"/copy_of_"+fileName));
+                    }
+                    FileOutputStream fos = new FileOutputStream(file);
+                    BufferedOutputStream bos = new BufferedOutputStream(fos);
+
+                    bos.write(bytes);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
