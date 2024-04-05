@@ -16,33 +16,36 @@ import android.os.Message;
 import android.os.ParcelUuid;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.UUID;
 
 public class BluetoothBroadcastReceiver extends Thread {
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothDevice serverDevice;
     private BluetoothSocket socket;
-    private UUID uuid;
-
-    public BluetoothBroadcastReceiver(String uuid) {
-        this.uuid = UUID.fromString(uuid);
-        ConnectThread connectThread = new ConnectThread(findServerDevice(UUID.fromString(uuid)));
+    public static String TAG = "BluetoothConnectionSevice";
+    private Context context;
+    public BluetoothBroadcastReceiver(Context context, BluetoothManager bluetoothManager,String address) {
+        bluetoothAdapter = bluetoothManager.getAdapter();
+        this.context = context;
+        ConnectThread connectThread = new ConnectThread(findServerDevice(address));
         connectThread.start();
     }
 
-    private BluetoothDevice findServerDevice(UUID uuid) {
+    private BluetoothDevice findServerDevice(String address) {
         BluetoothDevice serverDevice = null;
         for (BluetoothDevice device : bluetoothAdapter.getBondedDevices()) {
 
-            for (ParcelUuid deviceUUID : device.getUuids()) {
-                if (deviceUUID.equals(uuid)) {
-                    serverDevice = device;
-                    break;
-                }
+            if(device.getName().equals(address))
+            {
+                serverDevice = device;
+                Log.d(TAG, device.getName());
+                break;
             }
             if (serverDevice != null) {
                 break;
@@ -57,23 +60,25 @@ public class BluetoothBroadcastReceiver extends Thread {
             BluetoothSocket tmp = null;
             mmDevice = device;
             try {
-                tmp = device.createRfcommSocketToServiceRecord(uuid);
+                tmp = device.createRfcommSocketToServiceRecord(MyBluetooth.MY_UUID);
             } catch (IOException e) {
                 Log.e(TAG, "Socket's create() method failed",   e);
             }
             mmSocket = tmp;
         }
         public void run() {
-            bluetoothAdapter.cancelDiscovery();
             try {
                 mmSocket.connect();
+                Log.d(TAG, "Connected successfully!");
+                showToast("Connected successfully!");
             } catch (IOException connectException) {
                 connectException.printStackTrace();
 
 
             }
-
-            //manageMyConnectedSocket(mmSocket);
+        }
+        private void showToast(String message) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
         public void cancel() {
             try {
