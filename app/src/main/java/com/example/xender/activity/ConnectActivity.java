@@ -8,6 +8,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
 import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -21,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.xender.Bluetooth.BluetoothBroadcastReceiver;
 import com.example.xender.R;
 import com.example.xender.handler.Client;
 import com.example.xender.handler.Server;
@@ -79,7 +83,7 @@ public class ConnectActivity extends AppCompatActivity {
             if (contents != null) {
                 Log.d("QR Scanner", contents);
                 connect(contents);
-
+                connectBluetooth(contents);
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -168,4 +172,15 @@ public class ConnectActivity extends AppCompatActivity {
             }
         });
     }
+
+        private BluetoothDevice bluetoothDevice;
+
+        public void connectBluetooth(String uuid){
+            Log.d("Bluetooth", uuid);
+            BluetoothManager bluetoothManager = (BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE);
+
+
+        BluetoothBroadcastReceiver bluetoothBroadcastReceiver = new BluetoothBroadcastReceiver(this, bluetoothManager, uuid);
+    }
+
 }

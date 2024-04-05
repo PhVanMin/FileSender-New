@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.example.xender.R;
 import com.example.xender.handler.Client;
 import com.example.xender.handler.DatabaseHandler;
-import com.example.xender.utils.StorageUtil;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.appcheck.FirebaseAppCheck;
