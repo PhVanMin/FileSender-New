@@ -169,7 +169,7 @@ public class PasscodeUtil implements View.OnFocusChangeListener, View.OnKeyListe
     }
 
     private void setDefaultPinBackground(EditText editText) {
-        editText.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorGray)));
+        editText.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.gray)));
     }
 
     private void setFocusedPinBackground(EditText editText) {

@@ -1,16 +1,19 @@
 package com.example.xender.fragment;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -35,10 +38,11 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private TextView storageInfoTextView;
-    private Button sendBtn ;
-    private Button qrBtn;
-    private Button connectBtn;
-    private Button cloudBtn;
+    private TextView totalFilesTextView;
+    private ImageButton sendBtn ;
+    private ImageButton qrBtn;
+    private ImageButton connectBtn;
+    private ImageButton cloudBtn;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -98,15 +102,18 @@ public class HomeFragment extends Fragment {
         cloudBtn.setOnClickListener(v -> gotoCloudActivity());
 
         storageInfoTextView = getActivity().findViewById(R.id.storageInfoTextView);
+        totalFilesTextView = getActivity().findViewById(R.id.totalFiles);
 
+        long files = Environment.getExternalStorageDirectory().listFiles().length;
         long gbMemoryAvailable = StorageUtil.getByteAvailable() / (1073741824);
         long gbMemorySize = StorageUtil.getByteMemorySize() / (1073741824);
 
+        totalFilesTextView.setText(Long.toString(files) + " files");
         storageInfoTextView.setText(
                 String.valueOf(gbMemorySize - gbMemoryAvailable) + " GB of " +
                         String.valueOf(gbMemorySize) + " GB");
 
-        progressBar = getActivity().findViewById(R.id.progressBar);
+        progressBar = getActivity().findViewById(R.id.homeProgressBar);
         progressBar.setMax((int) gbMemorySize);
         progressBar.setProgress((int) ((gbMemorySize - gbMemoryAvailable)));
     }
