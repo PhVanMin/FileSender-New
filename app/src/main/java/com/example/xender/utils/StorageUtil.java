@@ -21,7 +21,7 @@ public class StorageUtil {
     public static final int FILTER_BY_VIDEO = 2 ;
 
     private static String documentPatterns[] ={".pdf",".txt",".docs",".docx",".ppt",".xlsx",".xml"};
-    private static String audioPatterns[] ={".mp3"};
+    private static String audioPatterns[] ={".mp3",".m4a"};
     private static String videoPatterns[] ={".mp4"};
 
     public static ArrayList<File> files = new ArrayList<>();
@@ -67,16 +67,19 @@ public class StorageUtil {
 
             if(listFile!=null){
                 for (File file: listFile) {
-
+                    Log.d("File test", file.getAbsolutePath());
                     if(file.isDirectory() &&
                             !file.getAbsolutePath().contains("Android") &&
                     !file.getAbsolutePath().contains("Lyrics")
                     ){
+                      //  Log.d("File test", file.getAbsolutePath());
                         getAllDir(file,filter);
                     } else if(!file.isDirectory())
                     {
+                    //   Log.d("File test", file.getAbsolutePath());
                         for (String pattern : getPattern(filter) )
                         {
+
                             if (file.getName().contains(pattern)) {
                                 Log.d("File test", file.getAbsolutePath());
                                 files.add(file);

@@ -4,10 +4,12 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -87,6 +89,7 @@ public class FileFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_folder, container, false);
     }
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onActivityCreated(@Nullable Bundle saveInstanceState) {
         Log.d("ActivitySend","FileFragment ");
@@ -112,11 +115,15 @@ public class FileFragment extends Fragment {
         sendActivity.fileFragment= this;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     public void loadFiles(){
         listView = getActivity().findViewById(R.id.list_files);
         ChooseActivity parent = (ChooseActivity) getActivity();
+        StorageUtil.files.clear();
         if (StorageUtil.files.size() == 0) {
-                StorageUtil.getAllDir(Environment.getExternalStorageDirectory(), StorageUtil.FILTER_BY_DOCUMENT);
+            StorageUtil.getAllDir(Environment.getExternalStorageDirectory(), StorageUtil.FILTER_BY_DOCUMENT);
+            StorageUtil.getAllDir(Environment.getStorageDirectory(), StorageUtil.FILTER_BY_DOCUMENT);
+
         }
         Log.d("File test",String.valueOf(StorageUtil.files.size()));
         fileAdapter = new FileAdapter(getActivity(),R.layout.file,StorageUtil.files);

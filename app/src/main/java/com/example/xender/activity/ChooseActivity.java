@@ -16,9 +16,11 @@ import android.widget.Toast;
 import com.example.xender.Loader.ContactsLoader;
 import com.example.xender.R;
 import com.example.xender.adapter.ContactAdapter;
+import com.example.xender.fragment.AudioFragment;
 import com.example.xender.fragment.ContactFragment;
 import com.example.xender.fragment.FileFragment;
 import com.example.xender.fragment.PhotoFragment;
+import com.example.xender.fragment.VideoFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ChooseActivity extends AppCompatActivity {
@@ -48,19 +50,13 @@ public class ChooseActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         BottomNavigationView navigationView = findViewById(R.id.navigation_view);
         NavigationUI.setupWithNavController(navigationView,navController);
-
-
         ContactsLoader loader = new ContactsLoader(this);
         loader.getContactList();
         contactAdapter  = new ContactAdapter(this,R.layout.contact,loader.getContacts());
-
-
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -81,9 +77,10 @@ public class ChooseActivity extends AppCompatActivity {
             }
         }
     }
-
     public PhotoFragment photoFragment;
     public ContactFragment contactFragment;
     public FileFragment fileFragment;
+    public VideoFragment videoFragment;
+    public AudioFragment audioFragment;
 
 }
