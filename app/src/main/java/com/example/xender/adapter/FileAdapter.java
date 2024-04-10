@@ -64,6 +64,7 @@ public class FileAdapter extends ArrayAdapter<File> {
         extension.put("xlsx",XLSX_IMAGE);
         extension.put("xml",XML_IMAGE);
         extension.put("mp3",MUSIC_IMAGE);
+        extension.put("m4a",MUSIC_IMAGE);
         extension.put("mp4",VIDEO_IMAGE);
     }
     public View getView(int position, View convertView, ViewGroup parent){
