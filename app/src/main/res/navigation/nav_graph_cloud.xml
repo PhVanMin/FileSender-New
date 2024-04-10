@@ -6,12 +6,14 @@
     android:id="@+id/nav_graph_qr">
     <fragment
         android:id="@+id/uploadFragment"
+        android:name="com.example.xender.fragment.UploadFragment"
         tools:layout="@layout/fragment_upload">
         <action
             android:id="@+id/action_uploadFragment_to_downloadFragment"
             app:destination="@id/downloadFragment" />
     </fragment>
     <fragment
+        android:name="com.example.xender.fragment.DownloadFragment"
         android:id="@+id/downloadFragment"
         tools:layout="@layout/fragment_download">
         <action

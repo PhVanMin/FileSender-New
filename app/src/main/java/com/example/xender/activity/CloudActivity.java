@@ -3,6 +3,9 @@ package com.example.xender.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +20,7 @@ import com.example.xender.handler.DatabaseHandler;
 import com.example.xender.model.FileCloud;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -30,6 +34,7 @@ import java.util.List;
 public class CloudActivity extends AppCompatActivity {
     private static String TAG = "Cloud activity debug";
     private Toolbar toolbar;
+    private NavController navController;
     private List<FileCloud> fileCloudList;
     private DatabaseHandler databaseHandler;
     private FileCloudAdapter fileCloudAdapter;
@@ -51,6 +56,10 @@ public class CloudActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        BottomNavigationView navigationView = findViewById(R.id.navigation_view);
+        NavigationUI.setupWithNavController(navigationView,navController);
 
 //        downloadBtn = findViewById(R.id.download_btn);
 //        fileCloudUri = findViewById(R.id.inputURI);
