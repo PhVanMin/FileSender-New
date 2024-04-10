@@ -4,11 +4,10 @@ package com.example.xender.activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
 import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
@@ -20,9 +19,7 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.xender.Bluetooth.BluetoothBroadcastReceiver;
 import com.example.xender.R;
@@ -38,6 +35,7 @@ public class ConnectActivity extends AppCompatActivity {
 
     private static final int MY_READ_PERMISSION_CODE = 1;
     Button scan_btn;
+    Toolbar toolbar;
     private IntentFilter intentFilter;
 //    WifiP2pManager manager;
 //    WifiP2pManager.Channel channel;
@@ -45,6 +43,14 @@ public class ConnectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
+
+        toolbar = findViewById(R.id.appbar_send);
+        toolbar.setTitle("Scan QR");
+        toolbar.isBackInvokedCallbackEnabled();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         if(MyWifi.wifiP2pManager == null)
             MyWifi.wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
@@ -55,17 +61,13 @@ public class ConnectActivity extends AppCompatActivity {
 
 
         scan_btn = findViewById(R.id.scan_btn);
-        scan_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentIntegrator intentIntegrator = new IntentIntegrator(ConnectActivity.this);
-                intentIntegrator.setOrientationLocked(true);
-                intentIntegrator.setPrompt("Scan a QR code");
-                intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-                intentIntegrator.setCaptureActivity(CaptureAct.class);
-                intentIntegrator.initiateScan();
-
-            }
+        scan_btn.setOnClickListener(v -> {
+            IntentIntegrator intentIntegrator = new IntentIntegrator(ConnectActivity.this);
+            intentIntegrator.setOrientationLocked(true);
+            intentIntegrator.setPrompt("Scan a QR code");
+            intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+            intentIntegrator.setCaptureActivity(CaptureAct.class);
+            intentIntegrator.initiateScan();
         });
         intentFilter = new IntentFilter();
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);

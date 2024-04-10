@@ -3,15 +3,10 @@ package com.example.xender.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -57,28 +52,28 @@ public class CloudActivity extends AppCompatActivity {
             }
         });
 
-        downloadBtn = findViewById(R.id.download_btn);
-        fileCloudUri = findViewById(R.id.inputURI);
-
-        downloadBtn.setOnClickListener(view -> {downloadFileCloud(fileCloudUri.getText().toString());});
-
-        databaseHandler = new DatabaseHandler(this);
-        listView = findViewById(R.id.list_cloud_file);
-        initData();
-        fileCloudAdapter = new FileCloudAdapter(this,R.layout.file,fileCloudList);
-        listView.setAdapter(fileCloudAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FileCloud current = fileCloudList.get(position);
-                Intent qrCloud = new Intent();
-                qrCloud.setClass(CloudActivity.this,QRCloudActivity.class);
-                qrCloud.putExtra("QRCODE",current.getUri());
-                startActivity(qrCloud);
-               // fileCloudQrFragment.generateQRCode(current.getUri());
-            }
-        });
+//        downloadBtn = findViewById(R.id.download_btn);
+//        fileCloudUri = findViewById(R.id.inputURI);
+//
+//        downloadBtn.setOnClickListener(view -> {downloadFileCloud(fileCloudUri.getText().toString());});
+//
+//        databaseHandler = new DatabaseHandler(this);
+//        listView = findViewById(R.id.list_cloud_file);
+//        initData();
+//        fileCloudAdapter = new FileCloudAdapter(this,R.layout.file,fileCloudList);
+//        listView.setAdapter(fileCloudAdapter);
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @SuppressLint("ResourceType")
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                FileCloud current = fileCloudList.get(position);
+//                Intent qrCloud = new Intent();
+//                qrCloud.setClass(CloudActivity.this,QRCloudActivity.class);
+//                qrCloud.putExtra("QRCODE",current.getUri());
+//                startActivity(qrCloud);
+//               // fileCloudQrFragment.generateQRCode(current.getUri());
+//            }
+//        });
     }
 
     private void initData(){

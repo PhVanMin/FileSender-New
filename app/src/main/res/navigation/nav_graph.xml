@@ -7,7 +7,6 @@
     <fragment
         android:id="@+id/contactFragment"
         android:name="com.example.xender.fragment.ContactFragment"
-
         tools:layout="@layout/fragment_contact">
 
 

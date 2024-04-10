@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/uploadFragment"
+    android:id="@+id/nav_graph_qr">
+    <fragment
+        android:id="@+id/uploadFragment"
+        tools:layout="@layout/fragment_upload">
+        <action
+            android:id="@+id/action_uploadFragment_to_downloadFragment"
+            app:destination="@id/downloadFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/downloadFragment"
+        tools:layout="@layout/fragment_download">
+        <action
+            android:id="@+id/action_downloadFragment_to_uploadFragment"
+            app:destination="@id/uploadFragment" />
+    </fragment>
+</navigation>

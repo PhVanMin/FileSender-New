@@ -99,7 +99,6 @@ public class QRActivity extends AppCompatActivity {
 
         qr = findViewById(R.id.Qr_code);
 
-
         if (MyWifi.broadcastReceiver == null)
             MyWifi.broadcastReceiver = new WifiDirectBroadcastReceiver(MyWifi.wifiP2pManager, MyWifi.channel, this);
 

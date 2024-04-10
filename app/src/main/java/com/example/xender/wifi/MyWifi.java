@@ -24,7 +24,6 @@ public class MyWifi {
     public static Socket socket = null;
 
     public static void sendFile(File current) {
-
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(current.getAbsolutePath()));
             Log.d("WifiDirect", "onItemClick: " + MyWifi.socket.toString());
