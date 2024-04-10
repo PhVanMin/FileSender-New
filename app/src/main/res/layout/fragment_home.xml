@@ -1,157 +1,286 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.HomeFragment"
-    android:layout_marginTop="20dp">
+    android:layout_marginTop="20dp"
+    tools:context=".fragment.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
-        android:layout_height="match_parent"
+    <ScrollView
         android:layout_width="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="25dp"
-            android:layout_marginLeft="25dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="25dp"
-            android:paddingRight="25dp"
-            android:background="@drawable/customborder">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_marginBottom="10dp"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginHorizontal="10dp">
 
                 <ImageView
+                    android:id="@+id/image_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/mobile_phone_protection_svgrepo_com"
-                    android:layout_gravity="center"/>
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/storage_image" />
 
-                <TextView
-                    android:layout_marginLeft="10dp"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Storage"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical"
+                    android:paddingStart="25dp">
 
-                    android:textColor="@color/colorPrimary" />
+                    <TextView
+                        android:id="@+id/storage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Storage"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
 
-            </LinearLayout>
-            <ProgressBar
+                    <TextView
+                        android:id="@+id/totalFiles"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="20000 files"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
-                android:id="@+id/progressBar"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:progressDrawable="@drawable/custom_progressbar"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/image_view"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="vertical">
 
-                android:progress="25"/>
+                    <TextView
+                        android:id="@+id/storageInfoTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:text="Used 69GB in 420GB"
+                        android:textColor="@color/white" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/homeProgressBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:indicatorColor="#D534F1"
+                        app:trackColor="@color/white"
+                        app:trackCornerRadius="10dp"
+                        app:trackThickness="15dp" />
+                </LinearLayout>
+            </RelativeLayout>
+
             <TextView
-                android:id="@+id/storageInfoTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="20 GB of 128 GB"
-                android:layout_marginTop="10dp"
-                android:textSize="12dp"
-
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
-                android:textColor="@color/colorPrimary"
-                ></TextView>
+                android:text="Features"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="10dp"
+                android:columnCount="3"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:useDefaultMargins="true">
+
+                <LinearLayout
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/send_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/customborder"
+                        android:backgroundTint="#D7FFDB"
+                        android:padding="25dp"
+                        android:src="@drawable/send_svgrepo_com" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Send"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/qr_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/customborder"
+                        android:backgroundTint="#D2E9FE"
+                        android:padding="25dp"
+                        android:src="@drawable/qr_scan_svgrepo_com" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="QR"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/connect_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/customborder"
+                        android:backgroundTint="#FAC9EA"
+                        android:padding="25dp"
+                        android:src="@drawable/anchor_link_svgrepo_com" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Connect"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/cloud_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/customborder"
+                        android:backgroundTint="#D4DDFF"
+                        android:padding="25dp"
+                        android:src="@drawable/cloud_svgrepo_com" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Upload"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginHorizontal="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/history_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/customborder"
+                        android:backgroundTint="#F8F2B9"
+                        android:padding="25dp"
+                        android:src="@drawable/history_svgrepo_com" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="History"
+                        android:textAlignment="center" />
+                </LinearLayout>
+            </GridLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:text="Recent"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:padding="10dp">-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginHorizontal="2dp"-->
+<!--                    android:background="@drawable/file_background"-->
+<!--                    android:elevation="4dp"-->
+<!--                    android:paddingHorizontal="10dp"-->
+<!--                    android:paddingVertical="20dp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/doc_svgrepo_com" />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Text.pdf" />-->
+<!--                </LinearLayout>-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginHorizontal="2dp"-->
+<!--                    android:layout_marginVertical="10dp"-->
+<!--                    android:background="@drawable/file_background"-->
+<!--                    android:elevation="4dp"-->
+<!--                    android:paddingHorizontal="10dp"-->
+<!--                    android:paddingVertical="20dp">-->
+
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/doc_svgrepo_com" />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Text.pdf" />-->
+<!--                </LinearLayout>-->
+<!--            </LinearLayout>-->
         </LinearLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Features"
-            android:layout_gravity="center"
-            android:textSize="25dp"
-            android:textColor="@color/black"
-            android:layout_margin="25dp"
-            />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/send_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/customborder"
-                android:drawableTop="@drawable/send_svgrepo_com"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginHorizontal="30dp"
-                android:paddingTop="25sp"
-                android:drawablePadding="2sp"
-                android:text="send"></Button>
-
-
-            <Button
-                android:id="@+id/qr_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/customborder"
-                android:drawableTop="@drawable/qr_scan_svgrepo_com"
-                android:textColor="@color/colorPrimary"
-               android:layout_marginHorizontal="30dp"
-                android:paddingTop="25sp"
-                android:drawablePadding="2sp"
-                android:text="qr"></Button>
-
-
-
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_marginTop="50dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-
-
-            <Button
-                android:id="@+id/connect_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/customborder"
-                android:drawableTop="@drawable/attach_svgrepo_com"
-                android:drawablePadding="2sp"
-                android:layout_marginHorizontal="30dp"
-
-                android:paddingTop="25sp"
-                android:text="connect"
-                android:textColor="@color/colorPrimary"></Button>
-            <Button
-                android:id="@+id/cloud_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/customborder"
-                android:drawableTop="@drawable/cloud_svgrepo_com"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginHorizontal="30dp"
-                android:paddingTop="25sp"
-                android:drawablePadding="2sp"
-                android:text="Cloud"></Button>
-
-
-        </LinearLayout>
-    </LinearLayout>
-
-
-
-
+    </ScrollView>
 
 
 </FrameLayout>
