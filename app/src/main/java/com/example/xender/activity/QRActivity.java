@@ -66,16 +66,10 @@ public class QRActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.appbar_send);
         toolbar.setTitle("Kết nối QR");
-        toolbar.isBackInvokedCallbackEnabled();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         BottomNavigationView navigationView = findViewById(R.id.navigation_view);

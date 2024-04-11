@@ -1,12 +1,16 @@
 package com.example.xender.fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
@@ -118,22 +122,21 @@ public class HomeFragment extends Fragment {
 
         storageInfoTextView = getActivity().findViewById(R.id.storageInfoTextView);
         totalFilesTextView = getActivity().findViewById(R.id.totalFiles);
-        cloudBtn.setOnClickListener(v -> gotoCloudActivity());
-        if (PermissionChecker.checkReadExternalStorage(getActivity()) ){
-            setProgressbar();
+        cloudBtn.setOnClickListener(v -> goToActivity(CloudActivity.class));
+
+        if( (android.os.Build.VERSION.SDK_INT) <= 32) {
+            if (ContextCompat.checkSelfPermission(activity,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(activity, new String[]
+                        {Manifest.permission.READ_EXTERNAL_STORAGE}, ChooseActivity.READ_FILES_PERMISSION);
+            }
+            else {
+                setProgressBar();
+            }
+        } else {
+            setProgressBar();
         }
-
-        long files = Environment.getExternalStorageDirectory().listFiles().length;
-        long gbMemoryAvailable = StorageUtil.getByteAvailable() / (1073741824);
-        long gbMemorySize = StorageUtil.getByteMemorySize() / (1073741824);
-
-        totalFilesTextView.setText(String.format(Locale.ENGLISH,"%d files", files));
-        storageInfoTextView.setText(
-                String.format(Locale.ENGLISH, "%s GB of %s GB", gbMemorySize - gbMemoryAvailable, gbMemorySize));
-
-        progressBar = getActivity().findViewById(R.id.homeProgressBar);
-        progressBar.setMax((int) gbMemorySize);
-        progressBar.setProgress((int) ((gbMemorySize - gbMemoryAvailable)));
     }
 
     public void goToActivity(Class<?> cls) {
@@ -149,18 +152,14 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public void setProgressbar(){
-
+    public void setProgressBar() {
         long files = Environment.getExternalStorageDirectory().listFiles().length;
         long gbMemoryAvailable = StorageUtil.getByteAvailable() / (1073741824);
         long gbMemorySize = StorageUtil.getByteMemorySize() / (1073741824);
 
-        storageInfoTextView = activity.findViewById(R.id.storageInfoTextView);
-        totalFilesTextView = activity.findViewById(R.id.totalFiles);
-        totalFilesTextView.setText(Long.toString(files) + " files");
+        totalFilesTextView.setText(String.format(Locale.ENGLISH,"%d files", files));
         storageInfoTextView.setText(
-                String.valueOf(gbMemorySize - gbMemoryAvailable) + " GB of " +
-                        String.valueOf(gbMemorySize) + " GB");
+                String.format(Locale.ENGLISH, "%s GB of %s GB", gbMemorySize - gbMemoryAvailable, gbMemorySize));
 
         progressBar = getActivity().findViewById(R.id.homeProgressBar);
         progressBar.setMax((int) gbMemorySize);

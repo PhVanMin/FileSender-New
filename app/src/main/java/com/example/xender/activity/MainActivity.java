@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     NavController navController;
     Toolbar toolbar;
 
-
+    public static int READ_STORAGE_PERMISSION = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == ChooseActivity.READ_STORAGE_PERMISSION) {
+        if (requestCode == READ_STORAGE_PERMISSION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (homeFragment != null){
-                    homeFragment.setProgressbar();
+                    homeFragment.setProgressBar();
                 }
                 Toast.makeText(this, "Read external storage granted", Toast.LENGTH_SHORT).show();
 
