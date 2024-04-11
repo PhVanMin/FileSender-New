@@ -33,8 +33,6 @@ import java.io.File;
 import java.net.InetAddress;
 
 public class MainActivity extends AppCompatActivity {
-
-
     NavController navController;
     Toolbar toolbar;
     private SQLiteDatabase db;

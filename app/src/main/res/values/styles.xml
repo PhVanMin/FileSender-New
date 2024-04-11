@@ -21,11 +21,11 @@
 
     <style name="MenuItemsActive">
         <item name="android:textColor">#6350FF</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="MenuItemsInactive">
         <item name="android:textColor">#C3BCFF</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">15sp</item>
     </style>
 </resources>
