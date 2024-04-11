@@ -45,7 +45,6 @@ public class Server extends Thread{
                     MyWifi.socket = socket;
                     handler = new SendReceiveHandler(socket);
                     handler.start();
-
                 }
 
         } catch (IOException e) {

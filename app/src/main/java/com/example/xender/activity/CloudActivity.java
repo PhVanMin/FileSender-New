@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
 import com.example.xender.adapter.FileCloudAdapter;
 
@@ -131,6 +132,11 @@ public class CloudActivity extends AppCompatActivity {
             }
         });
     };
+    @Override
+    protected void onResume() {
 
+        super.onResume();
+        MyApplication.setActivity(this);
+    }
 
 }

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.Toast;
 
+import com.example.xender.Dialog.MyApplication;
 import com.example.xender.Loader.ContactsLoader;
 import com.example.xender.R;
 import com.example.xender.adapter.ContactAdapter;
@@ -21,6 +22,7 @@ import com.example.xender.fragment.ContactFragment;
 import com.example.xender.fragment.FileFragment;
 import com.example.xender.fragment.PhotoFragment;
 import com.example.xender.fragment.VideoFragment;
+import com.example.xender.permission.PermissionChecker;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ChooseActivity extends AppCompatActivity {
@@ -72,9 +74,18 @@ public class ChooseActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+        MyApplication.setActivity(this);
+    }
+
     public PhotoFragment photoFragment;
     public ContactFragment contactFragment;
     public FileFragment fileFragment;
     public VideoFragment videoFragment;
     public AudioFragment audioFragment;
+
 }

@@ -30,7 +30,20 @@ public class PermissionChecker {
         Log.d(TAG, "checkReadExternalStorage: TRUE");
         return  true;
     };
-
+    public static boolean checkReadContactPermission(Activity activity){
+        if( (android.os.Build.VERSION.SDK_INT) <= 32) {
+            if (ContextCompat.checkSelfPermission(activity,
+                    Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(activity, new String[]
+                        {Manifest.permission.READ_CONTACTS}, ChooseActivity.READ_CONTACTS_PERMISSION);
+                Log.d(TAG, "checkReadContacts: FALSE");
+                return false;
+            }
+        }
+        Log.d(TAG, "checkReadContacts: TRUE");
+        return  true;
+    }
     public static boolean checkAccessNearbyDevice(Activity activity){
         if (ContextCompat.checkSelfPermission(
                 activity, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED) {

@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.xender.Bluetooth.MyBluetooth;
+import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
 import com.example.xender.fragment.BluetoothQrFragment;
 import com.example.xender.fragment.WifiQrFragment;
@@ -141,10 +142,10 @@ public class QRActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
        registerReceiver(MyWifi.broadcastReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
-
+        MyApplication.setActivity(this);
     }
-
 
 
     @Override
@@ -206,8 +207,6 @@ public class QRActivity extends AppCompatActivity {
                 Server server = Server.getServer();
                 if(!server.isAlive())
                     server.start();
-
-
 
             } else if (info.groupFormed){
                 Log.d("wifiDirect","is client");
