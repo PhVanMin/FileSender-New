@@ -1,5 +1,6 @@
 package com.example.xender.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
@@ -8,6 +9,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothCsipSetCoordinator;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.wifi.p2p.WifiP2pInfo;
@@ -23,9 +25,12 @@ import android.widget.Toast;
 
 import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
+import com.example.xender.fragment.HomeFragment;
 import com.example.xender.handler.Client;
 
 
+import com.example.xender.permission.PermissionChecker;
+import com.example.xender.utils.StorageUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.appcheck.FirebaseAppCheck;
@@ -39,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     NavController navController;
     Toolbar toolbar;
-    private SQLiteDatabase db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,5 +59,24 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == ChooseActivity.READ_STORAGE_PERMISSION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (homeFragment != null){
+                    homeFragment.setProgressbar();
+                }
+                Toast.makeText(this, "Read external storage granted", Toast.LENGTH_SHORT).show();
+
+            } else {
+                Toast.makeText(this, "Read external storage denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public HomeFragment homeFragment = null;
+
+
 }// class
 

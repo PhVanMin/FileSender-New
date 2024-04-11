@@ -30,6 +30,7 @@ public class ChooseActivity extends AppCompatActivity {
     NavController navController;
     public static final int READ_CONTACTS_PERMISSION=1;
     public static final int READ_IMAGES_PERMISSION=2;
+    public static final int READ_STORAGE_PERMISSION = 3;
     Adapter contactAdapter;
 
 
@@ -83,7 +84,6 @@ public class ChooseActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
         super.onResume();
         MyApplication.setActivity(this);
     }

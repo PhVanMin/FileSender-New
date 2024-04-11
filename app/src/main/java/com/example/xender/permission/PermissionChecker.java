@@ -22,7 +22,7 @@ public class PermissionChecker {
                     Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(activity, new String[]
-                        {Manifest.permission.READ_EXTERNAL_STORAGE}, ChooseActivity.READ_IMAGES_PERMISSION);
+                        {Manifest.permission.READ_EXTERNAL_STORAGE}, ChooseActivity.READ_STORAGE_PERMISSION);
                 Log.d(TAG, "checkReadExternalStorage: FALSE");
                 return false;
             }
@@ -74,8 +74,7 @@ public class PermissionChecker {
     public static boolean checkWriteExternalStorage(Activity activity){
         if( (android.os.Build.VERSION.SDK_INT) <= 32) {
             if (ContextCompat.checkSelfPermission(activity,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-            ) {
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(activity, new String[]
                         {Manifest.permission.WRITE_EXTERNAL_STORAGE}, QRActivity.WRITE_EXTERNAL_STORAGE);
                 Log.d(TAG, "checkWriteExternalStorage: FALSE");
@@ -89,8 +88,7 @@ public class PermissionChecker {
     public static boolean CheckFineLocation(Activity activity){
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(activity,
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            ) {
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(activity, new String[]
                         {Manifest.permission.ACCESS_FINE_LOCATION}, QRActivity.ACCESS_FINE_LOCATION);
 
