@@ -125,36 +125,10 @@ public class FileFragment extends Fragment {
             fileAdapter = new FileAdapter(getActivity(), R.layout.file, StorageUtil.files);
             listView.setAdapter(fileAdapter);
             listView.setOnItemClickListener((parent, view, position, id) -> {
-            /*File current = fileAdapter.files.get(position);
-            try {
-                byte[] bytes = Files.readAllBytes(Paths.get(current.getAbsolutePath()));
-                Log.d("WifiDirect", "onItemClick: "+ MyWifi.socket.toString());
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SendReceiveHandler handler = new SendReceiveHandler(MyWifi.socket);
-                        try {
-                            handler.writeLong(current.length());
-                            handler.writeUTF(current.getName());
-                            handler.write(bytes);
-                        } catch (IOException e) {
-                            Log.d("WifiDirect", "Exception " + e.toString());
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
-                thread.start();
-                Log.d("WifiDirect", "onItemClick: ");
-            } catch (Exception e) {
-                Log.d("WifiDirect", "onItemClick: "+e.toString());
-                throw new RuntimeException(e);
-            }*/
                 Intent intent = new Intent(getActivity(),SendActivity.class);
                 File current = fileAdapter.files.get(position);
                 intent.putExtra("File",current.getAbsolutePath());
-
                 startActivity(intent);
-
             });
         });
     }

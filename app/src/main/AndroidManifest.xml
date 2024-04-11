@@ -52,7 +52,7 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
-        android:name=".Dialog.MyApplication"
+
         android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

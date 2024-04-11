@@ -11,7 +11,7 @@ public class MyApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
-        MyApplication.context = getApplicationContext();
+        //MyApplication.context = getApplicationContext();
     }
     public  static void setActivity(Activity _activity){
         activity = _activity;
