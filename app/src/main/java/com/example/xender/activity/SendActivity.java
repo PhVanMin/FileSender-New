@@ -19,11 +19,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
+import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
 
 import com.example.xender.db.FileCloudDatabaseHandler;
 
+import com.example.xender.handler.SendReceiveHandler;
 import com.example.xender.model.FileCloud;
+import com.example.xender.wifi.MyWifi;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,6 +44,9 @@ import com.google.firebase.storage.UploadTask;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -53,7 +59,7 @@ public class SendActivity extends AppCompatActivity {
     Button backButton ;
     Toolbar toolbar;
     Button uploadButton ;
-
+    Button sendButton;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +70,7 @@ public class SendActivity extends AppCompatActivity {
         fileName = findViewById(R.id.fileName);
         fileImage = findViewById(R.id.fileImage);
         sizeDate = findViewById(R.id.sizeDate);
+        sendButton = findViewById(R.id.SendButton);
         uploadButton = findViewById(R.id.upload_btn);
 
 
@@ -85,7 +92,12 @@ public class SendActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendFile(file);
+            }
+        });
        uploadButton.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -175,5 +187,37 @@ public class SendActivity extends AppCompatActivity {
         });
 
     }
+    public void sendFile(File current){
 
+                try {
+                    byte[] bytes = Files.readAllBytes(Paths.get(current.getAbsolutePath()));
+                    Log.d("WifiDirect", "onItemClick: "+ MyWifi.socket.toString());
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SendReceiveHandler handler = new SendReceiveHandler(MyWifi.socket);
+                            try {
+
+                                handler.writeLong(current.length());
+                                handler.writeUTF(current.getName());
+                                handler.write(bytes);
+                            } catch (IOException e) {
+                                Log.d("WifiDirect", "Exception " + e.toString());
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+                    thread.start();
+                    Log.d("WifiDirect", "onItemClick: ");
+                } catch (Exception e) {
+                    Log.d("WifiDirect", "onItemClick: "+e.toString());
+                    throw new RuntimeException(e);
+                }
+    }
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+        MyApplication.setActivity(this);
+    }
 }

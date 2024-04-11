@@ -6,6 +6,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothCsipSetCoordinator;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -20,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
 import com.example.xender.handler.Client;
 

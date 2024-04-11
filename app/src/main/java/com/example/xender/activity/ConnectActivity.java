@@ -22,6 +22,7 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.example.xender.Bluetooth.BluetoothBroadcastReceiver;
+import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
 import com.example.xender.handler.Client;
 import com.example.xender.handler.Server;
@@ -43,7 +44,6 @@ public class ConnectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
-
         toolbar = findViewById(R.id.appbar_send);
         toolbar.setTitle("Scan QR");
         toolbar.isBackInvokedCallbackEnabled();
@@ -85,7 +85,7 @@ public class ConnectActivity extends AppCompatActivity {
             if (contents != null) {
                 Log.d("QR Scanner", contents);
                 connect(contents);
-                connectBluetooth(contents);
+               // connectBluetooth(contents);
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -106,6 +106,12 @@ public class ConnectActivity extends AppCompatActivity {
 
         }
 
+    }
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+        MyApplication.setActivity(this);
     }
    public static WifiP2pManager.ConnectionInfoListener connectionInfoListener=new WifiP2pManager.ConnectionInfoListener() {
         @Override
