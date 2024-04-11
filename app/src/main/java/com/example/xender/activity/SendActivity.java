@@ -21,7 +21,8 @@ import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
 import com.example.xender.R;
 
-import com.example.xender.handler.DatabaseHandler;
+import com.example.xender.db.FileCloudDatabaseHandler;
+
 import com.example.xender.model.FileCloud;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -164,8 +165,8 @@ public class SendActivity extends AppCompatActivity {
                     FileCloud fileCloud = new FileCloud(_file.getName(),
                             downloadUri.toString(),
                             new Timestamp(new Date().getTime()));
-                    DatabaseHandler handler = new DatabaseHandler(SendActivity.this);
-                    handler.addFileCloud(fileCloud);
+                    FileCloudDatabaseHandler handler = new FileCloudDatabaseHandler(SendActivity.this);
+                    handler.add(fileCloud);
                 } else {
                     Log.d(TAG, "then: fail " + task.getException().toString());
                     // ...
