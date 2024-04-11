@@ -46,11 +46,10 @@ public class ConnectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_connect);
         toolbar = findViewById(R.id.appbar_send);
         toolbar.setTitle("Scan QR");
-        toolbar.isBackInvokedCallbackEnabled();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         if(MyWifi.wifiP2pManager == null)
             MyWifi.wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
@@ -129,7 +128,6 @@ public class ConnectActivity extends AppCompatActivity {
                 Client client = new Client(groupOwnerAddress);
                 MyWifi.socket = client.getSocket();
                 client.start();
-
             }
         }
     };

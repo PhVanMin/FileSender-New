@@ -77,7 +77,6 @@ public class ChooseActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
         super.onResume();
         MyApplication.setActivity(this);
     }
