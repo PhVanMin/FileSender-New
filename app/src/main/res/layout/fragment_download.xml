@@ -25,6 +25,8 @@
             android:layout_height="wrap_content">
 
             <EditText
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
                 android:id="@+id/inputURI"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

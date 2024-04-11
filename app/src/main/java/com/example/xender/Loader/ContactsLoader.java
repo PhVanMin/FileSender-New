@@ -1,6 +1,7 @@
 package com.example.xender.Loader;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,28 +18,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class ContactsLoader {
-
-
-    private ChooseActivity sendActivity;
+    private Context context;
     private final ArrayList<Contact> contacts = new ArrayList<>();
     public ArrayList<Contact> getContacts() {
         return contacts;
     }
 
-    public ContactsLoader(ChooseActivity sendActivity) {
-        this.sendActivity = sendActivity;
+    public ContactsLoader(Context context) {
+        this.context = context;
     }
 
     public void getContactList() {
-        if(ContextCompat.checkSelfPermission(
-                sendActivity, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(sendActivity,
-                    new String[]{android.Manifest.permission.READ_CONTACTS},
-                    ChooseActivity.READ_CONTACTS_PERMISSION);
-        }
-
-        ContentResolver cr = sendActivity.getContentResolver();
+        ContentResolver cr = context.getContentResolver();
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         Cursor cursor = cr.query(uri,
                 null, null, null, null);

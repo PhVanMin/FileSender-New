@@ -59,7 +59,6 @@ public class CloudActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cloud);
         toolbar = findViewById(R.id.appbar_send);
         toolbar.setTitle("Cloud");
-        toolbar.isBackInvokedCallbackEnabled();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);

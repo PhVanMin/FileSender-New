@@ -67,8 +67,6 @@ public class SendActivity extends AppCompatActivity {
         uploadButton = findViewById(R.id.upload_btn);
 
 
-
-
         int index = extension.get(FilenameUtils.getExtension(file.getAbsolutePath()));
         Log.d("adapter ", String.valueOf(index));
         fileImage.setImageResource(IMAGE_FILE[index]);

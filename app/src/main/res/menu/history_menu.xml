@@ -5,9 +5,9 @@
     <item
         app:showAsAction="ifRoom"
         android:id="@+id/sentFragment"
-        android:title="Upload"/>
+        android:title="Sent"/>
     <item
         app:showAsAction="ifRoom"
-        android:id="@+id/downloadFragment"
-        android:title="Download"/>
+        android:id="@+id/receiveFragment"
+        android:title="Received"/>
 </menu>

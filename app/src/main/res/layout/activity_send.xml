@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <include
         layout="@layout/appbar"
@@ -48,7 +48,9 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#A1A1A1" />
-    <TableRow android:layout_marginVertical="10dp">
+    <TableRow
+        android:paddingHorizontal="5dp"
+        android:layout_marginVertical="10dp">
         <EditText
             android:id="@+id/noteInput"
             android:layout_width="0dp"
@@ -62,7 +64,9 @@
             android:textColor="@color/gray" />
     </TableRow>
 
-    <TableRow android:layout_marginVertical="10dp">
+    <TableRow
+        android:paddingHorizontal="5dp"
+        android:layout_marginVertical="10dp">
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -96,7 +100,9 @@
         </LinearLayout>
     </TableRow>
 
-    <TableRow android:layout_marginVertical="10dp">
+    <TableRow
+        android:paddingHorizontal="5dp"
+        android:layout_marginVertical="10dp">
         <ImageView
             android:layout_marginEnd="5dp"
             android:layout_gravity="center_vertical"
@@ -114,7 +120,9 @@
             tools:ignore="UseSwitchCompatOrMaterialXml" />
     </TableRow>
 
-    <TableRow android:layout_marginTop="10dp">
+    <TableRow
+        android:paddingHorizontal="5dp"
+        android:layout_marginTop="10dp">
         <ImageView
             android:layout_marginEnd="5dp"
             android:layout_gravity="center_vertical"
@@ -131,7 +139,8 @@
             tools:ignore="UseSwitchCompatOrMaterialXml" />
     </TableRow>
 
-    <TableRow>
+    <TableRow
+        android:paddingHorizontal="5dp">
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"

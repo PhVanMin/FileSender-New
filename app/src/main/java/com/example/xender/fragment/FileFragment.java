@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.xender.R;
 import com.example.xender.activity.ChooseActivity;
@@ -79,8 +80,6 @@ public class FileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
     @Override
@@ -89,80 +88,74 @@ public class FileFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_folder, container, false);
     }
-    @RequiresApi(api = Build.VERSION_CODES.R)
+
     @Override
     public void onActivityCreated(@Nullable Bundle saveInstanceState) {
-        Log.d("ActivitySend","FileFragment ");
-        if( (android.os.Build.VERSION.SDK_INT) <= 32) {
-            if (ContextCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-
-            ) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]
-                        {Manifest.permission.READ_EXTERNAL_STORAGE}, ChooseActivity.READ_IMAGES_PERMISSION);
-            }
-        }
-        loadFiles();
         super.onActivityCreated(saveInstanceState);
-
-
+        loadFiles();
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-         sendActivity = (ChooseActivity) getActivity();
+        sendActivity = (ChooseActivity) getActivity();
         sendActivity.fileFragment= this;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
     public void loadFiles(){
         listView = getActivity().findViewById(R.id.list_files);
-        ChooseActivity parent = (ChooseActivity) getActivity();
         StorageUtil.files.clear();
-        if (StorageUtil.files.size() == 0) {
-            StorageUtil.getAllDir(Environment.getExternalStorageDirectory(), StorageUtil.FILTER_BY_DOCUMENT);
-            StorageUtil.getAllDir(Environment.getStorageDirectory(), StorageUtil.FILTER_BY_DOCUMENT);
 
-        }
-        Log.d("File test",String.valueOf(StorageUtil.files.size()));
-        fileAdapter = new FileAdapter(getActivity(),R.layout.file,StorageUtil.files);
+        Thread scanFile = new Thread(() -> {
+            File root = Environment.getExternalStorageDirectory();
+            StorageUtil.getAllDir(root, StorageUtil.FILTER_BY_DOCUMENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                StorageUtil.getAllDir(Environment.getStorageDirectory(), StorageUtil.FILTER_BY_DOCUMENT);
+            }
 
-        listView.setAdapter(fileAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*File current = fileAdapter.files.get(position);
-                try {
-                    byte[] bytes = Files.readAllBytes(Paths.get(current.getAbsolutePath()));
-                    Log.d("WifiDirect", "onItemClick: "+ MyWifi.socket.toString());
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            SendReceiveHandler handler = new SendReceiveHandler(MyWifi.socket);
-                            try {
-                                handler.writeLong(current.length());
-                                handler.writeUTF(current.getName());
-                                handler.write(bytes);
-                            } catch (IOException e) {
-                                Log.d("WifiDirect", "Exception " + e.toString());
-                                throw new RuntimeException(e);
-                            }
+            updateList();
+        });
+        scanFile.start();
+    }
+
+    private void updateList() {
+        getActivity().runOnUiThread(() -> {
+            //fileAdapter.notifyDataSetChanged();
+
+            fileAdapter = new FileAdapter(getActivity(), R.layout.file, StorageUtil.files);
+            listView.setAdapter(fileAdapter);
+            listView.setOnItemClickListener((parent, view, position, id) -> {
+            /*File current = fileAdapter.files.get(position);
+            try {
+                byte[] bytes = Files.readAllBytes(Paths.get(current.getAbsolutePath()));
+                Log.d("WifiDirect", "onItemClick: "+ MyWifi.socket.toString());
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        SendReceiveHandler handler = new SendReceiveHandler(MyWifi.socket);
+                        try {
+                            handler.writeLong(current.length());
+                            handler.writeUTF(current.getName());
+                            handler.write(bytes);
+                        } catch (IOException e) {
+                            Log.d("WifiDirect", "Exception " + e.toString());
+                            throw new RuntimeException(e);
                         }
-                    });
-                    thread.start();
-                    Log.d("WifiDirect", "onItemClick: ");
-                } catch (Exception e) {
-                    Log.d("WifiDirect", "onItemClick: "+e.toString());
-                    throw new RuntimeException(e);
-                }*/
+                    }
+                });
+                thread.start();
+                Log.d("WifiDirect", "onItemClick: ");
+            } catch (Exception e) {
+                Log.d("WifiDirect", "onItemClick: "+e.toString());
+                throw new RuntimeException(e);
+            }*/
                 Intent intent = new Intent(getActivity(),SendActivity.class);
                 File current = fileAdapter.files.get(position);
                 intent.putExtra("File",current.getAbsolutePath());
 
                 startActivity(intent);
 
-            }
+            });
         });
     }
 }

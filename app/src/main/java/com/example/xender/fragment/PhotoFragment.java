@@ -26,6 +26,7 @@ import com.example.xender.activity.ChooseActivity;
 import com.example.xender.adapter.GalleryAdapter;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -100,7 +101,6 @@ public class PhotoFragment extends Fragment {
         gallery_number = getActivity().findViewById(R.id.gallery_number);
         recyclerView = getActivity().findViewById(R.id.recylerview_gallery_images);
 
-
         //check permission
 
         if( (android.os.Build.VERSION.SDK_INT) <= 32)
@@ -140,7 +140,7 @@ public class PhotoFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         images = ImagesLoader.listOfImages(getActivity());
-        galleryAdapter = new GalleryAdapter(getActivity(), images, new GalleryAdapter.PhotoListenter() {
+        galleryAdapter = new GalleryAdapter(getActivity(), images, new GalleryAdapter.PhotoListener() {
             @Override
             public void onPhotoClick(String path) {
                 // do sth
@@ -148,7 +148,8 @@ public class PhotoFragment extends Fragment {
             }
         });
         recyclerView.setAdapter(galleryAdapter);
-        gallery_number.setText("Photos (" + images.size() + ")");
+        String number = String.format(Locale.ENGLISH, "Photos (%d)", images.size());
+        gallery_number.setText(number);
     }
 
 }

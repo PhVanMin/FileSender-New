@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <include
@@ -19,7 +19,7 @@
         app:itemTextAppearanceInactive="@style/MenuItemsInactive"
         app:itemTextAppearanceActive="@style/MenuItemsActive"
         app:layout_constraintTop_toBottomOf="@id/appbar_send"
-        app:menu="@menu/cloud_menu"
+        app:menu="@menu/history_menu"
         android:id="@+id/navigation_view"
         android:outlineAmbientShadowColor="@android:color/transparent"
         android:outlineSpotShadowColor="@android:color/transparent"
@@ -35,7 +35,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/navigation_view"
         app:layout_constraintVertical_bias="0.0"
-        app:navGraph="@navigation/nav_graph_cloud"
+        app:navGraph="@navigation/nav_graph_history"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="0dp"
         />

@@ -1,18 +1,20 @@
 package com.example.xender.fragment;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.example.xender.Loader.ContactsLoader;
 import com.example.xender.R;
 import com.example.xender.activity.ChooseActivity;
 import com.example.xender.adapter.ContactAdapter;
@@ -35,7 +37,7 @@ public class ContactFragment extends Fragment {
 
     private ListView listView;
     private ContactAdapter contactAdapter;
-
+    ContactsLoader loader;
     public ContactFragment() {
         // Required empty public constructor
     }
@@ -64,14 +66,13 @@ public class ContactFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-        }    }
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-
         return inflater.inflate(R.layout.fragment_contact, container, false);
 
     }
@@ -79,23 +80,30 @@ public class ContactFragment extends Fragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle saveInstanceState) {
-        Log.d("ActivitySend","ContactFragment ");
-      super.onActivityCreated(saveInstanceState);
+        super.onActivityCreated(saveInstanceState);
 
-        loadContacts();
+        if (ContextCompat.checkSelfPermission(
+                getActivity(), android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.READ_CONTACTS},
+                    ChooseActivity.READ_CONTACTS_PERMISSION);
+        } else {
+            loadContacts();
+        }
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         ChooseActivity sendActivity = (ChooseActivity) getActivity();
-        sendActivity.contactFragment= this;
-}
+        sendActivity.contactFragment = this;
+    }
 
-    public void loadContacts(){
+    public void loadContacts() {
+        loader = new ContactsLoader(getActivity());
+        loader.getContactList();
+        contactAdapter  = new ContactAdapter(getActivity(),R.layout.contact,loader.getContacts());
         listView = getActivity().findViewById(R.id.list_contacts);
-        ChooseActivity parent = (ChooseActivity) getActivity();
-        contactAdapter = (ContactAdapter) ((ChooseActivity) getActivity()).getContactAdapter();
         listView.setAdapter(contactAdapter);
     }
 }

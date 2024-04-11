@@ -20,10 +20,13 @@ import android.widget.TextView;
 import com.example.xender.R;
 import com.example.xender.activity.CloudActivity;
 import com.example.xender.activity.ConnectActivity;
+import com.example.xender.activity.HistoryActivity;
 import com.example.xender.activity.QRActivity;
 import com.example.xender.activity.ChooseActivity;
+import com.example.xender.activity.SendActivity;
 import com.example.xender.utils.StorageUtil;
 
+import java.util.Locale;
 
 
 /**
@@ -43,6 +46,7 @@ public class HomeFragment extends Fragment {
     private ImageButton qrBtn;
     private ImageButton connectBtn;
     private ImageButton cloudBtn;
+    private ImageButton historyBtn;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -90,16 +94,19 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sendBtn = getActivity().findViewById(R.id.send_btn);
-        sendBtn.setOnClickListener(v -> gotoSendActivity());
+        sendBtn.setOnClickListener(v -> goToActivity(ChooseActivity.class));
 
         qrBtn = getActivity().findViewById(R.id.qr_btn);
-        qrBtn.setOnClickListener(v -> gotoQRActivity());
+        qrBtn.setOnClickListener(v -> goToActivity(QRActivity.class));
 
         connectBtn = getActivity().findViewById(R.id.connect_btn);
-        connectBtn.setOnClickListener(v -> gotoConnectctivity());
+        connectBtn.setOnClickListener(v -> goToActivity(ConnectActivity.class));
 
         cloudBtn = getActivity().findViewById(R.id.cloud_btn);
-        cloudBtn.setOnClickListener(v -> gotoCloudActivity());
+        cloudBtn.setOnClickListener(v -> goToActivity(CloudActivity.class));
+
+        historyBtn = getActivity().findViewById(R.id.history_btn);
+        historyBtn.setOnClickListener(v -> goToActivity(HistoryActivity.class));
 
         storageInfoTextView = getActivity().findViewById(R.id.storageInfoTextView);
         totalFilesTextView = getActivity().findViewById(R.id.totalFiles);
@@ -108,30 +115,17 @@ public class HomeFragment extends Fragment {
         long gbMemoryAvailable = StorageUtil.getByteAvailable() / (1073741824);
         long gbMemorySize = StorageUtil.getByteMemorySize() / (1073741824);
 
-        totalFilesTextView.setText(Long.toString(files) + " files");
+        totalFilesTextView.setText(String.format(Locale.ENGLISH,"%d files", files));
         storageInfoTextView.setText(
-                String.valueOf(gbMemorySize - gbMemoryAvailable) + " GB of " +
-                        String.valueOf(gbMemorySize) + " GB");
+                String.format(Locale.ENGLISH, "%s GB of %s GB", gbMemorySize - gbMemoryAvailable, gbMemorySize));
 
         progressBar = getActivity().findViewById(R.id.homeProgressBar);
         progressBar.setMax((int) gbMemorySize);
         progressBar.setProgress((int) ((gbMemorySize - gbMemoryAvailable)));
     }
-    public void gotoSendActivity(){
-        Intent intent = new Intent(getActivity(), ChooseActivity.class);
-        startActivity(intent);
-    }
-    public void gotoQRActivity(){
-        Log.d("QRActivity", "gotoQRActivity: ");
-        Intent intent = new Intent(getActivity(), QRActivity.class);
-        startActivity(intent);
-    }
-    public void gotoConnectctivity(){
-        Intent intent = new Intent(getActivity(), ConnectActivity.class);
-        startActivity(intent);
-    }
-    public void gotoCloudActivity(){
-        Intent intent = new Intent(getActivity(), CloudActivity.class);
+
+    public void goToActivity(Class<?> cls) {
+        Intent intent = new Intent(getActivity(), cls);
         startActivity(intent);
     }
 }
