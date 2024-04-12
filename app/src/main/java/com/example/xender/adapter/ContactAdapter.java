@@ -43,7 +43,6 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View row ;
 
-
         row = inflater.inflate(R.layout.contact, null);
         TextView name = (TextView) row.findViewById(R.id.name_textview);
         TextView phone = (TextView) row.findViewById(R.id.phone_number_textview);

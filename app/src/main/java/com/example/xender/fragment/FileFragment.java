@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
@@ -22,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.xender.R;
 import com.example.xender.activity.ChooseActivity;
@@ -80,8 +80,6 @@ public class FileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
     @Override
@@ -90,48 +88,48 @@ public class FileFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_folder, container, false);
     }
-    @RequiresApi(api = Build.VERSION_CODES.R)
+
     @Override
     public void onActivityCreated(@Nullable Bundle saveInstanceState) {
-        Log.d("ActivitySend","FileFragment ");
-        loadFiles();
         super.onActivityCreated(saveInstanceState);
-
-
+        loadFiles();
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-         sendActivity = (ChooseActivity) getActivity();
+        sendActivity = (ChooseActivity) getActivity();
         sendActivity.fileFragment= this;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
     public void loadFiles(){
         listView = getActivity().findViewById(R.id.list_files);
-        ChooseActivity parent = (ChooseActivity) getActivity();
         StorageUtil.files.clear();
-        if (StorageUtil.files.size() == 0) {
-            StorageUtil.getAllDir(Environment.getExternalStorageDirectory(), StorageUtil.FILTER_BY_DOCUMENT);
-            StorageUtil.getAllDir(Environment.getStorageDirectory(), StorageUtil.FILTER_BY_DOCUMENT);
 
-        }
-        Log.d("File test",String.valueOf(StorageUtil.files.size()));
-        fileAdapter = new FileAdapter(getActivity(),R.layout.file,StorageUtil.files);
+        Thread scanFile = new Thread(() -> {
+            File root = Environment.getExternalStorageDirectory();
+            StorageUtil.getAllDir(root, StorageUtil.FILTER_BY_DOCUMENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                StorageUtil.getAllDir(Environment.getStorageDirectory(), StorageUtil.FILTER_BY_DOCUMENT);
+            }
 
-        listView.setAdapter(fileAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            updateList();
+        });
+        scanFile.start();
+    }
 
+    private void updateList() {
+        getActivity().runOnUiThread(() -> {
+            //fileAdapter.notifyDataSetChanged();
+
+            fileAdapter = new FileAdapter(getActivity(), R.layout.file, StorageUtil.files);
+            listView.setAdapter(fileAdapter);
+            listView.setOnItemClickListener((parent, view, position, id) -> {
                 Intent intent = new Intent(getActivity(),SendActivity.class);
                 File current = fileAdapter.files.get(position);
                 intent.putExtra("File",current.getAbsolutePath());
-
                 startActivity(intent);
-
-            }
+            });
         });
     }
 }

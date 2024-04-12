@@ -2,51 +2,29 @@ package com.example.xender.fragment;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothServerSocket;
-import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-
 import com.example.xender.Bluetooth.MyBluetooth;
 import com.example.xender.R;
 import com.example.xender.activity.QRActivity;
-import com.example.xender.wifi.MyWifi;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,33 +77,41 @@ public class BluetoothQrFragment extends Fragment {
         }
     }
 
-    public void generateQRCode(String qrcode){
+    public void generateQRCode(String qrcode) {
         try {
-            Log.d("Bluetooth device", "generateQRCode: "+qrcode);
+            Log.d("Bluetooth device", "generateQRCode: " + qrcode);
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-            BitMatrix bitMatrix =multiFormatWriter.encode(qrcode, BarcodeFormat.QR_CODE,250,250);
-            BarcodeEncoder barcodeEncoder=new BarcodeEncoder();
+            BitMatrix bitMatrix = multiFormatWriter.encode(qrcode, BarcodeFormat.QR_CODE, 250, 250);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             qr_code.setImageBitmap(bitmap);
-        } catch(Exception e){
+        } catch (Exception e) {
 
         }
     }
-    private  static  BluetoothAdapter bluetoothAdapter;
+
+    private static BluetoothAdapter bluetoothAdapter;
     private static final int REQUEST_BLUETOOTH_CONNECT_PERMISSION = 1;
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        qr_code= getActivity().findViewById(R.id.Qr_code1);
+        qr_code = getActivity().findViewById(R.id.Qr_code1);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_BLUETOOTH_CONNECT_PERMISSION);
+        } else {
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent bt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivity(bt);
+            }
+            MyBluetooth myBluetooth = new MyBluetooth();
+            generateQRCode(myBluetooth.addressMyBluetooth());
         }
-        MyBluetooth myBluetooth = new MyBluetooth();
-
-        generateQRCode(myBluetooth.addressMyBluetooth());
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -133,10 +119,11 @@ public class BluetoothQrFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_bluetooth_qr, container, false);
     }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         QRActivity qrActivity = (QRActivity) getActivity();
-        qrActivity.bluetoothQrFragment= this;
+        qrActivity.bluetoothQrFragment = this;
     }
 }

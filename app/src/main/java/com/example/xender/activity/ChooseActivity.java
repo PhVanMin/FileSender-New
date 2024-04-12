@@ -30,13 +30,7 @@ public class ChooseActivity extends AppCompatActivity {
     NavController navController;
     public static final int READ_CONTACTS_PERMISSION=1;
     public static final int READ_IMAGES_PERMISSION=2;
-    public static final int READ_STORAGE_PERMISSION = 3;
-    Adapter contactAdapter;
-
-
-    public Adapter getContactAdapter() {
-        return contactAdapter;
-    }
+    public static final int READ_FILES_PERMISSION=3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,22 +38,13 @@ public class ChooseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_choose);
         toolbar = findViewById(R.id.appbar_send);
         toolbar.setTitle("Chọn tập tin");
-        toolbar.isBackInvokedCallbackEnabled();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(v -> finish());
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         BottomNavigationView navigationView = findViewById(R.id.navigation_view);
         NavigationUI.setupWithNavController(navigationView,navController);
-        ContactsLoader loader = new ContactsLoader(this);
-        loader.getContactList();
-        contactAdapter  = new ContactAdapter(this,R.layout.contact,loader.getContacts());
-        contactFragment.loadContacts();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -76,6 +61,14 @@ public class ChooseActivity extends AppCompatActivity {
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 Toast.makeText(this,"Read external storage granted",Toast.LENGTH_SHORT).show();
                 contactFragment.loadContacts();
+            } else {
+                Toast.makeText(this,"Read external storage denied",Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if (requestCode == READ_FILES_PERMISSION){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this,"Read external storage granted",Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this,"Read external storage denied",Toast.LENGTH_SHORT).show();
             }

@@ -50,7 +50,7 @@ public class FileAdapter extends ArrayAdapter<File> {
     public static Map<String,Integer> extension = new HashMap<>();
 
 
-    public FileAdapter(@NonNull Context context, int resource, @NonNull ArrayList objects) {
+    public FileAdapter(@NonNull Context context, int resource, @NonNull ArrayList<File> objects) {
         super(context, resource, objects);
         this.context = context ;
         this.files= objects;
@@ -67,19 +67,21 @@ public class FileAdapter extends ArrayAdapter<File> {
         extension.put("m4a",MUSIC_IMAGE);
         extension.put("mp4",VIDEO_IMAGE);
     }
+
+    @NonNull
     public View getView(int position, View convertView, ViewGroup parent){
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View row ;
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View row = convertView;
+        if (row == null) {
+            row = inflater.inflate(R.layout.file, parent, false);
+        }
 
-        row = inflater.inflate(R.layout.file, null);
-        TextView path = (TextView) row.findViewById(R.id.path_textView);
-        TextView size = (TextView) row.findViewById(R.id.size_textView);
+        TextView path = row.findViewById(R.id.path_textView);
+        TextView size = row.findViewById(R.id.size_textView);
         File current = files.get(position);
-        ImageView imageView = (android.widget.ImageView) row.findViewById(R.id.file_imgView);
+        ImageView imageView = row.findViewById(R.id.file_imgView);
 
-        Log.d("adapter ",  (FilenameUtils.getExtension(current.getAbsolutePath())));
         int index = extension.get(FilenameUtils.getExtension(current.getAbsolutePath()));
-        Log.d("adapter ", String.valueOf(index));
         imageView.setImageResource(IMAGE_FILE[index]);
         path.setText(current.getName());
         size.setText(readableFileSize(current.length()));

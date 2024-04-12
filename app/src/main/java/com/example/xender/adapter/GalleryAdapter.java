@@ -18,12 +18,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     private Context context;
     private List<String> images;
-    protected PhotoListenter photoListenter;
+    protected PhotoListener photoListener;
 
-    public GalleryAdapter(Context context, List<String> images, PhotoListenter photoListenter) {
+    public GalleryAdapter(Context context, List<String> images, PhotoListener photoListener) {
         this.context = context;
         this.images = images;
-        this.photoListenter = photoListenter;
+        this.photoListener = photoListener;
     }
 
     @NonNull
@@ -35,12 +35,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String image = this.images.get(position);
+       String image = this.images.get(position);
        Glide.with(context).load(image).into(holder.image);
        holder.itemView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               photoListenter.onPhotoClick(image);
+               photoListener.onPhotoClick(image);
            }
        });
     }
@@ -58,7 +58,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             image = itemView.findViewById(R.id.image);
         }
     }
-    public interface PhotoListenter{
+    public interface PhotoListener {
         void onPhotoClick(String path);
     }
 }

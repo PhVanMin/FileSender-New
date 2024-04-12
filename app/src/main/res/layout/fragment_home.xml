@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="20dp"
     tools:context=".fragment.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -119,6 +118,7 @@
                         android:src="@drawable/send_svgrepo_com" />
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Send"
@@ -143,6 +143,7 @@
                         android:src="@drawable/qr_scan_svgrepo_com" />
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="QR"
@@ -167,6 +168,7 @@
                         android:src="@drawable/anchor_link_svgrepo_com" />
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Connect"
@@ -191,6 +193,7 @@
                         android:src="@drawable/cloud_svgrepo_com" />
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Upload"
@@ -215,6 +218,7 @@
                         android:src="@drawable/history_svgrepo_com" />
 
                     <TextView
+                        android:textColor="@color/black"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="History"
@@ -226,59 +230,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
                 android:text="Recent"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="vertical"-->
-<!--                android:padding="10dp">-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginHorizontal="2dp"-->
-<!--                    android:background="@drawable/file_background"-->
-<!--                    android:elevation="4dp"-->
-<!--                    android:paddingHorizontal="10dp"-->
-<!--                    android:paddingVertical="20dp">-->
-
-<!--                    <ImageView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:src="@drawable/doc_svgrepo_com" />-->
-
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="Text.pdf" />-->
-<!--                </LinearLayout>-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginHorizontal="2dp"-->
-<!--                    android:layout_marginVertical="10dp"-->
-<!--                    android:background="@drawable/file_background"-->
-<!--                    android:elevation="4dp"-->
-<!--                    android:paddingHorizontal="10dp"-->
-<!--                    android:paddingVertical="20dp">-->
-
-<!--                    <ImageView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:src="@drawable/doc_svgrepo_com" />-->
-
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="Text.pdf" />-->
-<!--                </LinearLayout>-->
-<!--            </LinearLayout>-->
         </LinearLayout>
     </ScrollView>
 

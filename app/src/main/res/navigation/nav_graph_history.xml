@@ -6,18 +6,18 @@
     android:id="@+id/nav_graph_qr">
     <fragment
         android:id="@+id/sentFragment"
-        android:name="com.example.xender.fragment.UploadFragment"
+        android:name="com.example.xender.fragment.SentFragment"
         tools:layout="@layout/fragment_list">
         <action
-            android:id="@+id/action_uploadFragment_to_downloadFragment"
-            app:destination="@id/downloadFragment" />
+            android:id="@+id/action_sentFragment_to_receiveFragment"
+            app:destination="@id/receiveFragment" />
     </fragment>
     <fragment
-        android:name="com.example.xender.fragment.DownloadFragment"
-        android:id="@+id/downloadFragment"
-        tools:layout="@layout/fragment_download">
+        android:name="com.example.xender.fragment.ReceiveFragment"
+        android:id="@+id/receiveFragment"
+        tools:layout="@layout/fragment_list">
         <action
-            android:id="@+id/action_downloadFragment_to_uploadFragment"
+            android:id="@+id/action_receiveFragment_to_sentFragment"
             app:destination="@id/sentFragment" />
     </fragment>
 </navigation>

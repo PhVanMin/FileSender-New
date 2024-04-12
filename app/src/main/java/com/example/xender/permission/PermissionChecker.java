@@ -12,24 +12,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.xender.activity.ChooseActivity;
+import com.example.xender.activity.MainActivity;
 import com.example.xender.activity.QRActivity;
 
 public class PermissionChecker {
     static String TAG="PermissionChecker";
-    public static boolean checkReadExternalStorage(Activity activity){
-        if( (android.os.Build.VERSION.SDK_INT) <= 32) {
-            if (ContextCompat.checkSelfPermission(activity,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(activity, new String[]
-                        {Manifest.permission.READ_EXTERNAL_STORAGE}, ChooseActivity.READ_STORAGE_PERMISSION);
-                Log.d(TAG, "checkReadExternalStorage: FALSE");
-                return false;
-            }
-        }
-        Log.d(TAG, "checkReadExternalStorage: TRUE");
-        return  true;
-    };
     public static boolean checkReadContactPermission(Activity activity){
         if( (android.os.Build.VERSION.SDK_INT) <= 32) {
             if (ContextCompat.checkSelfPermission(activity,

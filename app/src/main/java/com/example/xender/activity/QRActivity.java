@@ -59,7 +59,6 @@ public class QRActivity extends AppCompatActivity {
     public static int ACCESS_FINE_LOCATION = 104;
 
     @SuppressLint("MissingPermission")
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,16 +66,10 @@ public class QRActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.appbar_send);
         toolbar.setTitle("Kết nối QR");
-        toolbar.isBackInvokedCallbackEnabled();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         BottomNavigationView navigationView = findViewById(R.id.navigation_view);
@@ -103,7 +96,7 @@ public class QRActivity extends AppCompatActivity {
             MyWifi.wifiManager.setWifiEnabled(true);
 
             if (PermissionChecker.CheckFineLocation(this)) {
-                if(PermissionChecker.checkWriteExternalStorage(this));
+
             }
         };
 
@@ -118,7 +111,17 @@ public class QRActivity extends AppCompatActivity {
         wifiQrFragment.generateQRCode(MyWifi.broadcastReceiver.getDeviceAddress());
 
 
+        MyWifi.wifiP2pManager.createGroup(MyWifi.channel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                // Device is ready to accept incoming connections from peers.
+            }
 
+            @Override
+            public void onFailure(int reason) {
+
+            }
+        });
         MyWifi.wifiP2pManager.discoverPeers(MyWifi.channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -133,13 +136,11 @@ public class QRActivity extends AppCompatActivity {
 
     }
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
 
-       registerReceiver(MyWifi.broadcastReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+        registerReceiver(MyWifi.broadcastReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
         MyApplication.setActivity(this);
     }
 
