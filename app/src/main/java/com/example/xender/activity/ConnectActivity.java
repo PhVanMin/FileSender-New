@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -27,6 +28,7 @@ import com.example.xender.R;
 import com.example.xender.handler.Client;
 import com.example.xender.handler.Server;
 import com.example.xender.wifi.MyWifi;
+import com.example.xender.wifi.WifiDirectBroadcastReceiver;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -38,6 +40,9 @@ public class ConnectActivity extends AppCompatActivity {
     Button scan_btn;
     Toolbar toolbar;
     private IntentFilter intentFilter;
+
+    static boolean isConnect = false;
+
 //    WifiP2pManager manager;
 //    WifiP2pManager.Channel channel;
 
@@ -69,6 +74,8 @@ public class ConnectActivity extends AppCompatActivity {
             intentIntegrator.setCaptureActivity(CaptureAct.class);
             intentIntegrator.initiateScan();
         });
+
+
         intentFilter = new IntentFilter();
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
@@ -85,7 +92,7 @@ public class ConnectActivity extends AppCompatActivity {
             if (contents != null) {
                 Log.d("QR Scanner", contents);
                 connect(contents);
-               // connectBluetooth(contents);
+
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -109,30 +116,12 @@ public class ConnectActivity extends AppCompatActivity {
     }
     @Override
     protected void onResume() {
-
         super.onResume();
         MyApplication.setActivity(this);
+        MyWifi.wifiP2pManager.requestConnectionInfo(MyWifi.channel, MyWifi.connectionInfoListener);
     }
-   public static WifiP2pManager.ConnectionInfoListener connectionInfoListener=new WifiP2pManager.ConnectionInfoListener() {
-        @Override
-        public void onConnectionInfoAvailable(WifiP2pInfo info) {
-            final InetAddress groupOwnerAddress = info.groupOwnerAddress;
-            if(info.groupFormed && info.isGroupOwner){
-                Log.d("wifiDirect","is server");
-                MyWifi.isServer= true;
-                Server server = Server.getServer();
-                MyWifi.socket = server.getSocket();
-                if(!server.isAlive())
-                    server.start();
-            } else if (info.groupFormed){
-                Log.d("wifiDirect","is client");
-                Client client = new Client(groupOwnerAddress);
-                MyWifi.socket = client.getSocket();
-                client.start();
 
-            }
-        }
-    };
+
     public void connect(String address) {
         Log.d("WifiDirect", address);
         WifiP2pConfig wifiP2pConfig = new WifiP2pConfig();
@@ -155,12 +144,9 @@ public class ConnectActivity extends AppCompatActivity {
         });
         MyWifi.wifiP2pManager.connect(MyWifi.channel, wifiP2pConfig, new WifiP2pManager.ActionListener() {
             @Override
-            public void onSuccess() {
-
+            public synchronized  void onSuccess() {
                 Log.d("WifiDirect", "success");
-
-                MyWifi.wifiP2pManager.requestConnectionInfo(MyWifi.channel,connectionInfoListener);
-
+                MyWifi.wifiP2pManager.requestConnectionInfo(MyWifi.channel, MyWifi.connectionInfoListener);
             }
 
             @Override
@@ -181,13 +167,11 @@ public class ConnectActivity extends AppCompatActivity {
         });
     }
 
-        private BluetoothDevice bluetoothDevice;
+    private BluetoothDevice bluetoothDevice;
 
-        public void connectBluetooth(String uuid){
-            Log.d("Bluetooth", uuid);
-            BluetoothManager bluetoothManager = (BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE);
-
-
+    public void connectBluetooth(String uuid){
+        Log.d("Bluetooth", uuid);
+        BluetoothManager bluetoothManager = (BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothBroadcastReceiver bluetoothBroadcastReceiver = new BluetoothBroadcastReceiver(this, bluetoothManager, uuid);
     }
 

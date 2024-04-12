@@ -136,8 +136,9 @@ public class SendReceiveHandler extends Thread{
                     }
 
                 } catch (IOException e) {
-                    Log.d("WifiDirect", e.toString());
 
+                    Log.d("WifiDirect", e.toString());
+                    break;
                 }
 
             }

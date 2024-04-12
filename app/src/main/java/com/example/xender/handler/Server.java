@@ -36,7 +36,6 @@ public class Server extends Thread{
     @Override
     public void run(){
         try {
-
                 Log.d("WifiDirect", "Sever start");
                 serverSocket = new ServerSocket(8888);
                 while(true) {

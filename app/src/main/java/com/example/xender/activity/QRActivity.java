@@ -93,11 +93,12 @@ public class QRActivity extends AppCompatActivity {
         if (MyWifi.channel == null)
             MyWifi.channel = MyWifi.wifiP2pManager.initialize(this, getMainLooper(), null);
 
-        qr = findViewById(R.id.Qr_code);
+
 
         if (MyWifi.broadcastReceiver == null)
             MyWifi.broadcastReceiver = new WifiDirectBroadcastReceiver(MyWifi.wifiP2pManager, MyWifi.channel, this);
 
+        qr = findViewById(R.id.Qr_code);
         if (PermissionChecker.checkAccessWifiState(this) ){
             MyWifi.wifiManager.setWifiEnabled(true);
 
@@ -205,11 +206,10 @@ public class QRActivity extends AppCompatActivity {
 
             } else if (info.groupFormed){
                 Log.d("wifiDirect","is client");
-                client = new Client(groupOwnerAddress);
-
-                client.start();
-
-
+                if(MyWifi.socket == null) {
+                    client = new Client(groupOwnerAddress);
+                    client.start();
+                }
             }
         }
     };
