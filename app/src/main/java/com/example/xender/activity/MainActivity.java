@@ -74,7 +74,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public HomeFragment homeFragment = null;
+    @Override
+    protected void onResume() {
 
+        super.onResume();
+        MyApplication.setActivity(this);
+    }
 
 }// class
 

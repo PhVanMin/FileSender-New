@@ -27,6 +27,8 @@ import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
 import com.example.xender.handler.Client;
 import com.example.xender.handler.Server;
+import com.example.xender.service.WifiDirectConnectionService;
+import com.example.xender.service.WifiDirectHandlerService;
 import com.example.xender.wifi.MyWifi;
 import com.example.xender.wifi.WifiDirectBroadcastReceiver;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -57,11 +59,6 @@ public class ConnectActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
-        if(MyWifi.wifiP2pManager == null)
-            MyWifi.wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-
-        if (MyWifi.channel == null)
-            MyWifi.channel = MyWifi.wifiP2pManager.initialize(this, getMainLooper(), null);
 
 
 
@@ -76,11 +73,10 @@ public class ConnectActivity extends AppCompatActivity {
         });
 
 
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+        if (!WifiDirectHandlerService.isRunning ) {
+            Intent intent = new Intent(this, WifiDirectHandlerService.class);
+            startService(intent);
+        }
 
     }
 
@@ -91,7 +87,9 @@ public class ConnectActivity extends AppCompatActivity {
             String contents = intentResult.getContents();
             if (contents != null) {
                 Log.d("QR Scanner", contents);
-                connect(contents);
+                Intent intent = new Intent(this, WifiDirectConnectionService.class);
+                intent.putExtra("address",contents);
+                startService(intent);
 
             }
         } else {
@@ -118,7 +116,7 @@ public class ConnectActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         MyApplication.setActivity(this);
-        MyWifi.wifiP2pManager.requestConnectionInfo(MyWifi.channel, MyWifi.connectionInfoListener);
+        //MyWifi.wifiP2pManager.requestConnectionInfo(MyWifi.channel, MyWifi.connectionInfoListener);
     }
 
 
@@ -131,22 +129,22 @@ public class ConnectActivity extends AppCompatActivity {
                     {Manifest.permission.ACCESS_FINE_LOCATION}, MY_READ_PERMISSION_CODE);
             Log.d("WifiDirect", "nooo");
         }
-        MyWifi.wifiP2pManager.discoverPeers(MyWifi.channel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                Log.d("WifiDirect","discover successs");
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                Log.d("WifiDirect","discover fail");
-            }
-        });
+//        MyWifi.wifiP2pManager.discoverPeers(MyWifi.channel, new WifiP2pManager.ActionListener() {
+//            @Override
+//            public void onSuccess() {
+//                Log.d("WifiDirect","discover successs");
+//            }
+//
+//            @Override
+//            public void onFailure(int reason) {
+//                Log.d("WifiDirect","discover fail");
+//            }
+//        });
         MyWifi.wifiP2pManager.connect(MyWifi.channel, wifiP2pConfig, new WifiP2pManager.ActionListener() {
             @Override
             public synchronized  void onSuccess() {
                 Log.d("WifiDirect", "success");
-                MyWifi.wifiP2pManager.requestConnectionInfo(MyWifi.channel, MyWifi.connectionInfoListener);
+               // MyWifi.wifiP2pManager.requestConnectionInfo(MyWifi.channel, MyWifi.connectionInfoListener);
             }
 
             @Override

@@ -154,12 +154,13 @@ public class HomeFragment extends Fragment {
 
     public void setProgressBar() {
         long files = Environment.getExternalStorageDirectory().listFiles().length;
-        long gbMemoryAvailable = StorageUtil.getByteAvailable() / (1073741824);
-        long gbMemorySize = StorageUtil.getByteMemorySize() / (1073741824);
+        double gbMemoryAvailable =  StorageUtil.getByteAvailable() / (1073741824);
+        double gbMemorySize =  StorageUtil.getByteMemorySize() / (1073741824);
 
         totalFilesTextView.setText(String.format(Locale.ENGLISH,"%d files", files));
         storageInfoTextView.setText(
-                String.format(Locale.ENGLISH, "%s GB of %s GB", gbMemorySize - gbMemoryAvailable, gbMemorySize));
+                String.format(Locale.ENGLISH, "%s GB of %s GB",
+                        Math.round(gbMemorySize) ,Math.round(gbMemorySize)+Math.round( gbMemoryAvailable)));
 
         progressBar = getActivity().findViewById(R.id.homeProgressBar);
         progressBar.setMax((int) gbMemorySize);

@@ -22,8 +22,10 @@ public class MyWifi {
     public static WifiManager wifiManager;
     public static WifiP2pManager.Channel channel;
     public static WifiDirectBroadcastReceiver broadcastReceiver;
+    public static BroadcastReceiver myBroadcastReceiver;
     public static boolean isServer = false;
     public static Socket socket = null;
+    public static String myWifiAddress;
 
     public static void sendFile(File current) {
         try {
@@ -65,9 +67,9 @@ public class MyWifi {
                         server.start();
                 } else if (info.groupFormed) {
                     Log.d("wifiDirect", "is client");
-                    Client client = new Client(groupOwnerAddress);
-                    if (MyWifi.socket == null)
-                    {
+
+                    if (MyWifi.socket == null) {
+                        Client client = new Client(groupOwnerAddress);
                         MyWifi.socket = client.getSocket();
                         client.start();
                     }

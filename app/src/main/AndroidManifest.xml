@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-
     <permission
         android:name="android.Manifest.permission.#LOCAL_MAC_ADDRESS"
         tools:ignore="ReservedSystemPermission" />
@@ -101,6 +100,9 @@
         <activity
             android:name=".activity.HistoryActivity"
             android:exported="false" />
+        <service android:name=".service.WifiDirectHandlerService" />
+        <service android:name=".service.WifiDirectConnectionService"/>
+        <receiver android:name=".wifi.MyBroadcastReceiver"/>
 
     </application>
 

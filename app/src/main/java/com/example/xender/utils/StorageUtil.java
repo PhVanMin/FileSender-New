@@ -39,7 +39,7 @@ public class StorageUtil {
     }
 
     public static long getByteMemorySize() {
-        StatFs stat = new StatFs(Environment.getDataDirectory().getPath());
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
         long blockSize = stat.getBlockSizeLong();
         long totalBlocks = stat.getBlockCountLong();
 

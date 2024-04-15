@@ -57,18 +57,20 @@ public class WifiDirectBroadcastReceiver extends BroadcastReceiver {
 
 
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-            Log.d("Wifi ", "changed action peers");
 
-        } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
+            Log.d("Wifi ", "changed action peers");
+            //wifiP2pManager.requestConnectionInfo(channel,activity.connectionInfoListener);
+        }
+        else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
             Log.d("Wifi device", "changed action connection");
             if(wifiP2pManager == null){
                 return ;
             }
 
 
-            NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
-
-            wifiP2pManager.requestConnectionInfo(channel,activity.connectionInfoListener);
+//            NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+//            if(networkInfo.isConnected())
+//                wifiP2pManager.requestConnectionInfo(channel,activity.connectionInfoListener);
 
 
             // Respond to new connection or disconnections
