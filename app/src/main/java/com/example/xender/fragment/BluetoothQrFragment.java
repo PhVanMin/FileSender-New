@@ -98,17 +98,14 @@ public class BluetoothQrFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         qr_code = getActivity().findViewById(R.id.Qr_code1);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_BLUETOOTH_CONNECT_PERMISSION);
-        } else {
-            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent bt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivity(bt);
-            }
-            MyBluetooth myBluetooth = new MyBluetooth();
-            generateQRCode(myBluetooth.addressMyBluetooth());
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent bt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivity(bt);
         }
+        MyBluetooth myBluetooth = new MyBluetooth();
+        generateQRCode(myBluetooth.getAddress());
+        myBluetooth.startServer();
 
     }
 

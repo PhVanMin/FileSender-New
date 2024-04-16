@@ -8,38 +8,33 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
-import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
-import com.example.xender.Bluetooth.BluetoothBroadcastReceiver;
+
+import com.example.xender.Bluetooth.ConnectQR;
 import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
-import com.example.xender.handler.Client;
-import com.example.xender.handler.Server;
 import com.example.xender.service.WifiDirectConnectionService;
 import com.example.xender.service.WifiDirectHandlerService;
 import com.example.xender.wifi.MyWifi;
-import com.example.xender.wifi.WifiDirectBroadcastReceiver;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.net.InetAddress;
-
 public class ConnectActivity extends AppCompatActivity {
-
+    private static final int SCAN_WIFI_REQUEST_CODE = 1;
+    private static final int SCAN_BLUETOOTH_REQUEST_CODE = 2;
     private static final int MY_READ_PERMISSION_CODE = 1;
     Button scan_btn;
+    Button scan_btn_BL;
     Toolbar toolbar;
     private IntentFilter intentFilter;
 
@@ -69,9 +64,20 @@ public class ConnectActivity extends AppCompatActivity {
             intentIntegrator.setPrompt("Scan a QR code");
             intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
             intentIntegrator.setCaptureActivity(CaptureAct.class);
+            intentIntegrator.setRequestCode(SCAN_WIFI_REQUEST_CODE);
             intentIntegrator.initiateScan();
         });
 
+        scan_btn_BL = findViewById(R.id.scan_btn_2);
+        scan_btn_BL.setOnClickListener(v -> {
+            IntentIntegrator intentIntegrator = new IntentIntegrator(ConnectActivity.this);
+            intentIntegrator.setOrientationLocked(true);
+            intentIntegrator.setPrompt("Scan a QR code");
+            intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+            intentIntegrator.setCaptureActivity(CaptureAct.class);
+            intentIntegrator.setRequestCode(SCAN_BLUETOOTH_REQUEST_CODE); // Đặt request code cho nút quét Bluetooth
+            intentIntegrator.initiateScan();
+        });
 
         if (!WifiDirectHandlerService.isRunning ) {
             Intent intent = new Intent(this, WifiDirectHandlerService.class);
@@ -83,19 +89,37 @@ public class ConnectActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (intentResult != null) {
-            String contents = intentResult.getContents();
-            if (contents != null) {
-                Log.d("QR Scanner", contents);
-                Intent intent = new Intent(this, WifiDirectConnectionService.class);
-                intent.putExtra("address",contents);
-                startService(intent);
+        Log.d("QR Scanner", String.valueOf(requestCode));
+        if (requestCode == SCAN_WIFI_REQUEST_CODE){
+            Log.d("QR Scanner", String.valueOf(requestCode));
+            if (intentResult != null) {
+                String contents = intentResult.getContents();
+                if (contents != null) {
+                    Log.d("QR Scanner", contents);
+                    Intent intent = new Intent(this, WifiDirectConnectionService.class);
+                    intent.putExtra("address",contents);
+                    startService(intent);
 
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
         }
+        else if (requestCode == SCAN_BLUETOOTH_REQUEST_CODE){
+            if (intentResult != null) {
+                String contents = intentResult.getContents();
+                if (contents != null) {
+                    Log.d("QR Scanner", contents);
+                    ConnectQR connectQR = new ConnectQR(this, contents);
 
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+        else{
+            return;
+        }
     }
 
 
@@ -129,6 +153,7 @@ public class ConnectActivity extends AppCompatActivity {
                     {Manifest.permission.ACCESS_FINE_LOCATION}, MY_READ_PERMISSION_CODE);
             Log.d("WifiDirect", "nooo");
         }
+
 //        MyWifi.wifiP2pManager.discoverPeers(MyWifi.channel, new WifiP2pManager.ActionListener() {
 //            @Override
 //            public void onSuccess() {
@@ -165,12 +190,6 @@ public class ConnectActivity extends AppCompatActivity {
         });
     }
 
-    private BluetoothDevice bluetoothDevice;
 
-    public void connectBluetooth(String uuid){
-        Log.d("Bluetooth", uuid);
-        BluetoothManager bluetoothManager = (BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothBroadcastReceiver bluetoothBroadcastReceiver = new BluetoothBroadcastReceiver(this, bluetoothManager, uuid);
-    }
 
 }

@@ -11,7 +11,7 @@
     <permission
         android:name="android.Manifest.permission.#LOCAL_MAC_ADDRESS"
         tools:ignore="ReservedSystemPermission" />
-    <permission android:name="Manifest.permission.ACCESS_FINE_LOCATION" />
+    <permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -102,7 +102,11 @@
             android:exported="false" />
         <service android:name=".service.WifiDirectHandlerService" />
         <service android:name=".service.WifiDirectConnectionService"/>
-        <receiver android:name=".wifi.MyBroadcastReceiver"/>
+        <receiver android:name=".wifi.MyBroadcastReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.bluetooth.device.action.FOUND" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
