@@ -3,11 +3,25 @@ package com.example.xender.model;
 import java.sql.Timestamp;
 
 public class FileSend {
+
+    public FileSend() {
+    }
+
+    public FileSend(String fileName, Timestamp time, String filePath, String receiveAddress, boolean isSend) {
+        this.fileName = fileName;
+        this.time = time;
+        this.filePath = filePath;
+        this.receiveAddress = receiveAddress;
+        this.isSend = isSend;
+    }
+
+    private boolean isSend ;
+
     private String fileName;
     private Timestamp time;
     private String filePath;
 
-    private String ReceiveAddress;
+    private String receiveAddress;
 
     public String getFileName() {
         return fileName;
@@ -34,10 +48,10 @@ public class FileSend {
     }
 
     public String getReceiveAddress() {
-        return ReceiveAddress;
+        return receiveAddress;
     }
 
     public void setReceiveAddress(String receiveAddress) {
-        ReceiveAddress = receiveAddress;
+        this.receiveAddress = receiveAddress;
     }
 }

@@ -10,6 +10,9 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.xender.handler.SendReceiveHandler;
+import com.example.xender.wifi.MyWifi;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +27,7 @@ public class ConnectQR {
 
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothDevice device;
+    private BluetoothBroadCast bluetoothBroadCast;
 
     public ConnectQR(Context context, String address) {
         Log.d(TAG, "SCAN " + address);
@@ -84,31 +88,36 @@ public class ConnectQR {
             return null;
         }
         Log.e(TAG, "Broadcast start");
-        BluetoothBroadCast bluetoothBroadCast = new BluetoothBroadCast();
+         bluetoothBroadCast = new BluetoothBroadCast();
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 
         context.registerReceiver(bluetoothBroadCast, filter);
         bluetoothAdapter.startDiscovery();
 
-        try {
-            Thread.sleep(60000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        int NUM = 10;
+        int count = 0 ;
 
-        context.unregisterReceiver(bluetoothBroadCast);
+        while(true && count < NUM){
+          //  context.registerReceiver(bluetoothBroadCast, filter);
+            count++;
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+           // context.unregisterReceiver(bluetoothBroadCast);
 
-        List<BluetoothDevice> bluetoothDevices = bluetoothBroadCast.getBluetoothDevices();
-        for (BluetoothDevice device : bluetoothDevices) {
-            Log.d(TAG, "Found device: " + device.getName() + " - " + device.getAddress());
-            if(device.getName() != null)
-            {
-                if (device.getName().equals(name)) {
-                    Log.d(TAG, "Found target device: " + device.getName() + " - " + device.getAddress());
-                    return device;
+            List<BluetoothDevice> bluetoothDevices = bluetoothBroadCast.getBluetoothDevices();
+            for (BluetoothDevice device : bluetoothDevices) {
+                Log.d(TAG, "Found device: " + device.getName() + " - " + device.getAddress());
+                if(device.getName() != null)
+                {
+                    if (device.getName().equals(name)) {
+                        Log.d(TAG, "Found target device: " + device.getName() + " - " + device.getAddress());
+                        return device;
+                    }
                 }
             }
-
         }
         return null;
     }
@@ -122,6 +131,7 @@ public class ConnectQR {
             Log.d(TAG, "Connect thread " + d.getName());
             BluetoothSocket tmp = null;
             mmDevice = d;
+
             try {
                 tmp = d.createRfcommSocketToServiceRecord(MY_UUID);
             } catch (IOException e) {
@@ -134,6 +144,9 @@ public class ConnectQR {
             try {
                 mmSocket.connect();
                 Log.d(TAG, "Connected successfully!");
+                SendReceiveHandler handler =new SendReceiveHandler(mmSocket);
+                MyWifi.bluetoothSocket = mmSocket;
+                handler.start();
             } catch (IOException connectException) {
                 connectException.printStackTrace();
             }

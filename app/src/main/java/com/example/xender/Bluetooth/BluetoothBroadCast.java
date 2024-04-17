@@ -20,8 +20,11 @@ public class BluetoothBroadCast extends BroadcastReceiver {
         String action = intent.getAction();
         if (BluetoothDevice.ACTION_FOUND.equals(action)) {
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-            bluetoothDevices.add(device);
-            Log.d("BluetoothBroadCast", "Found device: " + device.getName() + " - " + device.getAddress());
+            if(device.getName() != null)
+            { bluetoothDevices.add(device);
+                Log.d("BluetoothBroadCast", "Found device: " + device.getName() + " - " + device.getAddress());
+            }
+
         }
     }
 

@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import com.example.xender.handler.SendReceiveHandler;
+import com.example.xender.wifi.MyWifi;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -36,6 +37,7 @@ public class MyBluetooth {
         private AcceptThread() {
             try {
                 serverSocket = bluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord(NAME, MY_UUID);
+
             } catch (IOException e) {
                 Log.e(TAG, "Socket's listen() method failed", e);
             }
@@ -52,14 +54,13 @@ public class MyBluetooth {
                     break;
                 }
                 if (socket != null) {
-                    try {
-                        Log.d(TAG, "Socket's accept() Success");
+                    Log.d(TAG, "Socket's accept() Success");
                         /*SendReceiveHandler sendReceiveHandler = new SendReceiveHandler(new Socket());
                         sendReceiveHandler.start();*/
-                        socket.close();
-                    } catch (IOException e) {
-                        Log.e(TAG, "Could not close the connected socket", e);
-                    }
+                    MyWifi.bluetoothSocket = socket;
+                    SendReceiveHandler handler =new SendReceiveHandler(socket);
+                    handler.start();
+                    //socket.close();
                 }
             }
         }

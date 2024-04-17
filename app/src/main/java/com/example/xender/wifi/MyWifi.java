@@ -1,5 +1,6 @@
 package com.example.xender.wifi;
 
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pInfo;
@@ -23,6 +24,7 @@ public class MyWifi {
     public static WifiP2pManager.Channel channel;
     public static WifiDirectBroadcastReceiver broadcastReceiver;
     public static BroadcastReceiver myBroadcastReceiver;
+    public static BluetoothSocket bluetoothSocket = null;
     public static boolean isServer = false;
     public static Socket socket = null;
     public static String myWifiAddress;
@@ -52,11 +54,13 @@ public class MyWifi {
             throw new RuntimeException(e);
         }
     }
-        public static WifiP2pManager.ConnectionInfoListener connectionInfoListener=new WifiP2pManager.ConnectionInfoListener() {
+        public static WifiP2pManager.ConnectionInfoListener connectionInfoListener
+                = new WifiP2pManager.ConnectionInfoListener() {
             @Override
             public synchronized void onConnectionInfoAvailable(WifiP2pInfo info) {
                 Log.d("wifiDirect","connection Available");
                 final InetAddress groupOwnerAddress = info.groupOwnerAddress;
+
             //    Log.d("wifiDirect", groupOwnerAddress.toString());
                 if (info.groupFormed && info.isGroupOwner) {
                     Log.d("wifiDirect", "is server");

@@ -8,7 +8,6 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.example.xender.Dialog.MyApplication;
-import com.example.xender.wifi.MyWifi;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -30,9 +29,9 @@ public class Receiver {
     private long fileLength;
     private String fileName;
 
-    public Receiver() throws IOException {
-        inputStream= MyWifi.socket.getInputStream();
-        outputStream= MyWifi.socket.getOutputStream();
+    public Receiver(InputStream _inputStream, OutputStream _outputStream) throws IOException {
+        inputStream= _inputStream;
+        outputStream= _outputStream;
        bis = new BufferedInputStream(inputStream);
        dis = new DataInputStream(bis);
     }

@@ -1,6 +1,7 @@
 package com.example.xender.handler;
 
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
@@ -28,6 +29,7 @@ public class SendReceiveHandler extends Thread{
     public static boolean isAccept = false;
     public static boolean isFinish = false;
     private Socket socket;
+    private BluetoothSocket bluetoothSocket;
     private InputStream inputStream;
     private OutputStream outputStream;
     private static String EOF_STRING = "EOFFFFFFF!";
@@ -42,6 +44,16 @@ public class SendReceiveHandler extends Thread{
         }
     }
 
+    public SendReceiveHandler(BluetoothSocket skt){
+            bluetoothSocket=skt;
+        try {
+            inputStream= skt.getInputStream();
+            outputStream= skt.getOutputStream();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     //receive
     @Override
@@ -53,7 +65,7 @@ public class SendReceiveHandler extends Thread{
             @Override
             public void run() {
                 AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
-                b.setTitle("Connection Wifidirect");
+                b.setTitle("Connection");
                 b.setMessage("Successfully!");
                 AlertDialog al = b.create();
                 al.show();
@@ -63,8 +75,9 @@ public class SendReceiveHandler extends Thread{
 
         try {
 
-            Receiver  receiver = new Receiver();
-            while(socket!= null && !socket.isClosed()){
+            Receiver  receiver = new Receiver(inputStream,outputStream);
+
+            while( (socket!= null && !socket.isClosed()) || (bluetoothSocket!=null && bluetoothSocket.isConnected())){
                 receiver.ShowCheckDialog();
             }
 

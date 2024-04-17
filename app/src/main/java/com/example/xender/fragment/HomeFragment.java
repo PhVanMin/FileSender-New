@@ -137,6 +137,8 @@ public class HomeFragment extends Fragment {
         } else {
             setProgressBar();
         }
+
+        PermissionChecker.checkWriteExternalStorage(getActivity());
     }
 
     public void goToActivity(Class<?> cls) {

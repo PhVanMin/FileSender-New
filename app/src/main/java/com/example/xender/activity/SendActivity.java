@@ -189,19 +189,26 @@ public class SendActivity extends AppCompatActivity {
 
                 try {
                     byte[] bytes = Files.readAllBytes(Paths.get(current.getAbsolutePath()));
-                    Log.d("WifiDirect", "onItemClick: "+ MyWifi.socket.toString());
+                //    Log.d("WifiDirect", "onItemClick: "+ MyWifi.socket.toString());
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            SendReceiveHandler handler = new SendReceiveHandler(MyWifi.socket);
-                            try {
+                            SendReceiveHandler handler =null;
 
-                                handler.writeLong(current.length());
-                                handler.writeUTF(current.getName());
-                                handler.write(bytes);
-                            } catch (IOException e) {
-                                Log.d("WifiDirect", "Exception " + e.toString());
-                                throw new RuntimeException(e);
+                            if (MyWifi.socket != null)
+                                handler = new SendReceiveHandler(MyWifi.socket);
+                           else if (MyWifi.bluetoothSocket != null)
+                                handler = new SendReceiveHandler(MyWifi.bluetoothSocket);
+
+                            if (handler != null) {
+                                try {
+                                    handler.writeLong(current.length());
+                                    handler.writeUTF(current.getName());
+                                    handler.write(bytes);
+                                } catch (IOException e) {
+                                    Log.d("WifiDirect", "Exception " + e.toString());
+                                    throw new RuntimeException(e);
+                                }
                             }
                         }
                     });

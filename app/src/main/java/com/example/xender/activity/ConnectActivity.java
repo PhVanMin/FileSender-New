@@ -30,13 +30,14 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 public class ConnectActivity extends AppCompatActivity {
-    private static final int SCAN_WIFI_REQUEST_CODE = 1;
-    private static final int SCAN_BLUETOOTH_REQUEST_CODE = 2;
+    private static final int SCAN_WIFI_REQUEST_CODE = 100;
+    private static final int SCAN_BLUETOOTH_REQUEST_CODE = 200;
     private static final int MY_READ_PERMISSION_CODE = 1;
     Button scan_btn;
     Button scan_btn_BL;
     Toolbar toolbar;
     private IntentFilter intentFilter;
+    private static int request;
 
     static boolean isConnect = false;
 
@@ -64,7 +65,8 @@ public class ConnectActivity extends AppCompatActivity {
             intentIntegrator.setPrompt("Scan a QR code");
             intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
             intentIntegrator.setCaptureActivity(CaptureAct.class);
-            intentIntegrator.setRequestCode(SCAN_WIFI_REQUEST_CODE);
+           // intentIntegrator.setRequestCode(SCAN_WIFI_REQUEST_CODE);
+            request = SCAN_WIFI_REQUEST_CODE;
             intentIntegrator.initiateScan();
         });
 
@@ -75,7 +77,8 @@ public class ConnectActivity extends AppCompatActivity {
             intentIntegrator.setPrompt("Scan a QR code");
             intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
             intentIntegrator.setCaptureActivity(CaptureAct.class);
-            intentIntegrator.setRequestCode(SCAN_BLUETOOTH_REQUEST_CODE); // Đặt request code cho nút quét Bluetooth
+            request = SCAN_BLUETOOTH_REQUEST_CODE;
+          //  intentIntegrator.setRequestCode(SCAN_BLUETOOTH_REQUEST_CODE); // Đặt request code cho nút quét Bluetooth
             intentIntegrator.initiateScan();
         });
 
@@ -90,10 +93,11 @@ public class ConnectActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         Log.d("QR Scanner", String.valueOf(requestCode));
-        if (requestCode == SCAN_WIFI_REQUEST_CODE){
+        if (request == SCAN_WIFI_REQUEST_CODE){
             Log.d("QR Scanner", String.valueOf(requestCode));
             if (intentResult != null) {
                 String contents = intentResult.getContents();
+                Log.d("QR Scanner", contents);
                 if (contents != null) {
                     Log.d("QR Scanner", contents);
                     Intent intent = new Intent(this, WifiDirectConnectionService.class);
@@ -105,7 +109,7 @@ public class ConnectActivity extends AppCompatActivity {
                 super.onActivityResult(requestCode, resultCode, data);
             }
         }
-        else if (requestCode == SCAN_BLUETOOTH_REQUEST_CODE){
+        else if (request == SCAN_BLUETOOTH_REQUEST_CODE){
             if (intentResult != null) {
                 String contents = intentResult.getContents();
                 if (contents != null) {
