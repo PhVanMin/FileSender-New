@@ -8,6 +8,7 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
 
 import com.example.xender.handler.Client;
+import com.example.xender.handler.Receiver;
 import com.example.xender.handler.SendReceiveHandler;
 import com.example.xender.handler.Server;
 
@@ -28,6 +29,7 @@ public class MyWifi {
     public static boolean isServer = false;
     public static Socket socket = null;
     public static String myWifiAddress;
+    public static Receiver receiver;
 
     public static void sendFile(File current) {
         try {
