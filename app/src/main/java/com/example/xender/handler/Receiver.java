@@ -1,6 +1,7 @@
 package com.example.xender.handler;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
 import android.os.Handler;
@@ -8,6 +9,8 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.example.xender.Dialog.MyApplication;
+import com.example.xender.db.FileSendDatabaseHandler;
+import com.example.xender.model.FileSend;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -17,7 +20,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Receiver {
     private DataInputStream dis;
@@ -28,7 +33,7 @@ public class Receiver {
     boolean isDialogShow = false;
     private long fileLength;
     private String fileName;
-
+    private FileSendDatabaseHandler fileSendDatabaseHandler;
     public Receiver(InputStream _inputStream, OutputStream _outputStream) throws IOException {
         inputStream= _inputStream;
         outputStream= _outputStream;
@@ -139,6 +144,22 @@ public class Receiver {
             throw new RuntimeException(e);
         }
         isDialogShow = false;
+        FileSend fileSend = new FileSend(
+                0,
+                file.getName(),
+                file.getPath(),
+                "",
+                new Timestamp(new Date().getTime()),
+                false
+        );
+        fileSendDatabaseHandler = new FileSendDatabaseHandler(MyApplication.getAppContext());
+        Log.d("FileSendDatabaseHandler", fileSend.getFilePath() + fileSend.getFileName());
+        fileSendDatabaseHandler.add(fileSend);
+        fileSendDatabaseHandler.getAll();
+        for (FileSend f: fileSendDatabaseHandler.getAll()
+             ) {
+            Log.d("FileSendDatabaseHandler", f.getId() + f.getFileName());
+        }
         notify();
     }
 

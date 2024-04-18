@@ -4,6 +4,7 @@ import static com.example.xender.adapter.FileAdapter.IMAGE_FILE;
 import static com.example.xender.adapter.FileAdapter.extension;
 import static com.example.xender.adapter.FileAdapter.readableFileSize;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,8 +25,10 @@ import com.example.xender.R;
 
 import com.example.xender.db.FileCloudDatabaseHandler;
 
+import com.example.xender.db.FileSendDatabaseHandler;
 import com.example.xender.handler.SendReceiveHandler;
 import com.example.xender.model.FileCloud;
+import com.example.xender.model.FileSend;
 import com.example.xender.wifi.MyWifi;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,6 +56,8 @@ import java.util.Date;
 public class SendActivity extends AppCompatActivity {
 
     private File file;
+    private FileSendDatabaseHandler fileSendDatabaseHandler;
+    private String connectionAddress;
     TextView fileName;
     TextView sizeDate;
     ImageView fileImage;
@@ -196,15 +201,46 @@ public class SendActivity extends AppCompatActivity {
                             SendReceiveHandler handler =null;
 
                             if (MyWifi.socket != null)
+                            {
                                 handler = new SendReceiveHandler(MyWifi.socket);
+                                connectionAddress = "Wifi";
+                            }
                            else if (MyWifi.bluetoothSocket != null)
+                            {
                                 handler = new SendReceiveHandler(MyWifi.bluetoothSocket);
+                                connectionAddress = "Bluetooth";
+                            }
+
 
                             if (handler != null) {
                                 try {
                                     handler.writeLong(current.length());
                                     handler.writeUTF(current.getName());
                                     handler.write(bytes);
+                                    fileSendDatabaseHandler = new FileSendDatabaseHandler(SendActivity.this);
+                                    boolean isDatabaseExists = fileSendDatabaseHandler.isDatabaseExists(SendActivity.this);
+                                    Log.d(TAG, "Is database exists: " + isDatabaseExists);
+
+                                    SQLiteDatabase db = fileSendDatabaseHandler.getReadableDatabase();
+                                    boolean isTableExists = fileSendDatabaseHandler.isTableExists(db, "file_sends");
+                                    if(isTableExists != true)
+                                    {
+                                        fileSendDatabaseHandler.onCreate(db);
+                                    }
+                                    Log.d(TAG, "Is table exists: " + isTableExists);
+                                    FileSend fileSend = new FileSend(
+                                            0,
+                                            current.getName(),
+                                            current.getPath(),
+                                            connectionAddress,
+                                            new Timestamp(new Date().getTime()),
+                                            true
+                                    );
+                                    fileSendDatabaseHandler.add(fileSend);
+                                    for (FileSend f: fileSendDatabaseHandler.getAll()
+                                    ) {
+                                        Log.d(TAG, f.getId() + f.getFileName());
+                                    }
                                 } catch (IOException e) {
                                     Log.d("WifiDirect", "Exception " + e.toString());
                                     throw new RuntimeException(e);
