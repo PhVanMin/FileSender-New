@@ -152,13 +152,13 @@ public class Receiver {
                 new Timestamp(new Date().getTime()),
                 false
         );
-        fileSendDatabaseHandler = new FileSendDatabaseHandler(MyApplication.getAppContext());
+        fileSendDatabaseHandler = new FileSendDatabaseHandler(MyApplication.getActivity());
         Log.d("FileSendDatabaseHandler", fileSend.getFilePath() + fileSend.getFileName());
         fileSendDatabaseHandler.add(fileSend);
         fileSendDatabaseHandler.getAll();
         for (FileSend f: fileSendDatabaseHandler.getAll()
              ) {
-            Log.d("FileSendDatabaseHandler", f.getId() + f.getFileName());
+            Log.d("FileSendDatabaseHandler", f.getId() + " " + f.getFileName() + " " + f.getIsSend());
         }
         notify();
     }
