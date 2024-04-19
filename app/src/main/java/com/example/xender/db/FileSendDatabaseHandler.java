@@ -32,9 +32,6 @@ public class FileSendDatabaseHandler extends LocalDatabaseHandler<FileSend> {
 
     public FileSendDatabaseHandler(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        // Create the database and table if not exists
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.close();
     }
 
     @Override
@@ -117,8 +114,8 @@ public class FileSendDatabaseHandler extends LocalDatabaseHandler<FileSend> {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(TAG, "create table: ");
-        String tableString = String.format(
+        Log.d(TAG, "create tables: ");
+        String fileSendsTableString = String.format(
                 "CREATE TABLE file_sends (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                         "file_name TEXT," +
@@ -128,13 +125,40 @@ public class FileSendDatabaseHandler extends LocalDatabaseHandler<FileSend> {
                         "is_send INTEGER" +
                         ");"
         );
-        db.execSQL(tableString);
+
+        String fileCloudsTableString = String.format(
+                "CREATE TABLE file_clouds (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "name TEXT," +
+                        "uri TEXT," +
+                        "date_create DATETIME" +
+                        ");"
+        );
+
+        // Thực thi câu lệnh tạo bảng cho bảng file_sends
+        db.execSQL(fileSendsTableString);
+
+        // Thực thi câu lệnh tạo bảng cho bảng file_clouds
+        db.execSQL(fileCloudsTableString);
+
+        if(isTableExists(db, "file_clouds"))
+        {
+            Log.d(TAG, "file clouds ok");
+        }
+        else {
+            Log.d(TAG, "file clouds not ok");
+        }
+
+        if(isTableExists(db, "file_sends"))
+        {
+            Log.d(TAG, "file sends ok");
+        }
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(TAG, "Database: ");
-        String tableString = "DROP TABLE IF EXISTS " + TABLE_NAME;
+        String tableString  = "DROP TABLE IF EXISTS file_sends";
         db.execSQL(tableString);
         onCreate(db);
     }

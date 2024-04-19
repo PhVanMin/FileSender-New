@@ -57,6 +57,7 @@ public class CloudActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        databaseHandler = new FileCloudDatabaseHandler(this);
         setContentView(R.layout.activity_cloud);
         toolbar = findViewById(R.id.appbar_send);
         toolbar.setTitle("Cloud");
@@ -70,7 +71,7 @@ public class CloudActivity extends AppCompatActivity {
 
     }
     public void setViewUploadFragment(){
-        databaseHandler = new FileCloudDatabaseHandler(this);
+
         listView = findViewById(R.id.list_cloud_file);
         initData();
         fileCloudAdapter = new FileCloudAdapter(this,R.layout.file,fileCloudList);

@@ -218,16 +218,7 @@ public class SendActivity extends AppCompatActivity {
                                     handler.writeUTF(current.getName());
                                     handler.write(bytes);
                                     fileSendDatabaseHandler = new FileSendDatabaseHandler(SendActivity.this);
-                                    boolean isDatabaseExists = fileSendDatabaseHandler.isDatabaseExists(SendActivity.this);
-                                    Log.d(TAG, "Is database exists: " + isDatabaseExists);
 
-                                    SQLiteDatabase db = fileSendDatabaseHandler.getReadableDatabase();
-                                    boolean isTableExists = fileSendDatabaseHandler.isTableExists(db, "file_sends");
-                                    if(isTableExists != true)
-                                    {
-                                        fileSendDatabaseHandler.onCreate(db);
-                                    }
-                                    Log.d(TAG, "Is table exists: " + isTableExists);
                                     FileSend fileSend = new FileSend(
                                             0,
                                             current.getName(),

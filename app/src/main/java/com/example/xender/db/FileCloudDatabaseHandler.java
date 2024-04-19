@@ -87,15 +87,26 @@ public class FileCloudDatabaseHandler extends LocalDatabaseHandler<FileCloud> {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d(TAG, "create table: ");
         String tableString = String.format(
                 "CREATE TABLE file_clouds (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                         "name TEXT," +
                         "uri TEXT," +
                         "date_create DATETIME" +
+                        ");");
+        String tableString1 = String.format(
+                "CREATE TABLE file_sends (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "file_name TEXT," +
+                        "file_path TEXT," +
+                        "receive_address TEXT," +
+                        "date_create DATETIME," +
+                        "is_send INTEGER" +
                         ");"
         );
         db.execSQL(tableString);
+        db.execSQL(tableString1);
     }
 
     @Override
