@@ -14,6 +14,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
 import com.example.xender.adapter.FileAdapter;
 import com.example.xender.db.FileSendDatabaseHandler;
@@ -58,7 +59,8 @@ public class HistoryActivity extends AppCompatActivity {
 
     public void switchToSendFragment() {
         Log.d(TAG, "Load fragment: ");
-        navController.navigate(R.id.sentFragment);
+        //navController.navigate(R.id.sentFragment);
+        listView = findViewById(R.id.list_files);
         fileSendList = new ArrayList<>();
         fileSendDatabaseHandler = new FileSendDatabaseHandler(this);
         // Remove listView initialization from here
@@ -91,6 +93,12 @@ public class HistoryActivity extends AppCompatActivity {
 
     public void switchToReceiveFragment() {
         navController.navigate(R.id.receiveFragment);
+    }
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+        MyApplication.setActivity(this);
     }
 }
 
