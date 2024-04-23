@@ -12,13 +12,14 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
 import com.example.xender.db.FileSendDatabaseHandler;
+import com.example.xender.fragment.RecFragment;
 import com.example.xender.fragment.ReceiveFragment;
 import com.example.xender.fragment.SentFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HistoryActivity extends AppCompatActivity {
     public SentFragment sentFragment;
-    public ReceiveFragment receiveFragment;
+    public RecFragment recFragment;
     private FileSendDatabaseHandler fileSendDatabaseHandler;
     private static String TAG = "History activity debug";
     NavController navController;

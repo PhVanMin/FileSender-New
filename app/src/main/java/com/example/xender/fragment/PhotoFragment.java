@@ -2,6 +2,7 @@ package com.example.xender.fragment;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -23,8 +24,12 @@ import android.widget.Toast;
 import com.example.xender.Loader.ImagesLoader;
 import com.example.xender.R;
 import com.example.xender.activity.ChooseActivity;
+import com.example.xender.activity.SendActivity;
 import com.example.xender.adapter.GalleryAdapter;
 
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -145,6 +150,16 @@ public class PhotoFragment extends Fragment {
             public void onPhotoClick(String path) {
                 // do sth
                 Toast.makeText(getActivity(), "" + path, Toast.LENGTH_SHORT).show();
+                File imageFile = new File(path);
+
+                if (imageFile.exists()) {
+                    Toast.makeText(getActivity(), "File found! " + imageFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(), SendActivity.class);
+                    intent.putExtra("File", imageFile.getAbsolutePath());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "File not found!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         recyclerView.setAdapter(galleryAdapter);

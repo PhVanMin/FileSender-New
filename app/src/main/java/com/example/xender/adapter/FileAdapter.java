@@ -36,6 +36,7 @@ public class FileAdapter extends ArrayAdapter<File> {
             R.drawable.xml_svgrepo_com,
             R.drawable.music_file_5_svgrepo_com,
             R.drawable.video_file_1_svgrepo_com,
+            R.drawable.video_file_1_svgrepo_com,
     } ;
     public static int PDF_IMAGE = 0;
     public static int TXT_IMAGE = 1;
@@ -46,6 +47,8 @@ public class FileAdapter extends ArrayAdapter<File> {
     public static int XML_IMAGE = 6;
     public static int MUSIC_IMAGE = 7;
     public static int VIDEO_IMAGE = 8;
+    public static int IMAGE_IMAGE = 9;
+
     public ArrayList<File> files;
     public static Map<String,Integer> extension = new HashMap<>();
 
@@ -54,7 +57,7 @@ public class FileAdapter extends ArrayAdapter<File> {
         super(context, resource, objects);
         this.context = context ;
         this.files= objects;
-
+        Log.d("adapter 11", "111");
         extension.put("pdf",PDF_IMAGE);
         extension.put("txt",TXT_IMAGE);
         extension.put("docs",DOC_IMAGE);
@@ -66,6 +69,9 @@ public class FileAdapter extends ArrayAdapter<File> {
         extension.put("mp3",MUSIC_IMAGE);
         extension.put("m4a",MUSIC_IMAGE);
         extension.put("mp4",VIDEO_IMAGE);
+        extension.put("png",IMAGE_IMAGE);
+        extension.put("jpg",IMAGE_IMAGE);
+        extension.put("jpeg",IMAGE_IMAGE);
     }
 
     @NonNull

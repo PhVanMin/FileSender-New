@@ -8,6 +8,6 @@
         android:title="Sent"/>
     <item
         app:showAsAction="ifRoom"
-        android:id="@+id/receiveFragment"
+        android:id="@+id/recFragment"
         android:title="Received"/>
 </menu>

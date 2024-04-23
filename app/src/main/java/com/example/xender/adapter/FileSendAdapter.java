@@ -2,6 +2,7 @@ package com.example.xender.adapter;
 
 import static com.example.xender.adapter.FileAdapter.DOCX_IMAGE;
 import static com.example.xender.adapter.FileAdapter.DOC_IMAGE;
+import static com.example.xender.adapter.FileAdapter.IMAGE_IMAGE;
 import static com.example.xender.adapter.FileAdapter.MUSIC_IMAGE;
 import static com.example.xender.adapter.FileAdapter.PDF_IMAGE;
 import static com.example.xender.adapter.FileAdapter.PPT_IMAGE;
@@ -51,6 +52,9 @@ public class FileSendAdapter extends ArrayAdapter<FileSend> {
         extension.put("xml",XML_IMAGE);
         extension.put("mp3",MUSIC_IMAGE);
         extension.put("mp4",VIDEO_IMAGE);
+        extension.put("png",IMAGE_IMAGE);
+        extension.put("jpg",IMAGE_IMAGE);
+        extension.put("jpeg",IMAGE_IMAGE);
     }
     @Override
     public int getCount() {
@@ -66,9 +70,7 @@ public class FileSendAdapter extends ArrayAdapter<FileSend> {
 
         ImageView imageView = (android.widget.ImageView) row.findViewById(R.id.file_imgView);
 
-        Log.d("adapter ",  (FilenameUtils.getExtension(current.getFileName())));
         int index = extension.get(FilenameUtils.getExtension(current.getFileName()));
-        Log.d("adapter ", String.valueOf(index));
         // imageView.setImageResource(IMAGE_FILE[index]);
         path.setText(current.getFileName());
         size.setText(current.getTime().toString());

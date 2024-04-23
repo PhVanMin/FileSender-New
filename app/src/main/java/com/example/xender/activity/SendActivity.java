@@ -78,9 +78,10 @@ public class SendActivity extends AppCompatActivity {
         sendButton = findViewById(R.id.SendButton);
         uploadButton = findViewById(R.id.upload_btn);
 
-
+        Log.d("adapter 11", file.getAbsolutePath());
+        Log.d("adapter 11", file.getName());
         int index = extension.get(FilenameUtils.getExtension(file.getAbsolutePath()));
-        Log.d("adapter ", String.valueOf(index));
+        Log.d("adapter 11", String.valueOf(index));
         fileImage.setImageResource(IMAGE_FILE[index]);
         fileName.setText(file.getName());
         sizeDate.setText(readableFileSize(file.length()));

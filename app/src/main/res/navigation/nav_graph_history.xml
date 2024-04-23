@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/sentFragment"
+    app:startDestination="@id/recFragment"
     android:id="@+id/nav_graph_qr">
     <fragment
         android:id="@+id/sentFragment"
@@ -10,12 +10,12 @@
         tools:layout="@layout/fragment_list">
         <action
             android:id="@+id/action_sentFragment_to_receiveFragment"
-            app:destination="@id/receiveFragment" />
+            app:destination="@id/recFragment" />
     </fragment>
     <fragment
-        android:name="com.example.xender.fragment.ReceiveFragment"
-        android:id="@+id/receiveFragment"
-        tools:layout="@layout/fragment_list">
+        android:name="com.example.xender.fragment.RecFragment"
+        android:id="@+id/recFragment"
+        tools:layout="@layout/fragment_rec">
         <action
             android:id="@+id/action_receiveFragment_to_sentFragment"
             app:destination="@id/sentFragment" />
