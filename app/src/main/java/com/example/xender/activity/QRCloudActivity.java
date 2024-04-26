@@ -27,6 +27,8 @@ public class QRCloudActivity extends AppCompatActivity {
         String uri = getIntent().getStringExtra("QRCODE");
         generateQRCode(uri);
         textView.setText(uri);
+
+
     }
     public void generateQRCode(String qrcode){
         try {

@@ -1,11 +1,17 @@
 package com.example.xender.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -14,10 +20,20 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.xender.Dialog.MyApplication;
 import com.example.xender.Loader.ContactsLoader;
 import com.example.xender.R;
 import com.example.xender.activity.ChooseActivity;
 import com.example.xender.adapter.ContactAdapter;
+import com.example.xender.db.FileSendDatabaseHandler;
+import com.example.xender.handler.SendReceiveHandler;
+import com.example.xender.model.Contact;
+import com.example.xender.model.FileSend;
+import com.example.xender.wifi.MyWifi;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +54,8 @@ public class ContactFragment extends Fragment {
     private ListView listView;
     private ContactAdapter contactAdapter;
     ContactsLoader loader;
+
+
     public ContactFragment() {
         // Required empty public constructor
     }
@@ -105,5 +123,70 @@ public class ContactFragment extends Fragment {
         contactAdapter  = new ContactAdapter(getActivity(),R.layout.contact,loader.getContacts());
         listView = getActivity().findViewById(R.id.list_contacts);
         listView.setAdapter(contactAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Contact contact = contactAdapter.contacts.get(position);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
+                        b.setTitle("Confirm");
+                        b.setMessage("Do you send this contact?");
+                        b.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                               // MyApplication.getActivity().startForegroundService(intent);
+                                sendContact(contact);
+                            }
+                        });
+                        b.setCancelable(true);
+                        b.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        dialog.cancel();
+                                    }
+                                }).start();
+
+                            }
+                        });
+                        AlertDialog al = b.create();
+                        al.show();
+
+                    }
+                });
+
+            }
+        });
+    }
+
+    private void sendContact(Contact contact){
+        SendReceiveHandler handler =null;
+
+        if (MyWifi.socket != null)
+        {
+            handler = new SendReceiveHandler(MyWifi.socket);
+         //   connectionAddress = "Wifi";
+        }
+        else if (MyWifi.bluetoothSocket != null)
+        {
+            handler = new SendReceiveHandler(MyWifi.bluetoothSocket);
+          //  connectionAddress = "Bluetooth";
+        }
+
+
+        if (handler != null) {
+            try {
+                handler.writeUTF("Contact");
+                handler.writeUTF(contact.getName());
+                handler.writeUTF(contact.getPhoneNumber());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
     }
 }

@@ -21,8 +21,9 @@ import java.util.Random;
 
 public class ContactAdapter extends ArrayAdapter<Contact> {
     private Context context;
-    ArrayList<Contact> contacts;
-    public static int avatars [] = {R.drawable.avatar1,
+    public ArrayList<Contact> contacts;
+    public static int avatars [] = {
+            R.drawable.avatar1,
             R.drawable.avatar2,
             R.drawable.avatar3,
             R.drawable.avatar4,
@@ -50,16 +51,11 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
         Random rand = new Random();
         int index= rand.nextInt(10);
 
-
-
-       ImageView imageView = (android.widget.ImageView) row.findViewById(R.id.avatar_imgView);
-       imageView.setImageResource(avatars[index]);
-
+        ImageView imageView = (android.widget.ImageView) row.findViewById(R.id.avatar_imgView);
+        imageView.setImageResource(avatars[index]);
 
         name.setText(contacts.get(position).getName());
         phone.setText(contacts.get(position).getPhoneNumber());
-
-
 
         return row;
     }

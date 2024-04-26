@@ -10,6 +10,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -67,8 +69,6 @@ public class CloudActivity extends AppCompatActivity {
         BottomNavigationView navigationView = findViewById(R.id.navigation_view);
         NavigationUI.setupWithNavController(navigationView,navController);
         toolbar.setNavigationOnClickListener(v -> finish());
-
-
     }
     public void setViewUploadFragment(){
 
@@ -90,7 +90,6 @@ public class CloudActivity extends AppCompatActivity {
         fileCloudList.forEach(fileCloud -> {
             Log.d(TAG, "initData: "  + fileCloud.getName());
         });
-
     }
 
     private void downloadFileCloud(String uri){
@@ -107,7 +106,6 @@ public class CloudActivity extends AppCompatActivity {
                 }
                 FileOutputStream fos = new FileOutputStream(file);
                 BufferedOutputStream bos = new BufferedOutputStream(fos);
-
                 bos.write(bytes);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);

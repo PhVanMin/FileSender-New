@@ -103,6 +103,7 @@
             android:exported="false" />
         <service android:name=".service.WifiDirectHandlerService" />
         <service android:name=".service.WifiDirectConnectionService"/>
+        <service android:name=".service.ReceiveFileService"/>
         <service android:name=".service.SendFileService"/>
         <receiver android:name=".wifi.MyBroadcastReceiver" android:exported="true">
             <intent-filter>

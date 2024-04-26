@@ -1,18 +1,18 @@
 package com.example.xender.handler;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.xender.Dialog.MyApplication;
 import com.example.xender.db.FileSendDatabaseHandler;
 import com.example.xender.model.FileSend;
-import com.example.xender.service.SendFileService;
+import com.example.xender.service.ReceiveFileService;
 import com.example.xender.wifi.MyWifi;
 
 import java.io.BufferedInputStream;
@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class Receiver implements Serializable {
@@ -58,13 +57,61 @@ public class Receiver implements Serializable {
                 }
             }
             isDialogShow = true;
+            String type = dis.readUTF();
+            if (type.equals("Contact")){
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
+                        b.setTitle("Xác nhận");
+                        b.setMessage("Are you accept a contact? " );
+                        b.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    String name = dis.readUTF();
+                                    String phoneNumber = dis.readUTF();
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            addContact(name,phoneNumber);
+                                        }
+                                    }).start();
 
+
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+
+                            }
+                        });
+                        b.setCancelable(true);
+                        b.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Skip();
+                                        dialog.cancel();
+                                    }
+                                }).start();
+
+                            }
+                        });
+                        AlertDialog al = b.create();
+                        al.show();
+
+                    }
+                });
+            } else
+            {
 
              fileLength = dis.readLong();
             Log.d("WifiDirect", "length " + String.valueOf(fileLength));
             fileName = dis.readUTF();
             Log.d("WifiDirect", "name " + fileName);
-            intent = new Intent(MyApplication.getActivity(), SendFileService.class);
+            intent = new Intent(MyApplication.getActivity(), ReceiveFileService.class);
             MyWifi.receiver =this;
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -72,22 +119,16 @@ public class Receiver implements Serializable {
                     AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
                     b.setTitle("Xác nhận");
                     b.setMessage("Are you accept " + fileName + "\n Size: " + fileLength);
-
                     b.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
                             MyApplication.getActivity().startForegroundService(intent);
-
-
                         }
                     });
                     b.setCancelable(true);
                     b.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
-
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -103,7 +144,7 @@ public class Receiver implements Serializable {
 
                 }
             });
-
+    }
         }
 
     }
@@ -164,6 +205,18 @@ public class Receiver implements Serializable {
         }
         Thread.sleep(5000);
         notify();
+    }
+    private void addContact(String name, String phone) {
+        // in this method we are calling an intent and passing data to that
+        // intent for adding a new contact.
+        Intent contactIntent = new Intent(ContactsContract.Intents.Insert.ACTION);
+        contactIntent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+        contactIntent
+                .putExtra(ContactsContract.Intents.Insert.NAME, name)
+                .putExtra(ContactsContract.Intents.Insert.PHONE, phone);
+
+        MyApplication.getActivity().  startActivityForResult(contactIntent, 1);
+       // notify();
     }
 
 

@@ -4,6 +4,7 @@ import static com.example.xender.adapter.FileAdapter.IMAGE_FILE;
 import static com.example.xender.adapter.FileAdapter.extension;
 import static com.example.xender.adapter.FileAdapter.readableFileSize;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
@@ -29,6 +30,7 @@ import com.example.xender.db.FileSendDatabaseHandler;
 import com.example.xender.handler.SendReceiveHandler;
 import com.example.xender.model.FileCloud;
 import com.example.xender.model.FileSend;
+import com.example.xender.service.SendFileService;
 import com.example.xender.wifi.MyWifi;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -193,59 +195,11 @@ public class SendActivity extends AppCompatActivity {
     }
     public void sendFile(File current){
 
-                try {
-                    byte[] bytes = Files.readAllBytes(Paths.get(current.getAbsolutePath()));
-                //    Log.d("WifiDirect", "onItemClick: "+ MyWifi.socket.toString());
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            SendReceiveHandler handler =null;
 
-                            if (MyWifi.socket != null)
-                            {
-                                handler = new SendReceiveHandler(MyWifi.socket);
-                                connectionAddress = "Wifi";
-                            }
-                           else if (MyWifi.bluetoothSocket != null)
-                            {
-                                handler = new SendReceiveHandler(MyWifi.bluetoothSocket);
-                                connectionAddress = "Bluetooth";
-                            }
+        SendFileService.current=current;
 
-
-                            if (handler != null) {
-                                try {
-                                    handler.writeLong(current.length());
-                                    handler.writeUTF(current.getName());
-                                    handler.write(bytes);
-                                    fileSendDatabaseHandler = new FileSendDatabaseHandler(SendActivity.this);
-
-                                    FileSend fileSend = new FileSend(
-                                            0,
-                                            current.getName(),
-                                            current.getPath(),
-                                            connectionAddress,
-                                            new Timestamp(new Date().getTime()),
-                                            true
-                                    );
-                                    fileSendDatabaseHandler.add(fileSend);
-                                    for (FileSend f: fileSendDatabaseHandler.getAll()
-                                    ) {
-                                        Log.d(TAG, f.getId() + f.getFileName());
-                                    }
-                                } catch (IOException e) {
-                                    Log.d("WifiDirect", "Exception " + e.toString());
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        }
-                    });
-                    thread.start();
-                    Log.d("WifiDirect", "onItemClick: ");
-                } catch (Exception e) {
-                    Log.d("WifiDirect", "onItemClick: "+e.toString());
-                    throw new RuntimeException(e);
-                }
+        Intent intent = new Intent(this, SendFileService.class);
+        startService(intent);
     }
     @Override
     protected void onResume() {

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileSendDatabaseHandler extends LocalDatabaseHandler<FileSend> {
-    private static final String DATABASE_NAME = "xenderManager";
+    private static final String DATABASE_NAME = "xendeManager";
     private static final int DATABASE_VERSION = 1;
     private static final String TABLE_NAME = "file_sends";
 
