@@ -13,7 +13,7 @@ public class StorageUtil {
     public static final int FILTER_BY_AUDIO = 1;
     public static final int FILTER_BY_VIDEO = 2;
 
-    private static final String[] documentPatterns = {"pdf", "txt", ".docs", ".docx", ".ppt", ".xlsx", ".xml"};
+    private static final String[] documentPatterns = {"pdf", "txt", ".docs", ".docx", ".ppt", ".xlsx"};
     private static final String[] audioPatterns = {".mp3", ".m4a"};
     private static final String[] videoPatterns = {".mp4"};
 
@@ -59,7 +59,7 @@ public class StorageUtil {
             } else {
                 for (String pattern : getPattern(filter)) {
                     if (file.getName().endsWith(pattern)) {
-                        Log.d("File test", "File");
+                        Log.d("File test", file.getName());
                         files.add(file);
                         break;
                     }

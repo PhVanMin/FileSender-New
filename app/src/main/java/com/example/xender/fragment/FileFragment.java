@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,9 +94,22 @@ public class FileFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle saveInstanceState) {
         super.onActivityCreated(saveInstanceState);
-        loadFiles();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                requestAllFilesAccessPermission();
+            } else {
+                // Permission is granted, proceed with accessing files
+                loadFiles();
+            }
+        }
     }
-
+    private void requestAllFilesAccessPermission() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);

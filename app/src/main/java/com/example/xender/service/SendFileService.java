@@ -93,12 +93,6 @@ public class SendFileService extends Service {
             Log.d("WifiDirect", "onItemClick: "+e.toString());
             throw new RuntimeException(e);
         }
-
-
-
-
-
-
         return super.onStartCommand(intent, flags, startId);
     }
 
