@@ -29,7 +29,6 @@ public class SendFileService extends Service {
 
     String TAG="Send File Service";
 
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {

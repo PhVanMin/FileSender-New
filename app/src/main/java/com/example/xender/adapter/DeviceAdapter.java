@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Random;
 
 public class DeviceAdapter extends ArrayAdapter<ConnectedBluetoothDevice> {
-
-
     List<ConnectedBluetoothDevice> devices;
 
     public DeviceAdapter(@NonNull Context context, int resource, @NonNull List<ConnectedBluetoothDevice> objects) {

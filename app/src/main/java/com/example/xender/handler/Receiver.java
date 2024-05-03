@@ -38,18 +38,19 @@ public class Receiver implements Serializable {
     private long fileLength;
     private String fileName;
     private FileSendDatabaseHandler fileSendDatabaseHandler;
+
     public Receiver(InputStream _inputStream, OutputStream _outputStream) throws IOException {
-        inputStream= _inputStream;
-        outputStream= _outputStream;
-       bis = new BufferedInputStream(inputStream);
-       dis = new DataInputStream(bis);
+        inputStream = _inputStream;
+        outputStream = _outputStream;
+        bis = new BufferedInputStream(inputStream);
+        dis = new DataInputStream(bis);
 
     }
-    public  synchronized void ShowCheckDialog() throws IOException {
+
+    public synchronized void ShowCheckDialog() throws IOException {
 
         synchronized (this) {
-            while(isDialogShow)
-            {
+            while (isDialogShow) {
                 try {
                     wait();
                 } catch (InterruptedException e) {
@@ -58,99 +59,59 @@ public class Receiver implements Serializable {
             }
             isDialogShow = true;
             String type = dis.readUTF();
-            if (type.equals("Contact")){
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
-                        b.setTitle("Xác nhận");
-                        b.setMessage("Are you accept a contact? " );
-                        b.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                try {
-                                    String name = dis.readUTF();
-                                    String phoneNumber = dis.readUTF();
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            addContact(name,phoneNumber);
-                                        }
-                                    }).start();
-
-
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-                            }
-                        });
-                        b.setCancelable(true);
-                        b.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Skip();
-                                        dialog.cancel();
-                                    }
-                                }).start();
-
-                            }
-                        });
-                        AlertDialog al = b.create();
-                        al.show();
-
-                    }
-                });
-            } else
-            {
-
-             fileLength = dis.readLong();
-            Log.d("WifiDirect", "length " + String.valueOf(fileLength));
-            fileName = dis.readUTF();
-            Log.d("WifiDirect", "name " + fileName);
-            intent = new Intent(MyApplication.getActivity(), ReceiveFileService.class);
-            MyWifi.receiver =this;
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
+            if (type.equals("Contact")) {
+                new Handler(Looper.getMainLooper()).post(() -> {
                     AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
-                    b.setTitle("Xác nhận");
-                    b.setMessage("Are you accept " + fileName + "\n Size: " + fileLength);
-                    b.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            MyApplication.getActivity().startForegroundService(intent);
+                    b.setTitle("Nhận dữ liệu");
+                    b.setMessage("Nhận danh bạ? ");
+                    b.setPositiveButton("Chấp nhận", (dialog, which) -> {
+                        try {
+                            String name = dis.readUTF();
+                            String phoneNumber = dis.readUTF();
+                            new Thread(() -> addContact(name, phoneNumber)).start();
+
+
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
                     });
                     b.setCancelable(true);
-                    b.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Skip();
-                                        dialog.cancel();
-                                    }
-                                }).start();
-
-                        }
-                    });
+                    b.setNegativeButton("Từ chối", (dialog, which) -> new Thread(() -> {
+                        Skip();
+                        dialog.cancel();
+                    }).start());
                     AlertDialog al = b.create();
                     al.show();
 
-                }
-            });
-    }
+                });
+            } else {
+                fileLength = Math.round(dis.readFloat() / (1048576));
+                Log.d("WifiDirect", "length " + String.valueOf(fileLength));
+                fileName = dis.readUTF();
+                Log.d("WifiDirect", "name " + fileName);
+                intent = new Intent(MyApplication.getActivity(), ReceiveFileService.class);
+                MyWifi.receiver = this;
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
+                    b.setTitle("Nhận dữ liệu");
+                    b.setMessage("Nhận file " + fileName + "\n Dung lượng: " + fileLength + " MB");
+                    b.setPositiveButton("Chấp nhận", (dialog, which) -> MyApplication.getActivity().startForegroundService(intent));
+                    b.setCancelable(true);
+                    b.setNegativeButton("Từ chối", (dialog, which) -> new Thread(() -> {
+                        Skip();
+                        dialog.cancel();
+                    }).start());
+                    AlertDialog al = b.create();
+                    al.show();
+
+                });
+            }
         }
 
     }
 
 
-    public synchronized void Skip(){
+    public synchronized void Skip() {
         try {
             dis.skipBytes(bis.available());
         } catch (IOException e) {
@@ -160,6 +121,7 @@ public class Receiver implements Serializable {
         notify();
 
     }
+
     public synchronized void Receive() throws InterruptedException {
 
         String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -169,15 +131,15 @@ public class Receiver implements Serializable {
             file.renameTo(new File(dirPath + "/copy_of_" + fileName));
         }
         file.setWritable(true, false);
-        Log.d("WifiDirect", "file access" + String.valueOf(file.setWritable(true, false)));
+        Log.d("WifiDirect", "file access" + (file.setWritable(true, false)));
         Log.d("WifiDirect", "path= " + file.getAbsolutePath());
         try {
             FileOutputStream fos = new FileOutputStream(file);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
             Log.d("WifiDirect", "path= " + file.getAbsolutePath());
-            int s ;
+            int s;
             Log.d("WifiDirect bis", String.valueOf(bis.available()));
-            for (int i = 0 ; i<fileLength;i++){
+            for (int i = 0; i < fileLength; i++) {
                 bos.write(dis.readByte());
             }
             Log.d("WifiDirect", "write file successfully");
@@ -199,13 +161,14 @@ public class Receiver implements Serializable {
         Log.d("FileSendDatabaseHandler", fileSend.getFilePath() + fileSend.getFileName());
         fileSendDatabaseHandler.add(fileSend);
         fileSendDatabaseHandler.getAll();
-        for (FileSend f: fileSendDatabaseHandler.getAll()
-             ) {
+        for (FileSend f : fileSendDatabaseHandler.getAll()
+        ) {
             Log.d("FileSendDatabaseHandler", f.getId() + f.getFileName());
         }
         Thread.sleep(5000);
         notify();
     }
+
     private void addContact(String name, String phone) {
         // in this method we are calling an intent and passing data to that
         // intent for adding a new contact.
@@ -215,8 +178,8 @@ public class Receiver implements Serializable {
                 .putExtra(ContactsContract.Intents.Insert.NAME, name)
                 .putExtra(ContactsContract.Intents.Insert.PHONE, phone);
 
-        MyApplication.getActivity().  startActivityForResult(contactIntent, 1);
-       // notify();
+        MyApplication.getActivity().startActivityForResult(contactIntent, 1);
+        // notify();
     }
 
 

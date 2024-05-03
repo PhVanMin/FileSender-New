@@ -129,7 +129,7 @@ public class SendActivity extends AppCompatActivity {
 
     }
     public void sendFile(File current){
-        SendFileService.current=current;
+        SendFileService.current = current;
         Intent intent = new Intent(this, SendFileService.class);
         startService(intent);
     }
