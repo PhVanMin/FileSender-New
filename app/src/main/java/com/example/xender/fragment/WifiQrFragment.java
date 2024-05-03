@@ -84,7 +84,10 @@ public class WifiQrFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         qr_code= getActivity().findViewById(R.id.Qr_code);
-
+        if (MyWifi.myWifiAddress!=null)
+        {
+            generateQRCode(MyWifi.myWifiAddress);
+        }
         //generateQRCode(MyWifi.broadcastReceiver.getDeviceAddress());
     }
 

@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
+import com.example.xender.db.FileSendDatabaseHandler;
 import com.example.xender.fragment.HomeFragment;
 import com.example.xender.handler.Client;
 
@@ -63,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == READ_STORAGE_PERMISSION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (homeFragment != null){
-                    homeFragment.setProgressBar();
-                }
+                 }   homeFragment.setProgressBar();
+
                 Toast.makeText(this, "Read external storage granted", Toast.LENGTH_SHORT).show();
 
             } else {

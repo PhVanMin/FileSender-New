@@ -18,11 +18,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.xender.Bluetooth.ConnectQR;
 import com.example.xender.R;
 import com.example.xender.activity.CloudActivity;
 import com.example.xender.activity.ConnectActivity;
@@ -31,9 +34,14 @@ import com.example.xender.activity.MainActivity;
 import com.example.xender.activity.QRActivity;
 import com.example.xender.activity.ChooseActivity;
 import com.example.xender.activity.SendActivity;
+import com.example.xender.adapter.DeviceAdapter;
+import com.example.xender.db.BluetoothDeviceDatabaseHandler;
+import com.example.xender.db.FileSendDatabaseHandler;
+import com.example.xender.model.ConnectedBluetoothDevice;
 import com.example.xender.permission.PermissionChecker;
 import com.example.xender.utils.StorageUtil;
 
+import java.util.List;
 import java.util.Locale;
 
 
@@ -59,7 +67,9 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private ProgressBar progressBar;
+    private ListView deviceListView;
     MainActivity activity;
+    private  static List<ConnectedBluetoothDevice> devicelist;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -104,6 +114,7 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
+
         activity = (MainActivity) getActivity();
         sendBtn = getActivity().findViewById(R.id.send_btn);
         sendBtn.setOnClickListener(v -> goToActivity(ChooseActivity.class));
@@ -124,12 +135,14 @@ public class HomeFragment extends Fragment {
         totalFilesTextView = getActivity().findViewById(R.id.totalFiles);
         cloudBtn.setOnClickListener(v -> goToActivity(CloudActivity.class));
 
+        deviceListView = getActivity().findViewById(R.id.list_bluetooth_device);
+
         if( (android.os.Build.VERSION.SDK_INT) <= 32) {
             if (ContextCompat.checkSelfPermission(activity,
                     Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(activity, new String[]
-                        {Manifest.permission.READ_EXTERNAL_STORAGE}, ChooseActivity.READ_FILES_PERMISSION);
+                        {Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
             }
             else {
                 setProgressBar();
@@ -139,6 +152,8 @@ public class HomeFragment extends Fragment {
         }
 
         PermissionChecker.checkWriteExternalStorage(getActivity());
+
+        setListDevice();
     }
 
     public void goToActivity(Class<?> cls) {
@@ -155,6 +170,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void setProgressBar() {
+        Log.d("Progressbar", "setProgressBar: ");
         long files = Environment.getExternalStorageDirectory().listFiles().length;
         double gbMemoryAvailable =  StorageUtil.getByteAvailable() / (1073741824);
         double gbMemorySize =  StorageUtil.getByteMemorySize() / (1073741824);
@@ -167,5 +183,20 @@ public class HomeFragment extends Fragment {
         progressBar = getActivity().findViewById(R.id.homeProgressBar);
         progressBar.setMax((int) gbMemorySize);
         progressBar.setProgress((int) ((gbMemorySize - gbMemoryAvailable)));
+    }
+
+    public void setListDevice(){
+
+        BluetoothDeviceDatabaseHandler handler = new BluetoothDeviceDatabaseHandler(getActivity());
+         devicelist = handler.getAll();
+        DeviceAdapter adapter = new DeviceAdapter(getActivity(),R.layout.device,devicelist);
+        deviceListView.setAdapter(adapter);
+        deviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String address = devicelist.get(position).getName();
+                ConnectQR connectQR = new ConnectQR(getActivity(), address);
+            }
+        });
     }
 }

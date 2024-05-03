@@ -10,10 +10,17 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.xender.Dialog.MyApplication;
+import com.example.xender.activity.SendActivity;
+import com.example.xender.db.BluetoothDeviceDatabaseHandler;
+import com.example.xender.db.FileCloudDatabaseHandler;
 import com.example.xender.handler.SendReceiveHandler;
+import com.example.xender.model.ConnectedBluetoothDevice;
 import com.example.xender.wifi.MyWifi;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -52,6 +59,7 @@ public class ConnectQR {
     }
 
     private void connectToDevice(BluetoothDevice device) {
+
         new ConnectThread(device).start();
     }
 
@@ -144,6 +152,11 @@ public class ConnectQR {
             try {
                 mmSocket.connect();
                 Log.d(TAG, "Connected successfully!");
+                ConnectedBluetoothDevice bluetoothDevice = new ConnectedBluetoothDevice(
+                        mmDevice.getName(), mmDevice.getAddress(),  new Timestamp(new Date().getTime()));
+                //Log.d("Database handler", bluetoothDevice.toString());
+                BluetoothDeviceDatabaseHandler dbhandler = new BluetoothDeviceDatabaseHandler(MyApplication.getActivity());
+                dbhandler.add(bluetoothDevice);
                 SendReceiveHandler handler =new SendReceiveHandler(mmSocket);
                 MyWifi.bluetoothSocket = mmSocket;
                 handler.start();

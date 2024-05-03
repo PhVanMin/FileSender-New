@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileSendDatabaseHandler extends LocalDatabaseHandler<FileSend> {
-    private static final String DATABASE_NAME = "xendeManager";
+    private static final String DATABASE_NAME = "xenderManager";
     private static final int DATABASE_VERSION = 1;
     private static final String TABLE_NAME = "file_sends";
 
@@ -134,6 +134,15 @@ public class FileSendDatabaseHandler extends LocalDatabaseHandler<FileSend> {
                         "date_create DATETIME" +
                         ");"
         );
+
+        String tableString = String.format(
+                "CREATE TABLE bluetooth_device (" +
+                        "name TEXT," +
+                        "address TEXT PRIMARY KEY," +
+                        "date_create DATETIME" +
+                        ");"
+        );
+        db.execSQL(tableString);
 
         // Thực thi câu lệnh tạo bảng cho bảng file_sends
         db.execSQL(fileSendsTableString);
