@@ -58,6 +58,7 @@ public class QRActivity extends AppCompatActivity {
     public static int ACCESS_WIFI_STATE = 101;
     public static int NEARBY_WIFI_DEVICE = 102;
     public static int WRITE_EXTERNAL_STORAGE = 103;
+    public static int BLUETOOTH = 105;
 
     public static int ACCESS_FINE_LOCATION = 104;
 
@@ -175,6 +176,14 @@ public class QRActivity extends AppCompatActivity {
         if (requestCode == NEARBY_WIFI_DEVICE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "access nearby device", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if (requestCode == BLUETOOTH) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                bluetoothQrFragment.getConnection();
+            } else {
+                Toast.makeText(this, "not access bluetooth", Toast.LENGTH_SHORT).show();
             }
         }
     }

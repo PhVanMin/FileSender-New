@@ -50,7 +50,22 @@ public class FileAdapter extends ArrayAdapter<File> {
     public static int IMAGE_IMAGE = 9;
 
     public ArrayList<File> files;
-    public static Map<String,Integer> extension = new HashMap<>();
+    public static Map<String,Integer> extension = new HashMap<String,Integer>() {{
+        put("pdf",PDF_IMAGE);
+        put("txt",TXT_IMAGE);
+        put("docs",DOC_IMAGE);
+        put("docx",DOCX_IMAGE);
+        put("ppt",PPT_IMAGE);
+        put("pptx",PPT_IMAGE);
+        put("xlsx",XLSX_IMAGE);
+        put("xml",XML_IMAGE);
+        put("mp3",MUSIC_IMAGE);
+        put("m4a",MUSIC_IMAGE);
+        put("mp4",VIDEO_IMAGE);
+        put("png",IMAGE_IMAGE);
+        put("jpg",IMAGE_IMAGE);
+        put("jpeg",IMAGE_IMAGE);
+    }};
 
 
     public FileAdapter(@NonNull Context context, int resource, @NonNull ArrayList<File> objects) {

@@ -149,9 +149,9 @@ public class PhotoFragment extends Fragment {
             @Override
             public void onPhotoClick(String path) {
                 // do sth
-                Toast.makeText(getActivity(), "" + path, Toast.LENGTH_SHORT).show();
+                Log.d("File exist", path);
+                Toast.makeText(getActivity(), path, Toast.LENGTH_SHORT).show();
                 File imageFile = new File(path);
-
                 if (imageFile.exists()) {
                     Toast.makeText(getActivity(), "File found! " + imageFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), SendActivity.class);

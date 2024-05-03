@@ -60,15 +60,15 @@ public class FileCloudAdapter extends ArrayAdapter<FileCloud> {
         View row ;
 
         row = inflater.inflate(R.layout.file, null);
-        TextView path = (TextView) row.findViewById(R.id.path_textView);
-        TextView size = (TextView) row.findViewById(R.id.size_textView);
+        TextView path = row.findViewById(R.id.path_textView);
+        TextView size = row.findViewById(R.id.size_textView);
         FileCloud current = fileCloudList.get(position);
 
-        ImageView imageView = (android.widget.ImageView) row.findViewById(R.id.file_imgView);
+        ImageView imageView = row.findViewById(R.id.file_imgView);
 
         Log.d("adapter ",  (FilenameUtils.getExtension(current.getName())));
-        int index = extension.get(FilenameUtils.getExtension(current.getName()));
-        Log.d("adapter ", String.valueOf(index));
+//        int index = extension.get(FilenameUtils.getExtension(current.getName()));
+//        Log.d("adapter ", String.valueOf(index));
        // imageView.setImageResource(IMAGE_FILE[index]);
         path.setText(current.getName());
         size.setText(current.getTime().toString());

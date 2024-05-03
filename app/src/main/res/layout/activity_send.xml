@@ -27,6 +27,7 @@
                 android:src="@drawable/pdf_svgrepo_com" />
 
             <TextView
+                android:textColor="@color/black"
                 android:id="@+id/fileName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,6 +37,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
+                android:textColor="@color/black"
                 android:id="@+id/sizeDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,6 +113,7 @@
             android:layout_height="25dp"
             android:src="@drawable/link_chain_svgrepo_com"/>
         <Switch
+            android:textColor="@color/black"
             android:id="@+id/encryptionSwitch"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -130,6 +133,7 @@
             android:layout_height="23dp"
             android:src="@drawable/lock_svgrepo_com"/>
         <Switch
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:id="@+id/passwordSwitch"
             android:layout_width="0dp"
@@ -140,6 +144,7 @@
     </TableRow>
 
     <TableRow
+        android:visibility="gone"
         android:paddingHorizontal="5dp">
         <LinearLayout
             android:layout_width="0dp"
@@ -162,7 +167,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="12345678"
                 android:maxLength="8"
                 android:textAlignment="textEnd"
                 android:padding="10dp"
@@ -177,7 +181,8 @@
 
 
     <Button
-        android:layout_marginBottom="20dp"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginBottom="5dp"
         android:textSize="20sp"
         android:id="@+id/upload_btn"
         android:layout_width="match_parent"
@@ -187,8 +192,10 @@
         android:textColor="@android:color/white" />
 
     <Button
+        android:layout_marginHorizontal="5dp"
         android:textSize="20sp"
         android:id="@+id/SendButton"
+        android:layout_marginBottom="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_button"

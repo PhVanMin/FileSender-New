@@ -5,21 +5,18 @@ import static com.example.xender.adapter.FileAdapter.extension;
 import static com.example.xender.adapter.FileAdapter.readableFileSize;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder;
 
 import com.example.xender.Dialog.MyApplication;
 import com.example.xender.R;
@@ -27,21 +24,10 @@ import com.example.xender.R;
 import com.example.xender.db.FileCloudDatabaseHandler;
 
 import com.example.xender.db.FileSendDatabaseHandler;
-import com.example.xender.handler.SendReceiveHandler;
 import com.example.xender.model.FileCloud;
-import com.example.xender.model.FileSend;
 import com.example.xender.service.SendFileService;
-import com.example.xender.wifi.MyWifi;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnPausedListener;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -49,9 +35,6 @@ import com.google.firebase.storage.UploadTask;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -82,47 +65,25 @@ public class SendActivity extends AppCompatActivity {
 
         Log.d("adapter 11", file.getAbsolutePath());
         Log.d("adapter 11", file.getName());
-        int index = extension.get(FilenameUtils.getExtension(file.getAbsolutePath()));
+        int index = extension.getOrDefault(FilenameUtils.getExtension(file.getName()), 0);
         Log.d("adapter 11", String.valueOf(index));
         fileImage.setImageResource(IMAGE_FILE[index]);
         fileName.setText(file.getName());
         sizeDate.setText(readableFileSize(file.length()));
         toolbar = findViewById(R.id.appbar_send);
-        toolbar.setTitle("Chọn tập tin");
-        toolbar.isBackInvokedCallbackEnabled();
+        toolbar.setTitle("Gửi tập tin");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendFile(file);
-            }
-        });
-       uploadButton.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               uploadFile(file);
-           }
-       });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        sendButton.setOnClickListener(v -> sendFile(file));
+        uploadButton.setOnClickListener(v -> uploadFile(file));
         FirebaseApp.initializeApp(/*context=*/ this);
     }
     static String TAG= "Upload File";
     public  void uploadFile(File _file){
-        //  StorageUtil.getAllDir(Environment.getExternalStorageDirectory(),StorageUtil.FILTER_BY_DOCUMENT);
-
-
-
+        AlertDialog dialog = getUploadDialog();
+        dialog.show();
         Uri file =Uri.fromFile(_file);
-
-//        //FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
-//        firebaseAppCheck.installAppCheckProviderFactory(
-//                PlayIntegrityAppCheckProviderFactory.getInstance());
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
         StorageMetadata metadata = new StorageMetadata.Builder()
@@ -130,65 +91,39 @@ public class SendActivity extends AppCompatActivity {
                 .build();
         String path = "files/" + file.getLastPathSegment();
         StorageReference filePath = storageRef.child(path);
-        UploadTask uploadTask = (UploadTask) filePath
+        UploadTask uploadTask = filePath
                         .putFile(file, metadata);
-
-
-
-
-
-        // ...
-
-        // Listen for state changes, errors, and completion of the upload.
-        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                Log.d(TAG, "Upload is " + progress + "% done");
-            }
-        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                Log.d(TAG, "Upload is paused");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.d(TAG, "Upload is fail" + exception.toString());
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+        uploadTask.addOnProgressListener(taskSnapshot -> {
+            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+            Log.d(TAG, "Upload is " + progress + "% done");
+        }).addOnPausedListener(taskSnapshot -> Log.d(TAG, "Upload is paused"))
+            .addOnFailureListener(exception -> Log.d(TAG, "Upload is fail" + exception))
+            .addOnSuccessListener(taskSnapshot -> {
                 Log.d(TAG, "Upload is success");
-            }
-        });
+                dialog.cancel();
+                Toast.makeText(this, "Upload successful!", Toast.LENGTH_SHORT).show();
+            });
 
-        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    Log.d(TAG, "then: " + task.getException().toString());
-                    throw task.getException();
-                }
-
-                // Continue with the task to get the download URL
-                return filePath.getDownloadUrl();
+        uploadTask.continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                Log.d(TAG, "then: " + task.getException().toString());
+                throw task.getException();
             }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    Log.d(TAG, "then: " + downloadUri.toString());
-                    FileCloud fileCloud = new FileCloud(_file.getName(),
-                            downloadUri.toString(),
-                            new Timestamp(new Date().getTime()));
-                    FileCloudDatabaseHandler handler = new FileCloudDatabaseHandler(SendActivity.this);
-                    handler.add(fileCloud);
-                } else {
-                    Log.d(TAG, "then: fail " + task.getException().toString());
-                    // ...
-                }
+
+            // Continue with the task to get the download URL
+            return filePath.getDownloadUrl();
+        }).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Uri downloadUri = task.getResult();
+                Log.d(TAG, "then: " + downloadUri.toString());
+                FileCloud fileCloud = new FileCloud(_file.getName(),
+                        downloadUri.toString(),
+                        new Timestamp(new Date().getTime()));
+                FileCloudDatabaseHandler handler = new FileCloudDatabaseHandler(SendActivity.this);
+                handler.add(fileCloud);
+            } else {
+                Log.d(TAG, "then: fail " + task.getException().toString());
+                // ...
             }
         });
 
@@ -206,5 +141,17 @@ public class SendActivity extends AppCompatActivity {
 
         super.onResume();
         MyApplication.setActivity(this);
+    }
+
+    private AlertDialog getUploadDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+// 2. Chain together various setter methods to set the dialog characteristics.
+        builder.setMessage("Uploading...")
+                .setTitle("File upload")
+                .setCancelable(false);
+
+// 3. Get the AlertDialog.
+        return builder.create();
     }
 }

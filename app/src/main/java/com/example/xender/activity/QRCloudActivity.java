@@ -1,6 +1,7 @@
 package com.example.xender.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -17,11 +18,16 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 public class QRCloudActivity extends AppCompatActivity {
     ImageView qr_code;
     TextView textView;
+    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrcloud);
-
+        toolbar = findViewById(R.id.appbar_send);
+        toolbar.setTitle("Thông tin tải về");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         qr_code=findViewById(R.id.Qr_code_cloud);
         textView=findViewById(R.id.URI_text);
         String uri = getIntent().getStringExtra("QRCODE");

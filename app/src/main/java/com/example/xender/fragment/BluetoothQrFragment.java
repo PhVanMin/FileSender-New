@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.xender.Bluetooth.MyBluetooth;
@@ -96,8 +97,28 @@ public class BluetoothQrFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         qr_code = getActivity().findViewById(R.id.Qr_code1);
+
+        if( (android.os.Build.VERSION.SDK_INT) > 30) {
+            if (ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]
+                        {Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT}, QRActivity.BLUETOOTH);
+            } else {
+                getConnection();
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]
+                        {Manifest.permission.BLUETOOTH}, QRActivity.BLUETOOTH);
+            } else {
+                getConnection();
+            }
+        }
+    }
+
+    public void getConnection() {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!mBluetoothAdapter.isEnabled()) {
             Intent bt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -106,7 +127,6 @@ public class BluetoothQrFragment extends Fragment {
         MyBluetooth myBluetooth = new MyBluetooth();
         generateQRCode(myBluetooth.getAddress());
         myBluetooth.startServer();
-
     }
 
     @Override
