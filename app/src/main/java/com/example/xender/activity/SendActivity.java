@@ -97,11 +97,14 @@ public class SendActivity extends AppCompatActivity {
             double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
             Log.d(TAG, "Upload is " + progress + "% done");
         }).addOnPausedListener(taskSnapshot -> Log.d(TAG, "Upload is paused"))
-            .addOnFailureListener(exception -> Log.d(TAG, "Upload is fail" + exception))
+            .addOnFailureListener(exception -> {
+                Toast.makeText(this, "Tải lên thất bại!", Toast.LENGTH_SHORT).show();
+            })
             .addOnSuccessListener(taskSnapshot -> {
                 Log.d(TAG, "Upload is success");
-                dialog.cancel();
-                Toast.makeText(this, "Upload successful!", Toast.LENGTH_SHORT).show();
+                if (dialog.isShowing())
+                    dialog.cancel();
+                Toast.makeText(this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
             });
 
         uploadTask.continueWithTask(task -> {
@@ -143,9 +146,8 @@ public class SendActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 // 2. Chain together various setter methods to set the dialog characteristics.
-        builder.setMessage("Uploading...")
-                .setTitle("File upload")
-                .setCancelable(false);
+        builder.setMessage("Đang tải tệp... Nguời dùng có thể tắt")
+                .setTitle("Tải lên");
 
 // 3. Get the AlertDialog.
         return builder.create();

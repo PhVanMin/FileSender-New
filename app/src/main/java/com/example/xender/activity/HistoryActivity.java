@@ -32,7 +32,7 @@ public class HistoryActivity extends AppCompatActivity {
         Log.d(TAG, "Load file: ");
         setContentView(R.layout.activity_history);
         toolbar = findViewById(R.id.appbar_send);
-        toolbar.setTitle("History");
+        toolbar.setTitle("Lịch sử");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);

@@ -123,43 +123,23 @@ public class ContactFragment extends Fragment {
         contactAdapter  = new ContactAdapter(getActivity(),R.layout.contact,loader.getContacts());
         listView = getActivity().findViewById(R.id.list_contacts);
         listView.setAdapter(contactAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Contact contact = contactAdapter.contacts.get(position);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
-                        b.setTitle("Confirm");
-                        b.setMessage("Do you send this contact?");
-                        b.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                               // MyApplication.getActivity().startForegroundService(intent);
-                                sendContact(contact);
-                            }
-                        });
-                        b.setCancelable(true);
-                        b.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        dialog.cancel();
-                                    }
-                                }).start();
-
-                            }
-                        });
-                        AlertDialog al = b.create();
-                        al.show();
-
-                    }
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Contact contact = contactAdapter.contacts.get(position);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
+                b.setTitle("Danh bạ");
+                b.setMessage("Gửi danh bạ cho người kết nối?");
+                b.setPositiveButton("Đồng ý", (dialog, which) -> {
+                   // MyApplication.getActivity().startForegroundService(intent);
+                    sendContact(contact);
                 });
+                b.setCancelable(true);
+                b.setNegativeButton("Huỷ", (dialog, which) -> new Thread(() -> dialog.cancel()).start());
+                AlertDialog al = b.create();
+                al.show();
 
-            }
+            });
+
         });
     }
 

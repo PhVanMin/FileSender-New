@@ -179,7 +179,7 @@ public class HomeFragment extends Fragment {
 
         totalFilesTextView.setText(String.format(Locale.ENGLISH,"%d files", count));
         storageInfoTextView.setText(
-                String.format(Locale.ENGLISH, "%s GB of %s GB",
+                String.format(Locale.ENGLISH, "Đã dùng %s GB of %s GB",
                         Math.round(gbMemorySize - gbMemoryAvailable) ,Math.round(gbMemorySize)));
 
         progressBar = getActivity().findViewById(R.id.homeProgressBar);

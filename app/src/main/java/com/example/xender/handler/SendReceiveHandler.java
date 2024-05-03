@@ -61,15 +61,12 @@ public class SendReceiveHandler extends Thread{
         Log.d("WifiDirect", "write file start");
 
         Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
-                b.setTitle("Connection");
-                b.setMessage("Successfully!");
-                AlertDialog al = b.create();
-                al.show();
-            }
+        handler.post(() -> {
+            AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
+            b.setTitle("Kết nối");
+            b.setMessage("Thành công!");
+            AlertDialog al = b.create();
+            al.show();
         });
 
 

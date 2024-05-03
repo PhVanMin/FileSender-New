@@ -5,9 +5,9 @@
     <item
         app:showAsAction="ifRoom"
         android:id="@+id/sentFragment"
-        android:title="Sent"/>
+        android:title="Đã gửi"/>
     <item
         app:showAsAction="ifRoom"
         android:id="@+id/recFragment"
-        android:title="Received"/>
+        android:title="Đã nhận"/>
 </menu>

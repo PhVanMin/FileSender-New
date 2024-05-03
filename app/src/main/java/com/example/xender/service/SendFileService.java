@@ -41,48 +41,45 @@ public class SendFileService extends Service {
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(current.getAbsolutePath()));
             //    Log.d("WifiDirect", "onItemClick: "+ MyWifi.socket.toString());
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    SendReceiveHandler handler =null;
+            Thread thread = new Thread(() -> {
+                SendReceiveHandler handler =null;
 
-                    if (MyWifi.socket != null)
-                    {
-                        handler = new SendReceiveHandler(MyWifi.socket);
-                        connectionAddress = "Wifi";
-                    }
-                    else if (MyWifi.bluetoothSocket != null)
-                    {
-                        handler = new SendReceiveHandler(MyWifi.bluetoothSocket);
-                        connectionAddress = "Bluetooth";
-                    }
+                if (MyWifi.socket != null)
+                {
+                    handler = new SendReceiveHandler(MyWifi.socket);
+                    connectionAddress = "Wifi";
+                }
+                else if (MyWifi.bluetoothSocket != null)
+                {
+                    handler = new SendReceiveHandler(MyWifi.bluetoothSocket);
+                    connectionAddress = "Bluetooth";
+                }
 
 
-                    if (handler != null) {
-                        try {
-                            handler.writeUTF("File");
-                            handler.writeLong(current.length());
-                            handler.writeUTF(current.getName());
-                            handler.write(bytes);
-                            fileSendDatabaseHandler = new FileSendDatabaseHandler(MyApplication.getActivity());
+                if (handler != null) {
+                    try {
+                        handler.writeUTF("File");
+                        handler.writeLong(current.length());
+                        handler.writeUTF(current.getName());
+                        handler.write(bytes);
+                        fileSendDatabaseHandler = new FileSendDatabaseHandler(MyApplication.getActivity());
 
-                            FileSend fileSend = new FileSend(
-                                    0,
-                                    current.getName(),
-                                    current.getPath(),
-                                    connectionAddress,
-                                    new Timestamp(new Date().getTime()),
-                                    true
-                            );
-                            fileSendDatabaseHandler.add(fileSend);
-                            for (FileSend f: fileSendDatabaseHandler.getAll()
-                            ) {
-                                Log.d(TAG, f.getId() + f.getFileName());
-                            }
-                        } catch (IOException e) {
-                            Log.d("WifiDirect", "Exception " + e.toString());
-                            throw new RuntimeException(e);
+                        FileSend fileSend = new FileSend(
+                                0,
+                                current.getName(),
+                                current.getPath(),
+                                connectionAddress,
+                                new Timestamp(new Date().getTime()),
+                                true
+                        );
+                        fileSendDatabaseHandler.add(fileSend);
+                        for (FileSend f: fileSendDatabaseHandler.getAll()
+                        ) {
+                            Log.d(TAG, f.getId() + f.getFileName());
                         }
+                    } catch (IOException e) {
+                        Log.d("WifiDirect", "Exception " + e.toString());
+                        throw new RuntimeException(e);
                     }
                 }
             });

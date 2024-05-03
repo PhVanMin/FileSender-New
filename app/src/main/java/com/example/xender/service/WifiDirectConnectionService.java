@@ -49,15 +49,12 @@ public class WifiDirectConnectionService extends Service {
                         {
 
                             Handler handler = new Handler(Looper.getMainLooper());
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
-                                    b.setTitle("Connection Fail");
-                                    b.setMessage("Check your wifi and try again!!");
-                                    AlertDialog al = b.create();
-                                    al.show();
-                                }
+                            handler.post(() -> {
+                                AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
+                                b.setTitle("Kết nối thất bại");
+                                b.setMessage("Kiểm tra Wifi hoặc đối tác!!");
+                                AlertDialog al = b.create();
+                                al.show();
                             });
                             break;
                         }

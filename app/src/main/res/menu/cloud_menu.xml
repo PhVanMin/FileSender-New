@@ -5,9 +5,9 @@
     <item
         app:showAsAction="ifRoom"
         android:id="@+id/sentFragment"
-        android:title="Upload"/>
+        android:title="Tải lên"/>
     <item
         app:showAsAction="ifRoom"
         android:id="@+id/downloadFragment"
-        android:title="Download"/>
+        android:title="Tải xuống"/>
 </menu>

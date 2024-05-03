@@ -48,7 +48,7 @@ public class ConnectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
         toolbar = findViewById(R.id.appbar_send);
-        toolbar.setTitle("Scan QR");
+        toolbar.setTitle("Quét mã QR");
         toolbar.isBackInvokedCallbackEnabled();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -114,8 +114,7 @@ public class ConnectActivity extends AppCompatActivity {
                 String contents = intentResult.getContents();
                 if (contents != null) {
                     Log.d("QR Scanner", contents);
-                    ConnectQR connectQR = new ConnectQR(this, contents);
-
+                    new ConnectQR(this, contents);
                 }
             } else {
                 super.onActivityResult(requestCode, resultCode, data);

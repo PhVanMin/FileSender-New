@@ -94,7 +94,7 @@ public class Receiver implements Serializable {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     AlertDialog.Builder b = new AlertDialog.Builder(MyApplication.getActivity());
                     b.setTitle("Nhận dữ liệu");
-                    b.setMessage("Nhận file " + fileName + "\n Dung lượng: " + fileLength + " MB");
+                    b.setMessage("Nhận file " + fileName + "\nDung lượng: " + fileLength + " MB");
                     b.setPositiveButton("Chấp nhận", (dialog, which) -> MyApplication.getActivity().startForegroundService(intent));
                     b.setCancelable(true);
                     b.setNegativeButton("Từ chối", (dialog, which) -> new Thread(() -> {
