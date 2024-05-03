@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
+import android.os.StatFs;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +45,7 @@ import com.example.xender.model.ConnectedBluetoothDevice;
 import com.example.xender.permission.PermissionChecker;
 import com.example.xender.utils.StorageUtil;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -137,19 +142,12 @@ public class HomeFragment extends Fragment {
 
         deviceListView = getActivity().findViewById(R.id.list_bluetooth_device);
 
-        if( (android.os.Build.VERSION.SDK_INT) <= 32) {
-            if (ContextCompat.checkSelfPermission(activity,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(activity, new String[]
-                        {Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                requestAllFilesAccessPermission();
             }
-            else {
-                setProgressBar();
-            }
-        } else {
-            setProgressBar();
         }
+        setProgressBar();
 
         PermissionChecker.checkWriteExternalStorage(getActivity());
 
@@ -171,18 +169,24 @@ public class HomeFragment extends Fragment {
 
     public void setProgressBar() {
         Log.d("Progressbar", "setProgressBar: ");
-        long files = Environment.getExternalStorageDirectory().listFiles().length;
-        double gbMemoryAvailable =  StorageUtil.getByteAvailable() / (1073741824);
-        double gbMemorySize =  StorageUtil.getByteMemorySize() / (1073741824);
+        File root = Environment.getExternalStorageDirectory();
+        StatFs statFs = new StatFs(root.getPath());
+        StorageUtil.getAllDir(root, -1);
+        long count = StorageUtil.files.size();
+        double gbMemoryAvailable =  statFs.getAvailableBytes() / (1073741824);
+        double gbMemorySize =  statFs.getTotalBytes() / (1073741824);
 
-        totalFilesTextView.setText(String.format(Locale.ENGLISH,"%d files", files));
+
+        totalFilesTextView.setText(String.format(Locale.ENGLISH,"%d files", count));
         storageInfoTextView.setText(
                 String.format(Locale.ENGLISH, "%s GB of %s GB",
-                        Math.round(gbMemorySize) ,Math.round(gbMemorySize)+Math.round( gbMemoryAvailable)));
+                        Math.round(gbMemorySize - gbMemoryAvailable) ,Math.round(gbMemorySize)));
 
         progressBar = getActivity().findViewById(R.id.homeProgressBar);
         progressBar.setMax((int) gbMemorySize);
         progressBar.setProgress((int) ((gbMemorySize - gbMemoryAvailable)));
+
+        StorageUtil.files.clear();
     }
 
     public void setListDevice(){
@@ -198,5 +202,13 @@ public class HomeFragment extends Fragment {
                 ConnectQR connectQR = new ConnectQR(getActivity(), address);
             }
         });
+    }
+
+    private void requestAllFilesAccessPermission() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
     }
 }

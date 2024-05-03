@@ -57,15 +57,21 @@ public class StorageUtil {
             if (file.isDirectory()) {
                 getAllDir(file, filter);
             } else {
-                for (String pattern : getPattern(filter)) {
-                    if (file.getName().endsWith(pattern)) {
-                        Log.d("File test", file.getName());
-                        files.add(file);
-                        break;
+                String[] patterns = getPattern(filter);
+                if (patterns == null) {
+                    Log.d("File test no pattern", file.getName());
+                    files.add(file);
+                }
+                else {
+                    for (String pattern : patterns) {
+                        if (file.getName().endsWith(pattern)) {
+                            Log.d("File test", file.getName());
+                            files.add(file);
+                            break;
+                        }
                     }
                 }
             }
         }
-
     }
 }
